@@ -12,6 +12,7 @@ export interface BoneConfig {
   name: string;
   length: number;
   angles: SemanticAngle[];
+  baseRotation?: THREE.Euler; // Base rotation applied before semantic angles
 }
 
 export class Bone {
@@ -22,6 +23,9 @@ export class Bone {
   // Local offset from parent (along parent's Y axis typically)
   localOffset: THREE.Vector3;
   length: number;
+
+  // Base rotation applied before semantic angles
+  baseRotation: THREE.Euler;
 
   // Semantic angles (ordered list)
   angles: SemanticAngle[];
@@ -35,6 +39,7 @@ export class Bone {
     this.name = config.name;
     this.length = config.length;
     this.localOffset = localOffset;
+    this.baseRotation = config.baseRotation ? config.baseRotation.clone() : new THREE.Euler(0, 0, 0);
 
     this.angles = config.angles.map(angle => ({ ...angle }));
 
@@ -58,9 +63,11 @@ export class Bone {
     // Apply local offset
     this.mesh.position.copy(this.localOffset);
 
-    // Build rotation matrix by applying rotations in order
+    // Start with base rotation
     const rotationMatrix = new THREE.Matrix4();
+    rotationMatrix.makeRotationFromEuler(this.baseRotation);
 
+    // Apply semantic angles in order on top of base rotation
     this.angles.forEach(angle => {
       const radians = THREE.MathUtils.degToRad(angle.value);
       const absAxis = angle.axis.replace('-', '') as 'x' | 'y' | 'z';

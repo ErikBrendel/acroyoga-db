@@ -8,11 +8,14 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
   const containerRef = useRef<HTMLDivElement>(null);
   const [bones, setBones] = useState<{
     hip: Bone;
-    upperLeg: Bone;
-    lowerLeg: Bone;
-    foot: Bone;
+    leftUpperLeg: Bone;
+    leftLowerLeg: Bone;
+    leftFoot: Bone;
+    rightUpperLeg: Bone;
+    rightLowerLeg: Bone;
+    rightFoot: Bone;
   } | null>(null);
-  const [selectedBone, setSelectedBone] = useState<'upperLeg' | 'lowerLeg' | 'foot'>('upperLeg');
+  const [selectedBone, setSelectedBone] = useState<'leftUpperLeg' | 'leftLowerLeg' | 'leftFoot' | 'rightUpperLeg' | 'rightLowerLeg' | 'rightFoot' | null>(null);
   const [, setUpdateTrigger] = useState(0);
   const transformControlsRef = useRef<TransformControls | null>(null);
   const orbitControlsRef = useRef<OrbitControls | null>(null);
@@ -70,6 +73,10 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
     gridHelper.position.y = 0.01; // Slightly above ground to prevent z-fighting
     scene.add(gridHelper);
 
+    // Axes helper (red=X, green=Y, blue=Z)
+    const axesHelper = new THREE.AxesHelper(1);
+    scene.add(axesHelper);
+
     // Create leg skeleton: Hip (root) → Upper Leg → Lower Leg → Foot
     const hipConfig: BoneConfig = {
       name: 'hip',
@@ -77,13 +84,25 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
       angles: [],
     };
 
-    const upperLegConfig: BoneConfig = {
-      name: 'upper-leg',
+    const leftUpperLegConfig: BoneConfig = {
+      name: 'left-upper-leg',
       length: 0.43, // ~43cm upper leg
+      baseRotation: new THREE.Euler(0, 0, Math.PI), // Rotate 180° around Z to point downward
       angles: [
-        { name: 'straddle', value: 0, min: -10, max: 90, axis: 'x' },
-        { name: 'pike', value: 0, min: -30, max: 120, axis: '-z' },
-        { name: 'rotate', value: 0, min: -45, max: 45, axis: 'y' },
+        { name: 'pike', value: 0, min: -10, max: 130, axis: 'x' },
+        { name: 'straddle', value: 0, min: -30, max: 120, axis: '-z' },
+        { name: 'rotate', value: 0, min: -90, max: 90, axis: 'y' },
+      ],
+    };
+
+    const rightUpperLegConfig: BoneConfig = {
+      name: 'right-upper-leg',
+      length: 0.43, // ~43cm upper leg
+      baseRotation: new THREE.Euler(0, 0, Math.PI), // Rotate 180° around Z to point downward
+      angles: [
+        { name: 'pike', value: 0, min: -10, max: 130, axis: 'x' },
+        { name: 'straddle', value: 0, min: -30, max: 120, axis: 'z' }, // Inverted for right leg
+        { name: 'rotate', value: 0, min: -90, max: 90, axis: 'y' },
       ],
     };
 
@@ -104,25 +123,43 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
       ],
     };
 
+    const hipWidth = 0.15; // ~15cm offset from center for each leg
+
     const hip = new Bone(hipConfig, new THREE.Vector3(0, 1, 0));
-    const upperLeg = new Bone(upperLegConfig, new THREE.Vector3(0, 0, 0));
-    const lowerLeg = new Bone(lowerLegConfig, new THREE.Vector3(0, upperLegConfig.length, 0));
-    const foot = new Bone(footConfig, new THREE.Vector3(0, lowerLegConfig.length, 0));
 
-    hip.addChild(upperLeg);
-    upperLeg.addChild(lowerLeg);
-    lowerLeg.addChild(foot);
+    // Left leg
+    const leftUpperLeg = new Bone(leftUpperLegConfig, new THREE.Vector3(-hipWidth, 0, 0));
+    const leftLowerLeg = new Bone(lowerLegConfig, new THREE.Vector3(0, leftUpperLegConfig.length, 0));
+    const leftFoot = new Bone(footConfig, new THREE.Vector3(0, lowerLegConfig.length, 0));
 
+    // Right leg
+    const rightUpperLeg = new Bone(rightUpperLegConfig, new THREE.Vector3(hipWidth, 0, 0));
+    const rightLowerLeg = new Bone(lowerLegConfig, new THREE.Vector3(0, rightUpperLegConfig.length, 0));
+    const rightFoot = new Bone(footConfig, new THREE.Vector3(0, lowerLegConfig.length, 0));
+
+    // Build hierarchy
+    hip.addChild(leftUpperLeg);
+    leftUpperLeg.addChild(leftLowerLeg);
+    leftLowerLeg.addChild(leftFoot);
+
+    hip.addChild(rightUpperLeg);
+    rightUpperLeg.addChild(rightLowerLeg);
+    rightLowerLeg.addChild(rightFoot);
+
+    // Create visuals
     hip.createVisuals(0xff0000); // red - hip
-    upperLeg.createVisuals(0x00ff00); // green - upper leg
-    lowerLeg.createVisuals(0x0000ff); // blue - lower leg
-    foot.createVisuals(0xffff00); // yellow - foot
+    leftUpperLeg.createVisuals(0x00ff00); // green - left upper leg
+    leftLowerLeg.createVisuals(0x0000ff); // blue - left lower leg
+    leftFoot.createVisuals(0xffff00); // yellow - left foot
+    rightUpperLeg.createVisuals(0x00ffff); // cyan - right upper leg
+    rightLowerLeg.createVisuals(0xff00ff); // magenta - right lower leg
+    rightFoot.createVisuals(0xffa500); // orange - right foot
 
     scene.add(hip.mesh);
 
     hip.updateTransform();
 
-    setBones({ hip, upperLeg, lowerLeg, foot });
+    setBones({ hip, leftUpperLeg, leftLowerLeg, leftFoot, rightUpperLeg, rightLowerLeg, rightFoot });
 
     // Create TransformControls for rotation
     const transformControls = new TransformControls(camera, renderer.domElement);
@@ -139,11 +176,11 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
 
     transformControlsRef.current = transformControls;
 
-    // Attach to upper leg by default and configure axes
-    transformControls.attach(upperLeg.mesh);
-    const hasX = upperLeg.angles.some(a => a.axis === 'x' || a.axis === '-x');
-    const hasY = upperLeg.angles.some(a => a.axis === 'y' || a.axis === '-y');
-    const hasZ = upperLeg.angles.some(a => a.axis === 'z' || a.axis === '-z');
+    // Attach to left upper leg by default and configure axes
+    transformControls.attach(leftUpperLeg.mesh);
+    const hasX = leftUpperLeg.angles.some(a => a.axis === 'x' || a.axis === '-x');
+    const hasY = leftUpperLeg.angles.some(a => a.axis === 'y' || a.axis === '-y');
+    const hasZ = leftUpperLeg.angles.some(a => a.axis === 'z' || a.axis === '-z');
     transformControls.showX = hasX;
     transformControls.showY = hasY;
     transformControls.showZ = hasZ;
@@ -151,7 +188,7 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
     console.log('TransformControls created:', transformControls);
     console.log('Is Object3D:', transformControls instanceof THREE.Object3D);
     console.log('Has _root:', '_root' in transformControls);
-    console.log('Attached to bone:', upperLeg.mesh.name);
+    console.log('Attached to bone:', leftUpperLeg.mesh.name);
 
     // Disable orbit controls when dragging gizmo
     transformControls.addEventListener('dragging-changed', (event) => {
@@ -165,9 +202,12 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
 
       // Find which bone this is
       let bone: Bone | null = null;
-      if (attachedBone === upperLeg.mesh) bone = upperLeg;
-      else if (attachedBone === lowerLeg.mesh) bone = lowerLeg;
-      else if (attachedBone === foot.mesh) bone = foot;
+      if (attachedBone === leftUpperLeg.mesh) bone = leftUpperLeg;
+      else if (attachedBone === leftLowerLeg.mesh) bone = leftLowerLeg;
+      else if (attachedBone === leftFoot.mesh) bone = leftFoot;
+      else if (attachedBone === rightUpperLeg.mesh) bone = rightUpperLeg;
+      else if (attachedBone === rightLowerLeg.mesh) bone = rightLowerLeg;
+      else if (attachedBone === rightFoot.mesh) bone = rightFoot;
 
       if (bone) {
         // Extract euler rotation from the mesh (this was set by the gizmo)
@@ -225,15 +265,20 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
   useEffect(() => {
     if (!bones || !transformControlsRef.current) return;
 
+    if (selectedBone === null) {
+      transformControlsRef.current.detach();
+      return;
+    }
+
     const bone = bones[selectedBone];
     if (bone) {
       transformControlsRef.current.detach();
       transformControlsRef.current.attach(bone.mesh);
 
       // Enable only the axes that this bone has angles for
-      const hasX = bone.angles.some(a => a.axis === 'x' || a.axis === '-x');
-      const hasY = bone.angles.some(a => a.axis === 'y' || a.axis === '-y');
-      const hasZ = bone.angles.some(a => a.axis === 'z' || a.axis === '-z');
+      const hasX = bone.angles.some((a: { axis: string }) => a.axis === 'x' || a.axis === '-x');
+      const hasY = bone.angles.some((a: { axis: string }) => a.axis === 'y' || a.axis === '-y');
+      const hasZ = bone.angles.some((a: { axis: string }) => a.axis === 'z' || a.axis === '-z');
       transformControlsRef.current.showX = hasX;
       transformControlsRef.current.showY = hasY;
       transformControlsRef.current.showZ = hasZ;
@@ -242,13 +287,13 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
 
   if (!isOpen) return null;
 
-  const handleAngleChange = (boneName: 'upperLeg' | 'lowerLeg' | 'foot', angleName: string, value: number) => {
+  const handleAngleChange = (boneName: 'leftUpperLeg' | 'leftLowerLeg' | 'leftFoot' | 'rightUpperLeg' | 'rightLowerLeg' | 'rightFoot', angleName: string, value: number) => {
     if (!bones) return;
     bones[boneName].setAngle(angleName, value);
     setUpdateTrigger(prev => prev + 1); // Force re-render
   };
 
-  const currentBone = bones?.[selectedBone];
+  const currentBone = bones && selectedBone ? bones[selectedBone] : null;
   const angles = currentBone ? currentBone.angles : [];
 
   return (
@@ -270,51 +315,99 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
 
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2">Select Bone</label>
-          <select
-            value={selectedBone}
-            onChange={(e) => setSelectedBone(e.target.value as 'upperLeg' | 'lowerLeg' | 'foot')}
-            className="w-full px-3 py-2 bg-gray-800 rounded"
-          >
-            <option value="upperLeg">Upper Leg (Green)</option>
-            <option value="lowerLeg">Lower Leg (Blue)</option>
-            <option value="foot">Foot (Yellow)</option>
-          </select>
+          <div className="space-y-1">
+            <button
+              onClick={() => setSelectedBone(null)}
+              className={`w-full px-3 py-2 rounded text-left text-sm ${
+                selectedBone === null ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
+              }`}
+            >
+              None
+            </button>
+
+            <div className="text-xs text-gray-500 mt-2 mb-1">Left Leg</div>
+            <button
+              onClick={() => setSelectedBone('leftUpperLeg')}
+              className={`w-full px-3 py-2 rounded text-left text-sm ${
+                selectedBone === 'leftUpperLeg' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
+              }`}
+            >
+              🟢 Upper Leg
+            </button>
+            <button
+              onClick={() => setSelectedBone('leftLowerLeg')}
+              className={`w-full px-3 py-2 rounded text-left text-sm ${
+                selectedBone === 'leftLowerLeg' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
+              }`}
+            >
+              🔵 Lower Leg
+            </button>
+            <button
+              onClick={() => setSelectedBone('leftFoot')}
+              className={`w-full px-3 py-2 rounded text-left text-sm ${
+                selectedBone === 'leftFoot' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
+              }`}
+            >
+              🟡 Foot
+            </button>
+
+            <div className="text-xs text-gray-500 mt-2 mb-1">Right Leg</div>
+            <button
+              onClick={() => setSelectedBone('rightUpperLeg')}
+              className={`w-full px-3 py-2 rounded text-left text-sm ${
+                selectedBone === 'rightUpperLeg' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
+              }`}
+            >
+              🔵 Upper Leg
+            </button>
+            <button
+              onClick={() => setSelectedBone('rightLowerLeg')}
+              className={`w-full px-3 py-2 rounded text-left text-sm ${
+                selectedBone === 'rightLowerLeg' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
+              }`}
+            >
+              🟣 Lower Leg
+            </button>
+            <button
+              onClick={() => setSelectedBone('rightFoot')}
+              className={`w-full px-3 py-2 rounded text-left text-sm ${
+                selectedBone === 'rightFoot' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
+              }`}
+            >
+              🟠 Foot
+            </button>
+          </div>
         </div>
 
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Angles</h3>
-          {angles.map((angle) => (
-            <div key={angle.name}>
-              <label className="block text-sm mb-1">
-                {angle.name}: {angle.value.toFixed(1)}°
-              </label>
-              <input
-                type="range"
-                min={angle.min}
-                max={angle.max}
-                value={angle.value}
-                onChange={(e) =>
-                  handleAngleChange(selectedBone, angle.name, parseFloat(e.target.value))
-                }
-                className="w-full"
-              />
-              <div className="flex justify-between text-xs text-gray-400">
-                <span>{angle.min}°</span>
-                <span>{angle.max}°</span>
+          {selectedBone === null ? (
+            <p className="text-sm text-gray-400">Select a bone to adjust angles</p>
+          ) : (
+            angles.map((angle: { name: string; value: number; min: number; max: number }) => (
+              <div key={angle.name}>
+                <label className="block text-sm mb-1">
+                  {angle.name}: {angle.value.toFixed(1)}°
+                </label>
+                <input
+                  type="range"
+                  min={angle.min}
+                  max={angle.max}
+                  value={angle.value}
+                  onChange={(e) =>
+                    handleAngleChange(selectedBone, angle.name, parseFloat(e.target.value))
+                  }
+                  className="w-full"
+                />
+                <div className="flex justify-between text-xs text-gray-400">
+                  <span>{angle.min}°</span>
+                  <span>{angle.max}°</span>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
 
-        <div className="mt-6 p-3 bg-gray-800 rounded">
-          <div className="text-xs text-gray-400 mb-2">Leg Skeleton Demo</div>
-          <ul className="text-sm space-y-1">
-            <li>🔴 Hip (root, red)</li>
-            <li>🟢 Upper Leg (green, 3 angles)</li>
-            <li>🔵 Lower Leg (blue, 1 angle)</li>
-            <li>🟡 Foot (yellow, 2 angles)</li>
-          </ul>
-        </div>
       </div>
     </div>
   );
