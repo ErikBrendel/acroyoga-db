@@ -84,7 +84,8 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
     rightLowerLeg: Bone;
     rightFoot: Bone;
   } | null>(null);
-  const [selectedBone, setSelectedBone] = useState<'leftUpperLeg' | 'leftLowerLeg' | 'leftFoot' | 'rightUpperLeg' | 'rightLowerLeg' | 'rightFoot' | null>(null);
+  const [selectedBone, setSelectedBone] = useState<'hip' | 'leftUpperLeg' | 'leftLowerLeg' | 'leftFoot' | 'rightUpperLeg' | 'rightLowerLeg' | 'rightFoot' | null>(null);
+  const [hipMode, setHipMode] = useState<'translate' | 'rotate'>('translate');
   const [, setUpdateTrigger] = useState(0);
   const transformControlsRef = useRef<TransformControls | null>(null);
   const orbitControlsRef = useRef<OrbitControls | null>(null);
@@ -198,12 +199,12 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
     const hip = new Bone(hipConfig, new THREE.Vector3(0, 1, 0));
 
     // Left leg
-    const leftUpperLeg = new Bone(leftUpperLegConfig, new THREE.Vector3(-hipWidth, 0, 0));
+    const leftUpperLeg = new Bone(leftUpperLegConfig, new THREE.Vector3(-hipWidth, -0.1, 0));
     const leftLowerLeg = new Bone(lowerLegConfig, new THREE.Vector3(0, leftUpperLegConfig.length, 0));
     const leftFoot = new Bone(footConfig, new THREE.Vector3(0, lowerLegConfig.length, 0));
 
     // Right leg
-    const rightUpperLeg = new Bone(rightUpperLegConfig, new THREE.Vector3(hipWidth, 0, 0));
+    const rightUpperLeg = new Bone(rightUpperLegConfig, new THREE.Vector3(hipWidth, -0.1, 0));
     const rightLowerLeg = new Bone(lowerLegConfig, new THREE.Vector3(0, rightUpperLegConfig.length, 0));
     const rightFoot = new Bone(footConfig, new THREE.Vector3(0, lowerLegConfig.length, 0));
 
@@ -273,14 +274,22 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
 
       // Find which bone this is
       let bone: Bone | null = null;
-      if (attachedBone === leftUpperLeg.mesh) bone = leftUpperLeg;
+      let isHip = false;
+      if (attachedBone === hip.mesh) {
+        bone = hip;
+        isHip = true;
+      }
+      else if (attachedBone === leftUpperLeg.mesh) bone = leftUpperLeg;
       else if (attachedBone === leftLowerLeg.mesh) bone = leftLowerLeg;
       else if (attachedBone === leftFoot.mesh) bone = leftFoot;
       else if (attachedBone === rightUpperLeg.mesh) bone = rightUpperLeg;
       else if (attachedBone === rightLowerLeg.mesh) bone = rightLowerLeg;
       else if (attachedBone === rightFoot.mesh) bone = rightFoot;
 
-      if (bone) {
+      if (bone && isHip) {
+        // Hip translation - just update the UI
+        setUpdateTrigger(prev => prev + 1);
+      } else if (bone) {
         // Extract euler rotation from the mesh (this was set by the gizmo)
         const currentEuler = attachedBone.rotation;
         const prevEuler = previousEulerRef.current;
@@ -367,23 +376,38 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
       transformControlsRef.current.detach();
       transformControlsRef.current.attach(bone.mesh);
 
-      // Initialize previous euler with current bone rotation
-      previousEulerRef.current.copy(bone.mesh.rotation);
+      // Hip gets translate or rotate mode based on toggle, others get rotate mode
+      if (selectedBone === 'hip') {
+        transformControlsRef.current.setMode(hipMode);
+        transformControlsRef.current.showX = true;
+        transformControlsRef.current.showY = true;
+        transformControlsRef.current.showZ = true;
 
-      // Enable only the axes that this bone has angles for
-      const hasX = bone.angles.some((a: { axis: string }) => a.axis === 'x' || a.axis === '-x');
-      const hasY = bone.angles.some((a: { axis: string }) => a.axis === 'y' || a.axis === '-y');
-      const hasZ = bone.angles.some((a: { axis: string }) => a.axis === 'z' || a.axis === '-z');
-      transformControlsRef.current.showX = hasX;
-      transformControlsRef.current.showY = hasY;
-      transformControlsRef.current.showZ = hasZ;
+        // Initialize previous euler for rotation mode
+        if (hipMode === 'rotate') {
+          previousEulerRef.current.copy(bone.mesh.rotation);
+        }
+      } else {
+        transformControlsRef.current.setMode('rotate');
+
+        // Initialize previous euler with current bone rotation
+        previousEulerRef.current.copy(bone.mesh.rotation);
+
+        // Enable only the axes that this bone has angles for
+        const hasX = bone.angles.some((a: { axis: string }) => a.axis === 'x' || a.axis === '-x');
+        const hasY = bone.angles.some((a: { axis: string }) => a.axis === 'y' || a.axis === '-y');
+        const hasZ = bone.angles.some((a: { axis: string }) => a.axis === 'z' || a.axis === '-z');
+        transformControlsRef.current.showX = hasX;
+        transformControlsRef.current.showY = hasY;
+        transformControlsRef.current.showZ = hasZ;
+      }
     }
-  }, [selectedBone, bones]);
+  }, [selectedBone, bones, hipMode]);
 
   if (!isOpen) return null;
 
-  const handleAngleChange = (boneName: 'leftUpperLeg' | 'leftLowerLeg' | 'leftFoot' | 'rightUpperLeg' | 'rightLowerLeg' | 'rightFoot', angleName: string, value: number) => {
-    if (!bones) return;
+  const handleAngleChange = (boneName: 'hip' | 'leftUpperLeg' | 'leftLowerLeg' | 'leftFoot' | 'rightUpperLeg' | 'rightLowerLeg' | 'rightFoot', angleName: string, value: number) => {
+    if (!bones || boneName === 'hip') return; // Hip has no angles
     bones[boneName].setAngle(angleName, value);
     // Update previous euler reference after manual slider change
     if (selectedBone === boneName) {
@@ -437,6 +461,16 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
               }`}
             >
               None
+            </button>
+
+            <div className="text-xs text-gray-500 mt-2 mb-1">Root</div>
+            <button
+              onClick={() => setSelectedBone('hip')}
+              className={`w-full px-3 py-2 rounded text-left text-sm ${
+                selectedBone === 'hip' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
+              }`}
+            >
+              🔴 Hip (Move/Rotate)
             </button>
 
             <div className="text-xs text-gray-500 mt-2 mb-1">Left Leg</div>
@@ -512,6 +546,28 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
           <h3 className="text-lg font-semibold">Angles</h3>
           {selectedBone === null ? (
             <p className="text-sm text-gray-400">Select a bone to adjust angles</p>
+          ) : selectedBone === 'hip' ? (
+            <div>
+              <p className="text-sm text-gray-400 mb-3">Use gizmo to move/rotate hip</p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setHipMode('translate')}
+                  className={`flex-1 px-3 py-2 rounded text-sm ${
+                    hipMode === 'translate' ? 'bg-green-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  }`}
+                >
+                  Translate
+                </button>
+                <button
+                  onClick={() => setHipMode('rotate')}
+                  className={`flex-1 px-3 py-2 rounded text-sm ${
+                    hipMode === 'rotate' ? 'bg-green-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  }`}
+                >
+                  Rotate
+                </button>
+              </div>
+            </div>
           ) : (
             angles.map((angle: { name: string; value: number; min: number; max: number }) => (
               <div key={angle.name}>
@@ -524,7 +580,7 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
                   max={angle.max}
                   value={angle.value}
                   onChange={(e) =>
-                    handleAngleChange(selectedBone, angle.name, parseFloat(e.target.value))
+                    handleAngleChange(selectedBone as Exclude<typeof selectedBone, null | 'hip'>, angle.name, parseFloat(e.target.value))
                   }
                   className="w-full"
                 />
