@@ -20,9 +20,10 @@ export function usePoseData(): PoseData {
   useEffect(() => {
     async function loadData() {
       try {
+        const baseUrl = import.meta.env.BASE_URL;
         const [posesResponse, transitionsResponse] = await Promise.all([
-          fetch('/data/poses.json'),
-          fetch('/data/transitions.json'),
+          fetch(`${baseUrl}data/poses.json`),
+          fetch(`${baseUrl}data/transitions.json`),
         ]);
 
         if (!posesResponse.ok) {
