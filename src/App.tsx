@@ -1,12 +1,13 @@
-import { useState, useMemo } from 'react';
-import { usePoseData } from './hooks/usePoseData';
-import { PoseGraph } from './components/PoseGraph';
-import { PoseDetailSidebar } from './components/PoseDetailSidebar';
-import { FlowsList } from './components/FlowsList';
-import { transformToGraph } from './utils/graphTransform';
+import {useMemo, useState} from 'react';
+import {usePoseData} from './hooks/usePoseData';
+import {PoseGraph} from './components/PoseGraph';
+import {PoseDetailSidebar} from './components/PoseDetailSidebar';
+import {FlowsList} from './components/FlowsList';
+import {transformToGraph} from './utils/graphTransform';
+import {isLocalEditMode} from './utils/editMode';
 
 function App() {
-  const { poses, transitions, flows, loading, error } = usePoseData();
+  const { poses, transitions, flows, loading, error, refetch } = usePoseData();
   const [selectedPoseId, setSelectedPoseId] = useState<string | null>(null);
   const [activeFlowName, setActiveFlowName] = useState<string | null>(null);
 
@@ -43,8 +44,17 @@ function App() {
   return (
     <div className="w-screen h-screen relative bg-gray-50">
       <div className="absolute top-0 left-0 p-4 z-10 bg-white shadow-md rounded-br-lg">
-        <h1 className="text-xl font-bold text-gray-900">Acroyoga Pose Graph</h1>
-        <p className="text-sm text-gray-600">{poses.length} poses, {transitions.length} transitions</p>
+        <div className="flex items-center gap-3">
+          <div>
+            <h1 className="text-xl font-bold text-gray-900">Acroyoga Pose Graph</h1>
+            <p className="text-sm text-gray-600">{poses.length} poses, {transitions.length} transitions</p>
+          </div>
+          {isLocalEditMode() && (
+            <div className="px-3 py-1 bg-green-100 border border-green-300 rounded-full">
+              <span className="text-xs font-semibold text-green-700">Local Edit Mode</span>
+            </div>
+          )}
+        </div>
       </div>
       <FlowsList
         flows={flows}
@@ -66,6 +76,7 @@ function App() {
         activeFlowName={activeFlowName}
         onSelectPose={setSelectedPoseId}
         onFlowClick={handleFlowClick}
+        onDataChange={isLocalEditMode() ? refetch : undefined}
       />
     </div>
   );

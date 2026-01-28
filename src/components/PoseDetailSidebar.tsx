@@ -1,5 +1,9 @@
+import { useState } from 'react';
 import { Pose, Transition, Flow } from '../types/data';
 import { PoseButton } from './PoseButton';
+import { AddTransitionForm } from './AddTransitionForm';
+import { isLocalEditMode } from '../utils/editMode';
+import { deleteTransition } from '../api/transitions';
 
 interface PoseDetailSidebarProps {
   selectedPoseId: string | null;
@@ -9,6 +13,7 @@ interface PoseDetailSidebarProps {
   activeFlowName: string | null;
   onSelectPose: (poseId: string | null) => void;
   onFlowClick: (flowName: string) => void;
+  onDataChange?: () => void;
 }
 
 export function PoseDetailSidebar({
@@ -19,7 +24,9 @@ export function PoseDetailSidebar({
   activeFlowName,
   onSelectPose,
   onFlowClick,
+  onDataChange,
 }: PoseDetailSidebarProps) {
+  const [isDeleting, setIsDeleting] = useState(false);
   if (!selectedPoseId) {
     return null;
   }
@@ -40,6 +47,28 @@ export function PoseDetailSidebar({
   );
   const mirroredPose = pose.mirroredPoseId ? poses.find((p) => p.id === pose.mirroredPoseId) : null;
   const containingFlows = flows.filter((f) => f.poseIds.includes(selectedPoseId));
+
+  const handleDeleteTransition = async (fromPoseId: string, toPoseId: string) => {
+    if (isDeleting) return;
+    setIsDeleting(true);
+
+    try {
+      await deleteTransition({ fromPoseId, toPoseId });
+      if (onDataChange) {
+        onDataChange();
+      }
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to delete transition');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleAddTransitionSuccess = () => {
+    if (onDataChange) {
+      onDataChange();
+    }
+  };
 
   return (
     <div className="absolute top-0 right-0 h-full w-96 bg-white shadow-2xl border-l border-gray-200 overflow-y-auto z-10">
@@ -124,6 +153,7 @@ export function PoseDetailSidebar({
                     poseName={connectedPose?.name}
                     direction="bidirectional"
                     onSelectPose={onSelectPose}
+                    onDelete={() => handleDeleteTransition(transition.fromPoseId, transition.toPoseId)}
                   />
                 );
               })}
@@ -146,6 +176,7 @@ export function PoseDetailSidebar({
                     poseName={targetPose?.name}
                     direction="to"
                     onSelectPose={onSelectPose}
+                    onDelete={() => handleDeleteTransition(transition.fromPoseId, transition.toPoseId)}
                   />
                 );
               })}
@@ -168,10 +199,21 @@ export function PoseDetailSidebar({
                     poseName={sourcePose?.name}
                     direction="from"
                     onSelectPose={onSelectPose}
+                    onDelete={() => handleDeleteTransition(transition.fromPoseId, transition.toPoseId)}
                   />
                 );
               })}
             </div>
+          </div>
+        )}
+
+        {isLocalEditMode() && (
+          <div className="mb-6">
+            <AddTransitionForm
+              currentPoseId={selectedPoseId}
+              allPoses={poses}
+              onSuccess={handleAddTransitionSuccess}
+            />
           </div>
         )}
       </div>

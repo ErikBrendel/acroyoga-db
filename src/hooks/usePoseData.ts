@@ -8,10 +8,11 @@ interface PoseData {
   flows: Flow[];
   loading: boolean;
   error: string | null;
+  refetch: () => void;
 }
 
 export function usePoseData(): PoseData {
-  const [data, setData] = useState<PoseData>({
+  const [data, setData] = useState<Omit<PoseData, 'refetch'>>({
     poses: [],
     transitions: [],
     flows: [],
@@ -19,8 +20,7 @@ export function usePoseData(): PoseData {
     error: null,
   });
 
-  useEffect(() => {
-    async function loadData() {
+  const loadData = async () => {
       try {
         const baseUrl = import.meta.env.BASE_URL;
         const [posesResponse, transitionsResponse, flowsResponse] = await Promise.all([
@@ -69,12 +69,16 @@ export function usePoseData(): PoseData {
           error: err instanceof Error ? err.message : 'Unknown error occurred',
         });
       }
-    }
+  }
 
+  useEffect(() => {
     loadData();
   }, []);
 
-  return data;
+  return {
+    ...data,
+    refetch: loadData,
+  };
 }
 
 function validateData(poses: Pose[], transitions: Transition[], flows: Flow[]): string[] {
