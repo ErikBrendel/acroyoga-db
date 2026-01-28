@@ -128,5 +128,10 @@
     "name": "Mono Backbird (Right)",
     "description": "Single-leg base on right side. Flyer balances horizontally face-up on one foot. (AI generated)",
     "mirroredPoseId": "mono-backbird-left"
+  },
+  {
+    "id": "back-bird",
+    "name": "Back Bird",
+    "description": "Like Bird, but Flyer turns to face the ceiling. Base Feet on Flyer butt. Hand connection optional."
   }
 ]

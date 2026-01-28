@@ -106,5 +106,13 @@
   {
     "fromPoseId": "straddlebat",
     "toPoseId": "star"
+  },
+  {
+    "fromPoseId": "back-bird",
+    "toPoseId": "reverse-shoulder-stand"
+  },
+  {
+    "fromPoseId": "back-bird",
+    "toPoseId": "reverse-throne"
   }
 ]
