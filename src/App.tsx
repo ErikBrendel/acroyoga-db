@@ -3,6 +3,7 @@ import {usePoseData} from './hooks/usePoseData';
 import {PoseGraph} from './components/PoseGraph';
 import {PoseDetailSidebar} from './components/PoseDetailSidebar';
 import {FlowsList} from './components/FlowsList';
+import {AddPoseDialog} from './components/AddPoseDialog';
 import {transformToGraph} from './utils/graphTransform';
 import {isLocalEditMode} from './utils/editMode';
 
@@ -10,6 +11,7 @@ function App() {
   const { poses, transitions, flows, loading, error, refetch } = usePoseData();
   const [selectedPoseId, setSelectedPoseId] = useState<string | null>(null);
   const [activeFlowName, setActiveFlowName] = useState<string | null>(null);
+  const [isAddPoseDialogOpen, setIsAddPoseDialogOpen] = useState(false);
 
   const { nodes, edges } = useMemo(() => transformToGraph(poses, transitions), [poses, transitions]);
 
@@ -50,9 +52,17 @@ function App() {
             <p className="text-sm text-gray-600">{poses.length} poses, {transitions.length} transitions</p>
           </div>
           {isLocalEditMode() && (
-            <div className="px-3 py-1 bg-green-100 border border-green-300 rounded-full">
-              <span className="text-xs font-semibold text-green-700">Local Edit Mode</span>
-            </div>
+            <>
+              <div className="px-3 py-1 bg-green-100 border border-green-300 rounded-full">
+                <span className="text-xs font-semibold text-green-700">Local Edit Mode</span>
+              </div>
+              <button
+                onClick={() => setIsAddPoseDialogOpen(true)}
+                className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-xs font-semibold"
+              >
+                + New Pose
+              </button>
+            </>
           )}
         </div>
       </div>
@@ -77,6 +87,12 @@ function App() {
         onSelectPose={setSelectedPoseId}
         onFlowClick={handleFlowClick}
         onDataChange={isLocalEditMode() ? refetch : undefined}
+      />
+      <AddPoseDialog
+        isOpen={isAddPoseDialogOpen}
+        onClose={() => setIsAddPoseDialogOpen(false)}
+        onSuccess={refetch}
+        existingPoses={poses}
       />
     </div>
   );

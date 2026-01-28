@@ -5,6 +5,7 @@ import path from 'path'
 
 const dataDir = path.join(process.cwd(), 'public/data')
 const transitionsPath = path.join(dataDir, 'transitions.json')
+const posesPath = path.join(dataDir, 'poses.json')
 
 type ApiHandler = (body: any) => { code: number; data: any }
 
@@ -49,6 +50,31 @@ const apiRoutes: Record<string, ApiHandler> = {
     fs.renameSync(tmpPath, transitionsPath)
 
     return { code: 200, data: { success: true } }
+  },
+
+  'POST:/api/poses': (body) => {
+    if (!body.id) {
+      return { code: 400, data: { error: 'id is required' } }
+    }
+
+    const poses = JSON.parse(fs.readFileSync(posesPath, 'utf-8'))
+
+    if (poses.some((p: any) => p.id === body.id)) {
+      return { code: 400, data: { error: 'Pose with this ID already exists' } }
+    }
+
+    poses.push({
+      id: body.id,
+      ...(body.name && { name: body.name }),
+      ...(body.description && { description: body.description }),
+      ...(body.mirroredPoseId && { mirroredPoseId: body.mirroredPoseId }),
+    })
+
+    const tmpPath = posesPath + '.tmp'
+    fs.writeFileSync(tmpPath, JSON.stringify(poses, null, 2) + '\n')
+    fs.renameSync(tmpPath, posesPath)
+
+    return { code: 201, data: { success: true, pose: body } }
   },
 }
 
