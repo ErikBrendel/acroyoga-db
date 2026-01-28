@@ -50,5 +50,101 @@
     "fromPoseId": "star",
     "toPoseId": "whale-right",
     "mirroredTransitionId": "star-whale-left"
+  },
+  {
+    "id": "straddlebat-sidestar-left",
+    "name": "Straddlebat ↔ Side Star (Left)",
+    "description": "Flyer rotates from upside-down to sideways left as base adjusts feet.",
+    "fromPoseId": "straddlebat",
+    "toPoseId": "sidestar-left",
+    "mirroredTransitionId": "straddlebat-sidestar-right"
+  },
+  {
+    "id": "straddlebat-sidestar-right",
+    "name": "Straddlebat ↔ Side Star (Right)",
+    "description": "Flyer rotates from upside-down to sideways right as base adjusts feet.",
+    "fromPoseId": "straddlebat",
+    "toPoseId": "sidestar-right",
+    "mirroredTransitionId": "straddlebat-sidestar-left"
+  },
+  {
+    "id": "sidestar-left-reverse-bird",
+    "name": "Side Star (Left) ↔ Reverse Bird",
+    "description": "Flyer rotates from left side to face-up as base brings feet together.",
+    "fromPoseId": "sidestar-left",
+    "toPoseId": "reverse-bird",
+    "mirroredTransitionId": "sidestar-right-reverse-bird"
+  },
+  {
+    "id": "sidestar-right-reverse-bird",
+    "name": "Side Star (Right) ↔ Reverse Bird",
+    "description": "Flyer rotates from right side to face-up as base brings feet together.",
+    "fromPoseId": "sidestar-right",
+    "toPoseId": "reverse-bird",
+    "mirroredTransitionId": "sidestar-left-reverse-bird"
+  },
+  {
+    "id": "star-mono-reverse-shin-left",
+    "name": "Star ↔ Mono Reverse Shin (Left)",
+    "description": "From star, base lowers right foot, flyer shifts to left leg, connects hands.",
+    "fromPoseId": "star",
+    "toPoseId": "mono-reverse-shin-left",
+    "mirroredTransitionId": "star-mono-reverse-shin-right"
+  },
+  {
+    "id": "star-mono-reverse-shin-right",
+    "name": "Star ↔ Mono Reverse Shin (Right)",
+    "description": "From star, base lowers left foot, flyer shifts to right leg, connects hands.",
+    "fromPoseId": "star",
+    "toPoseId": "mono-reverse-shin-right",
+    "mirroredTransitionId": "star-mono-reverse-shin-left"
+  },
+  {
+    "id": "mono-reverse-shin-kneepit-left",
+    "name": "Mono Reverse Shin ↔ Supported Kneepit (Left)",
+    "description": "Flyer transitions shin to knee pit while maintaining hand support.",
+    "fromPoseId": "mono-reverse-shin-left",
+    "toPoseId": "supported-mono-kneepit-left",
+    "mirroredTransitionId": "mono-reverse-shin-kneepit-right"
+  },
+  {
+    "id": "mono-reverse-shin-kneepit-right",
+    "name": "Mono Reverse Shin ↔ Supported Kneepit (Right)",
+    "description": "Flyer transitions shin to knee pit while maintaining hand support.",
+    "fromPoseId": "mono-reverse-shin-right",
+    "toPoseId": "supported-mono-kneepit-right",
+    "mirroredTransitionId": "mono-reverse-shin-kneepit-left"
+  },
+  {
+    "id": "kneepit-mono-backbird-left",
+    "name": "Supported Kneepit ↔ Mono Backbird (Left)",
+    "description": "Flyer extends leg from knee pit to horizontal backbird position.",
+    "fromPoseId": "supported-mono-kneepit-left",
+    "toPoseId": "mono-backbird-left",
+    "mirroredTransitionId": "kneepit-mono-backbird-right"
+  },
+  {
+    "id": "kneepit-mono-backbird-right",
+    "name": "Supported Kneepit ↔ Mono Backbird (Right)",
+    "description": "Flyer extends leg from knee pit to horizontal backbird position.",
+    "fromPoseId": "supported-mono-kneepit-right",
+    "toPoseId": "mono-backbird-right",
+    "mirroredTransitionId": "kneepit-mono-backbird-left"
+  },
+  {
+    "id": "mono-backbird-star-left",
+    "name": "Mono Backbird ↔ Star (Left)",
+    "description": "Base adds second foot to flyer's shoulder, returning to star position.",
+    "fromPoseId": "mono-backbird-left",
+    "toPoseId": "star",
+    "mirroredTransitionId": "mono-backbird-star-right"
+  },
+  {
+    "id": "mono-backbird-star-right",
+    "name": "Mono Backbird ↔ Star (Right)",
+    "description": "Base adds second foot to flyer's shoulder, returning to star position.",
+    "fromPoseId": "mono-backbird-right",
+    "toPoseId": "star",
+    "mirroredTransitionId": "mono-backbird-star-left"
   }
 ]

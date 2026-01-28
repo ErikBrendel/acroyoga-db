@@ -40,5 +40,63 @@
     "name": "Whale (Right)",
     "description": "Single-leg base pose. Base's right foot on flyer's right hip, flyer arches sideways.",
     "mirroredPoseId": "whale-left"
+  },
+  {
+    "id": "straddlebat",
+    "name": "Straddlebat",
+    "description": "Base's feet on flyer's inner thighs. Flyer hangs upside-down with legs straddled."
+  },
+  {
+    "id": "reverse-bird",
+    "name": "Reverse Bird",
+    "description": "Base lies on back with feet supporting flyer's hips. Flyer balances horizontally face-up."
+  },
+  {
+    "id": "sidestar-left",
+    "name": "Side Star (Left)",
+    "description": "Base's feet on flyer's left hip and left shoulder. Flyer opens sideways to the left.",
+    "mirroredPoseId": "sidestar-right"
+  },
+  {
+    "id": "sidestar-right",
+    "name": "Side Star (Right)",
+    "description": "Base's feet on flyer's right hip and right shoulder. Flyer opens sideways to the right.",
+    "mirroredPoseId": "sidestar-left"
+  },
+  {
+    "id": "mono-reverse-shin-left",
+    "name": "Mono Reverse Shin-to-Foot Connected Hands (Left)",
+    "description": "Single-leg base on left side. Flyer's shin to base's foot, hands connected, flyer faces away.",
+    "mirroredPoseId": "mono-reverse-shin-right"
+  },
+  {
+    "id": "mono-reverse-shin-right",
+    "name": "Mono Reverse Shin-to-Foot Connected Hands (Right)",
+    "description": "Single-leg base on right side. Flyer's shin to base's foot, hands connected, flyer faces away.",
+    "mirroredPoseId": "mono-reverse-shin-left"
+  },
+  {
+    "id": "supported-mono-kneepit-left",
+    "name": "Supported Mono Kneepit (Left)",
+    "description": "Single-leg base on left side. Base's foot in flyer's knee pit with hand support.",
+    "mirroredPoseId": "supported-mono-kneepit-right"
+  },
+  {
+    "id": "supported-mono-kneepit-right",
+    "name": "Supported Mono Kneepit (Right)",
+    "description": "Single-leg base on right side. Base's foot in flyer's knee pit with hand support.",
+    "mirroredPoseId": "supported-mono-kneepit-left"
+  },
+  {
+    "id": "mono-backbird-left",
+    "name": "Mono Backbird (Left)",
+    "description": "Single-leg base on left side. Flyer balances horizontally face-up on one foot.",
+    "mirroredPoseId": "mono-backbird-right"
+  },
+  {
+    "id": "mono-backbird-right",
+    "name": "Mono Backbird (Right)",
+    "description": "Single-leg base on right side. Flyer balances horizontally face-up on one foot.",
+    "mirroredPoseId": "mono-backbird-left"
   }
 ]
