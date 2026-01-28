@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { z } from 'zod';
-import { Pose, Transition, PoseSchema, TransitionSchema } from '../types/data';
+import { Pose, Transition, Flow, PoseSchema, TransitionSchema, FlowSchema } from '../types/data';
 
 interface PoseData {
   poses: Pose[];
   transitions: Transition[];
+  flows: Flow[];
   loading: boolean;
   error: string | null;
 }
@@ -13,6 +14,7 @@ export function usePoseData(): PoseData {
   const [data, setData] = useState<PoseData>({
     poses: [],
     transitions: [],
+    flows: [],
     loading: true,
     error: null,
   });
@@ -21,9 +23,10 @@ export function usePoseData(): PoseData {
     async function loadData() {
       try {
         const baseUrl = import.meta.env.BASE_URL;
-        const [posesResponse, transitionsResponse] = await Promise.all([
+        const [posesResponse, transitionsResponse, flowsResponse] = await Promise.all([
           fetch(`${baseUrl}data/poses.json`),
           fetch(`${baseUrl}data/transitions.json`),
+          fetch(`${baseUrl}data/flows.json`),
         ]);
 
         if (!posesResponse.ok) {
@@ -32,15 +35,20 @@ export function usePoseData(): PoseData {
         if (!transitionsResponse.ok) {
           throw new Error(`Failed to fetch transitions: ${transitionsResponse.statusText}`);
         }
+        if (!flowsResponse.ok) {
+          throw new Error(`Failed to fetch flows: ${flowsResponse.statusText}`);
+        }
 
         const posesJson = await posesResponse.json();
         const transitionsJson = await transitionsResponse.json();
+        const flowsJson = await flowsResponse.json();
 
         const poses = z.array(PoseSchema).parse(posesJson);
         const transitions = z.array(TransitionSchema).parse(transitionsJson);
+        const flows = z.array(FlowSchema).parse(flowsJson);
 
         // Validate data integrity
-        const validationErrors = validateData(poses, transitions);
+        const validationErrors = validateData(poses, transitions, flows);
         if (validationErrors.length > 0) {
           throw new Error(`Data validation failed:\n${validationErrors.join('\n')}`);
         }
@@ -48,6 +56,7 @@ export function usePoseData(): PoseData {
         setData({
           poses,
           transitions,
+          flows,
           loading: false,
           error: null,
         });
@@ -55,6 +64,7 @@ export function usePoseData(): PoseData {
         setData({
           poses: [],
           transitions: [],
+          flows: [],
           loading: false,
           error: err instanceof Error ? err.message : 'Unknown error occurred',
         });
@@ -67,9 +77,26 @@ export function usePoseData(): PoseData {
   return data;
 }
 
-function validateData(poses: Pose[], transitions: Transition[]): string[] {
+function validateData(poses: Pose[], transitions: Transition[], flows: Flow[]): string[] {
   const errors: string[] = [];
-  const poseIds = new Set(poses.map(p => p.id));
+
+  // Check unique pose IDs
+  const poseIds = new Set<string>();
+  poses.forEach((pose, index) => {
+    if (poseIds.has(pose.id)) {
+      errors.push(`Pose ${index}: duplicate pose ID "${pose.id}"`);
+    }
+    poseIds.add(pose.id);
+  });
+
+  // Check unique flow names
+  const flowNames = new Set<string>();
+  flows.forEach((flow, index) => {
+    if (flowNames.has(flow.name)) {
+      errors.push(`Flow ${index}: duplicate flow name "${flow.name}"`);
+    }
+    flowNames.add(flow.name);
+  });
 
   // Check all transition references exist and forbid reflexive transitions
   transitions.forEach((transition, index) => {
@@ -110,6 +137,36 @@ function validateData(poses: Pose[], transitions: Transition[]): string[] {
     // Check if a reversible transition conflicts with a reverse transition
     if (!transition.nonReversible && transitionPairs.has(reversePairKey)) {
       errors.push(`Transition ${index}: reversible transition from "${transition.fromPoseId}" to "${transition.toPoseId}" conflicts with reverse direction`);
+    }
+  });
+
+  // Validate flows
+  flows.forEach((flow) => {
+    // Check minimum length
+    if (flow.poseIds.length < 3) {
+      errors.push(`Flow "${flow.name}": must contain at least 3 poses`);
+    }
+
+    // Check all pose IDs exist
+    flow.poseIds.forEach((poseId, poseIndex) => {
+      if (!poseIds.has(poseId)) {
+        errors.push(`Flow "${flow.name}" pose ${poseIndex}: pose "${poseId}" does not exist`);
+      }
+    });
+
+    // Check consecutive poses have valid transitions
+    for (let i = 0; i < flow.poseIds.length - 1; i++) {
+      const fromPose = flow.poseIds[i];
+      const toPose = flow.poseIds[i + 1];
+
+      const hasTransition = transitions.some(t =>
+        (t.fromPoseId === fromPose && t.toPoseId === toPose) ||
+        (!t.nonReversible && t.fromPoseId === toPose && t.toPoseId === fromPose)
+      );
+
+      if (!hasTransition) {
+        errors.push(`Flow "${flow.name}": no transition exists between "${fromPose}" and "${toPose}"`);
+      }
     }
   });
 

@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { usePoseData } from './hooks/usePoseData';
 import { PoseGraph } from './components/PoseGraph';
 import { PoseDetailSidebar } from './components/PoseDetailSidebar';
+import { FlowsList } from './components/FlowsList';
 import { transformToGraph } from './utils/graphTransform';
 
 function App() {
-  const { poses, transitions, loading, error } = usePoseData();
+  const { poses, transitions, flows, loading, error } = usePoseData();
   const [selectedPoseId, setSelectedPoseId] = useState<string | null>(null);
+  const [activeFlowName, setActiveFlowName] = useState<string | null>(null);
 
   if (loading) {
     return (
@@ -30,7 +32,12 @@ function App() {
     );
   }
 
+  const activeFlow = flows.find(f => f.name === activeFlowName) || null;
   const { nodes, edges } = transformToGraph(poses, transitions);
+
+  const handleFlowClick = (flowName: string) => {
+    setActiveFlowName(prev => prev === flowName ? null : flowName);
+  };
 
   return (
     <div className="w-screen h-screen relative bg-gray-50">
@@ -38,17 +45,26 @@ function App() {
         <h1 className="text-xl font-bold text-gray-900">Acroyoga Pose Graph</h1>
         <p className="text-sm text-gray-600">{poses.length} poses, {transitions.length} transitions</p>
       </div>
+      <FlowsList
+        flows={flows}
+        activeFlowName={activeFlowName}
+        onFlowClick={handleFlowClick}
+      />
       <PoseGraph
         nodes={nodes}
         edges={edges}
         selectedPoseId={selectedPoseId}
+        activeFlow={activeFlow}
         onSelectPose={setSelectedPoseId}
       />
       <PoseDetailSidebar
         selectedPoseId={selectedPoseId}
         poses={poses}
         transitions={transitions}
+        flows={flows}
+        activeFlowName={activeFlowName}
         onSelectPose={setSelectedPoseId}
+        onFlowClick={handleFlowClick}
       />
     </div>
   );

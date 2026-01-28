@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Beginner Flow",
+    "poseIds": ["bird", "throne", "chair", "whale", "vishnus-couch-left"]
+  },
+  {
+    "name": "Ninja Star Washing Machine",
+    "poseIds": ["straddlebat", "sidestar-left", "reverse-bird", "sidestar-right", "straddlebat"]
+  },
+  {
+    "name": "4-Step Mono Flow (Left)",
+    "poseIds": ["star", "mono-reverse-shin-left", "supported-mono-kneepit-left", "mono-backbird-left", "star"]
+  }
+]

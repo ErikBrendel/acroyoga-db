@@ -1,18 +1,24 @@
-import { Pose, Transition } from '../types/data';
+import { Pose, Transition, Flow } from '../types/data';
 import { PoseButton } from './PoseButton';
 
 interface PoseDetailSidebarProps {
   selectedPoseId: string | null;
   poses: Pose[];
   transitions: Transition[];
+  flows: Flow[];
+  activeFlowName: string | null;
   onSelectPose: (poseId: string | null) => void;
+  onFlowClick: (flowName: string) => void;
 }
 
 export function PoseDetailSidebar({
   selectedPoseId,
   poses,
   transitions,
+  flows,
+  activeFlowName,
   onSelectPose,
+  onFlowClick,
 }: PoseDetailSidebarProps) {
   if (!selectedPoseId) {
     return null;
@@ -33,6 +39,7 @@ export function PoseDetailSidebar({
     (t) => t.nonReversible && t.toPoseId === selectedPoseId
   );
   const mirroredPose = pose.mirroredPoseId ? poses.find((p) => p.id === pose.mirroredPoseId) : null;
+  const containingFlows = flows.filter((f) => f.poseIds.includes(selectedPoseId));
 
   return (
     <div className="absolute top-0 right-0 h-full w-96 bg-white shadow-2xl border-l border-gray-200 overflow-y-auto z-10">
@@ -73,6 +80,29 @@ export function PoseDetailSidebar({
             >
               {mirroredPose.name || mirroredPose.id}
             </button>
+          </div>
+        )}
+
+        {containingFlows.length > 0 && (
+          <div className="mb-6">
+            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">
+              Part of Flows
+            </h3>
+            <div className="space-y-2">
+              {containingFlows.map((flow) => (
+                <button
+                  key={flow.name}
+                  onClick={() => onFlowClick(flow.name)}
+                  className={`block w-full text-left px-3 py-2 rounded text-sm font-medium transition-colors ${
+                    activeFlowName === flow.name
+                      ? 'bg-yellow-100 text-yellow-900 border border-yellow-300'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {flow.name}
+                </button>
+              ))}
+            </div>
           </div>
         )}
 

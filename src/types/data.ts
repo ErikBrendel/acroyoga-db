@@ -13,5 +13,11 @@ export const TransitionSchema = z.object({
   nonReversible: z.boolean().optional(),
 });
 
+export const FlowSchema = z.object({
+  name: z.string(),
+  poseIds: z.array(z.string()),
+});
+
 export type Pose = z.infer<typeof PoseSchema>;
 export type Transition = z.infer<typeof TransitionSchema>;
+export type Flow = z.infer<typeof FlowSchema>;
