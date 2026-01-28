@@ -2,151 +2,263 @@
   {
     "id": "bird",
     "name": "Bird",
-    "description": "Base lies on back with feet up, supporting flyer's hips. Flyer balances horizontally face-down. (AI generated)"
+    "description": "Base lies on back with feet up, supporting flyer's hips. Flyer balances horizontally face-down. (AI generated)",
+    "position": {
+      "x": 661,
+      "y": 630
+    }
   },
   {
     "id": "throne",
     "name": "Throne",
-    "description": "Base sits with feet on flyer's hips. Flyer stands upright on base's feet. (AI generated)"
+    "description": "Base sits with feet on flyer's hips. Flyer stands upright on base's feet. (AI generated)",
+    "position": {
+      "x": 370,
+      "y": 715
+    }
   },
   {
     "id": "reverse-throne",
     "name": "Reverse Throne",
-    "description": "Base's feet on flyer's hips. Flyer stands upright facing away from base. (AI generated)"
+    "description": "Base's feet on flyer's hips. Flyer stands upright facing away from base. (AI generated)",
+    "position": {
+      "x": 116,
+      "y": 498
+    }
   },
   {
     "id": "front-plank",
     "name": "Front Plank",
-    "description": "Base lies on back with feet on flyer's shoulders/chest. Flyer holds plank position. (AI generated)"
+    "description": "Base lies on back with feet on flyer's shoulders/chest. Flyer holds plank position. (AI generated)",
+    "position": {
+      "x": 671,
+      "y": 899
+    }
   },
   {
     "id": "shoulder-stand",
     "name": "Shoulder Stand",
-    "description": "Base lies on back supporting flyer's shoulders with hands, flyer is upside down, facing towards base feet. Base Hands (including thumbs) on flyer's back/shoulders. Base sees flyer back."
+    "description": "Base lies on back supporting flyer's shoulders with hands, flyer is upside down, facing towards base feet. Base Hands (including thumbs) on flyer's back/shoulders. Base sees flyer back.",
+    "position": {
+      "x": 826,
+      "y": 368
+    }
   },
   {
     "id": "reverse-shoulder-stand",
     "name": "Reverse Shoulder Stand",
-    "description": "Base lies on back supporting flyer's shoulders with hands, flyer is upside down facing towards base head. Base thumbs on flyer's back. Base sees flyer front."
+    "description": "Base lies on back supporting flyer's shoulders with hands, flyer is upside down facing towards base head. Base thumbs on flyer's back. Base sees flyer front.",
+    "position": {
+      "x": 397,
+      "y": 223
+    }
   },
   {
     "id": "star",
     "name": "Star",
-    "description": "Base lies on back with one foot on flyer's hip, one on shoulder. Flyer spreads arms and legs like a star. (AI generated)"
+    "description": "Base lies on back with one foot on flyer's hip, one on shoulder. Flyer spreads arms and legs like a star. (AI generated)",
+    "position": {
+      "x": 775,
+      "y": -216
+    }
   },
   {
     "id": "folded-leaf",
     "name": "Folded Leaf",
-    "description": "Base's feet on flyer's hips. Flyer folds forward, hands near base's head. (AI generated)"
+    "description": "Base's feet on flyer's hips. Flyer folds forward, hands near base's head. (AI generated)",
+    "position": {
+      "x": 916,
+      "y": 706
+    }
   },
   {
     "id": "chair",
     "name": "Chair",
-    "description": "Base's feet on flyer's sit bones. Flyer sits upright as if in a chair. (AI generated)"
+    "description": "Base's feet on flyer's sit bones. Flyer sits upright as if in a chair. (AI generated)",
+    "position": {
+      "x": 38,
+      "y": 1070
+    }
   },
   {
     "id": "extended-f2h",
     "name": "Extended F2H",
-    "description": "Extended foot-to-hand. Single-leg base pose with flyer's foot in base's hand, flyer extends upward. (AI generated)"
+    "description": "Extended foot-to-hand. Single-leg base pose with flyer's foot in base's hand, flyer extends upward. (AI generated)",
+    "position": {
+      "x": -77,
+      "y": 802
+    }
   },
   {
     "id": "whale",
     "name": "Whale",
-    "description": "Single-leg base pose. Base's foot on flyer's shoulders, flyer arches back. (AI generated)"
+    "description": "Single-leg base pose. Base's foot on flyer's shoulders, flyer arches back. (AI generated)",
+    "position": {
+      "x": -243,
+      "y": 940
+    }
   },
   {
     "id": "vishnus-couch-left",
     "name": "Vishnu's Couch (Left)",
     "description": "Base's left foot supports flyer lying on their left side in a relaxed position. (AI generated)",
-    "mirroredPoseId": "vishnus-couch-right"
+    "mirroredPoseId": "vishnus-couch-right",
+    "position": {
+      "x": -466,
+      "y": 945
+    }
   },
   {
     "id": "vishnus-couch-right",
     "name": "Vishnu's Couch (Right)",
     "description": "Base's right foot supports flyer lying on their right side in a relaxed position. (AI generated)",
-    "mirroredPoseId": "vishnus-couch-left"
+    "mirroredPoseId": "vishnus-couch-left",
+    "position": {
+      "x": -404,
+      "y": 772
+    }
   },
   {
     "id": "straddlebat",
     "name": "Straddlebat",
-    "description": "Base's feet on flyer's inner thighs. Flyer hangs upside-down with legs straddled. (AI generated)"
+    "description": "Base's feet on flyer's inner thighs. Flyer hangs upside-down with legs straddled. (AI generated)",
+    "position": {
+      "x": 605,
+      "y": 20
+    }
   },
   {
     "id": "floating-paschi",
     "name": "Floating Paschi",
-    "description": "Base's feet on flyer's inner thighs. Flyer inverted with legs together in forward fold. (AI generated)"
+    "description": "Base's feet on flyer's inner thighs. Flyer inverted with legs together in forward fold. (AI generated)",
+    "position": {
+      "x": 556,
+      "y": 273
+    }
   },
   {
     "id": "reverse-bird",
     "name": "Reverse Bird",
-    "description": "Like Bird, but Flyer faces the other way. Base feet still on Flyer hips. Connecting hands optional, but requires long straight arms."
+    "description": "Like Bird, but Flyer faces the other way. Base feet still on Flyer hips. Connecting hands optional, but requires long straight arms.",
+    "position": {
+      "x": 150,
+      "y": -76
+    }
   },
   {
     "id": "sidestar-left",
     "name": "Side Star (Left)",
     "description": "Base's feet on flyer's left hip and left shoulder. Flyer opens sideways to the left. (AI generated)",
-    "mirroredPoseId": "sidestar-right"
+    "mirroredPoseId": "sidestar-right",
+    "position": {
+      "x": 331,
+      "y": 53
+    }
   },
   {
     "id": "sidestar-right",
     "name": "Side Star (Right)",
     "description": "Base's feet on flyer's right hip and right shoulder. Flyer opens sideways to the right. (AI generated)",
-    "mirroredPoseId": "sidestar-left"
+    "mirroredPoseId": "sidestar-left",
+    "position": {
+      "x": 359,
+      "y": -157
+    }
   },
   {
     "id": "mono-reverse-shin-left",
     "name": "Mono Reverse Shin-to-Foot Connected Hands (Left)",
     "description": "Single-leg base on left side. Flyer's shin to base's foot, hands connected, flyer faces away. (AI generated)",
-    "mirroredPoseId": "mono-reverse-shin-right"
+    "mirroredPoseId": "mono-reverse-shin-right",
+    "position": {
+      "x": 1141,
+      "y": -422
+    }
   },
   {
     "id": "mono-reverse-shin-right",
     "name": "Mono Reverse Shin-to-Foot Connected Hands (Right)",
     "description": "Single-leg base on right side. Flyer's shin to base's foot, hands connected, flyer faces away. (AI generated)",
-    "mirroredPoseId": "mono-reverse-shin-left"
+    "mirroredPoseId": "mono-reverse-shin-left",
+    "position": {
+      "x": 952,
+      "y": -439
+    }
   },
   {
     "id": "supported-mono-kneepit-left",
     "name": "Supported Mono Kneepit (Left)",
     "description": "Single-leg base on left side. Base's foot in flyer's knee pit with hand support. (AI generated)",
-    "mirroredPoseId": "supported-mono-kneepit-right"
+    "mirroredPoseId": "supported-mono-kneepit-right",
+    "position": {
+      "x": 800,
+      "y": -759
+    }
   },
   {
     "id": "supported-mono-kneepit-right",
     "name": "Supported Mono Kneepit (Right)",
     "description": "Single-leg base on right side. Base's foot in flyer's knee pit with hand support. (AI generated)",
-    "mirroredPoseId": "supported-mono-kneepit-left"
+    "mirroredPoseId": "supported-mono-kneepit-left",
+    "position": {
+      "x": 810,
+      "y": -583
+    }
   },
   {
     "id": "mono-backbird-left",
     "name": "Mono Backbird (Left)",
     "description": "Single-leg base on left side. Flyer balances horizontally face-up on one foot. (AI generated)",
-    "mirroredPoseId": "mono-backbird-right"
+    "mirroredPoseId": "mono-backbird-right",
+    "position": {
+      "x": 504,
+      "y": -450
+    }
   },
   {
     "id": "mono-backbird-right",
     "name": "Mono Backbird (Right)",
     "description": "Single-leg base on right side. Flyer balances horizontally face-up on one foot. (AI generated)",
-    "mirroredPoseId": "mono-backbird-left"
+    "mirroredPoseId": "mono-backbird-left",
+    "position": {
+      "x": 675,
+      "y": -457
+    }
   },
   {
     "id": "back-bird",
     "name": "Back Bird",
-    "description": "Like Bird, but Flyer turns to face the ceiling. Base Feet on Flyer butt. Hand connection optional."
+    "description": "Like Bird, but Flyer turns to face the ceiling. Base Feet on Flyer butt. Hand connection optional.",
+    "position": {
+      "x": 382,
+      "y": 451
+    }
   },
   {
     "id": "low-foot-to-hand",
     "name": "Low F2H",
-    "description": "Base elbows close to chest, Flyer faces away, heels at Base fingers and toes at Base wrist. High-Heels!"
+    "description": "Base elbows close to chest, Flyer faces away, heels at Base fingers and toes at Base wrist. High-Heels!",
+    "position": {
+      "x": -62,
+      "y": 99
+    }
   },
   {
     "id": "low-reverse-foot-to-hand",
     "name": "Low Reverse F2H",
-    "description": "Base elbows close to chest. Flyer facing towards Base head. C-grip for Base. No High-Heels!"
+    "description": "Base elbows close to chest. Flyer facing towards Base head. C-grip for Base. No High-Heels!",
+    "position": {
+      "x": 318,
+      "y": 1044
+    }
   },
   {
     "id": "reverse-chair",
     "name": "Reverse Chair",
-    "description": "Like Chair, but facing away. Flyer feet dangling or put on Base calves."
+    "description": "Like Chair, but facing away. Flyer feet dangling or put on Base calves.",
+    "position": {
+      "x": -60,
+      "y": 313
+    }
   }
 ]

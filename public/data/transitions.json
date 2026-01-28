@@ -130,5 +130,9 @@
   {
     "fromPoseId": "chair",
     "toPoseId": "low-reverse-foot-to-hand"
+  },
+  {
+    "fromPoseId": "floating-paschi",
+    "toPoseId": "back-bird"
   }
 ]
