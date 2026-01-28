@@ -9,16 +9,11 @@
   },
   {
     "fromPoseId": "bird",
-    "toPoseId": "star"
-  },
-  {
-    "fromPoseId": "bird",
     "toPoseId": "folded-leaf"
   },
   {
     "fromPoseId": "bird",
-    "toPoseId": "shoulder-stand",
-    "nonReversible": true
+    "toPoseId": "shoulder-stand"
   },
   {
     "fromPoseId": "throne",
@@ -102,6 +97,14 @@
   },
   {
     "fromPoseId": "mono-backbird-right",
+    "toPoseId": "star"
+  },
+  {
+    "fromPoseId": "straddlebat",
+    "toPoseId": "reverse-shoulder-stand"
+  },
+  {
+    "fromPoseId": "straddlebat",
     "toPoseId": "star"
   }
 ]

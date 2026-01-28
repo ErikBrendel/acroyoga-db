@@ -10,5 +10,9 @@
   {
     "name": "4-Step Mono Flow (Left)",
     "poseIds": ["star", "mono-reverse-shin-left", "supported-mono-kneepit-left", "mono-backbird-left", "star"]
+  },
+  {
+    "name": "4-Step Mono Flow (Right)",
+    "poseIds": ["star", "mono-reverse-shin-right", "supported-mono-kneepit-right", "mono-backbird-right", "star"]
   }
 ]

@@ -22,7 +22,12 @@
   {
     "id": "shoulder-stand",
     "name": "Shoulder Stand",
-    "description": "Base lies on back supporting flyer's shoulders with feet. Flyer is vertical, head down. (AI generated)"
+    "description": "Base lies on back supporting flyer's shoulders with hands, flyer is upside down, facing towards base feet. Base Hands (including thumbs) on flyer's back/shoulders. Base sees flyer back."
+  },
+  {
+    "id": "reverse-shoulder-stand",
+    "name": "Reverse Shoulder Stand",
+    "description": "Base lies on back supporting flyer's shoulders with hands, flyer is upside down facing towards base head. Base thumbs on flyer's back. Base sees flyer front."
   },
   {
     "id": "star",
