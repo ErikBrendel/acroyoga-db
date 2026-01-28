@@ -4,6 +4,75 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { Bone, BoneConfig } from '../3d/Bone';
 
+interface Preset {
+  name: string;
+  angles: {
+    bone: 'leftUpperLeg' | 'leftLowerLeg' | 'leftFoot' | 'rightUpperLeg' | 'rightLowerLeg' | 'rightFoot';
+    angleName: string;
+    value: number;
+  }[];
+}
+
+const PRESETS: Preset[] = [
+  {
+    name: 'Straight',
+    angles: [
+      { bone: 'leftUpperLeg', angleName: 'pike', value: 0 },
+      { bone: 'leftUpperLeg', angleName: 'straddle', value: 0 },
+      { bone: 'leftLowerLeg', angleName: 'bend', value: 0 },
+      { bone: 'rightUpperLeg', angleName: 'pike', value: 0 },
+      { bone: 'rightUpperLeg', angleName: 'straddle', value: 0 },
+      { bone: 'rightLowerLeg', angleName: 'bend', value: 0 },
+    ],
+  },
+  {
+    name: 'Straddle',
+    angles: [
+      { bone: 'leftUpperLeg', angleName: 'straddle', value: 60 },
+      { bone: 'rightUpperLeg', angleName: 'straddle', value: 60 },
+    ],
+  },
+  {
+    name: 'Pike',
+    angles: [
+      { bone: 'leftUpperLeg', angleName: 'pike', value: 90 },
+      { bone: 'rightUpperLeg', angleName: 'pike', value: 90 },
+    ],
+  },
+  {
+    name: 'Straddle-Pike',
+    angles: [
+      { bone: 'leftUpperLeg', angleName: 'pike', value: 80 },
+      { bone: 'leftUpperLeg', angleName: 'straddle', value: 50 },
+      { bone: 'rightUpperLeg', angleName: 'pike', value: 80 },
+      { bone: 'rightUpperLeg', angleName: 'straddle', value: 50 },
+    ],
+  },
+  {
+    name: 'Tuck',
+    angles: [
+      { bone: 'leftUpperLeg', angleName: 'pike', value: 100 },
+      { bone: 'leftLowerLeg', angleName: 'bend', value: 130 },
+      { bone: 'rightUpperLeg', angleName: 'pike', value: 100 },
+      { bone: 'rightLowerLeg', angleName: 'bend', value: 130 },
+    ],
+  },
+  {
+    name: 'Point',
+    angles: [
+      { bone: 'leftFoot', angleName: 'flex', value: 10 },
+      { bone: 'rightFoot', angleName: 'flex', value: 10 },
+    ],
+  },
+  {
+    name: 'Flex',
+    angles: [
+      { bone: 'leftFoot', angleName: 'flex', value: 130 },
+      { bone: 'rightFoot', angleName: 'flex', value: 130 },
+    ],
+  },
+];
+
 export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [bones, setBones] = useState<{
@@ -19,6 +88,7 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
   const [, setUpdateTrigger] = useState(0);
   const transformControlsRef = useRef<TransformControls | null>(null);
   const orbitControlsRef = useRef<OrbitControls | null>(null);
+  const previousEulerRef = useRef<THREE.Euler>(new THREE.Euler());
 
   useEffect(() => {
     if (!isOpen || !containerRef.current) return;
@@ -178,6 +248,7 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
 
     // Attach to left upper leg by default and configure axes
     transformControls.attach(leftUpperLeg.mesh);
+    previousEulerRef.current.copy(leftUpperLeg.mesh.rotation);
     const hasX = leftUpperLeg.angles.some(a => a.axis === 'x' || a.axis === '-x');
     const hasY = leftUpperLeg.angles.some(a => a.axis === 'y' || a.axis === '-y');
     const hasZ = leftUpperLeg.angles.some(a => a.axis === 'z' || a.axis === '-z');
@@ -211,26 +282,47 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
 
       if (bone) {
         // Extract euler rotation from the mesh (this was set by the gizmo)
-        const euler = attachedBone.rotation;
+        const currentEuler = attachedBone.rotation;
+        const prevEuler = previousEulerRef.current;
 
-        // Map euler axes to semantic angles based on axis field
-        bone.angles.forEach(angle => {
-          const absAxis = angle.axis.replace('-', '') as 'x' | 'y' | 'z';
-          const multiplier = angle.axis.startsWith('-') ? -1 : 1;
+        // Calculate which axis changed the most (threshold: 0.01 radians)
+        const deltaX = Math.abs(currentEuler.x - prevEuler.x);
+        const deltaY = Math.abs(currentEuler.y - prevEuler.y);
+        const deltaZ = Math.abs(currentEuler.z - prevEuler.z);
 
-          let eulerValue = 0;
-          if (absAxis === 'x') eulerValue = euler.x;
-          else if (absAxis === 'y') eulerValue = euler.y;
-          else if (absAxis === 'z') eulerValue = euler.z;
+        let changedAxis: 'x' | 'y' | 'z' | null = null;
+        const threshold = 0.01;
 
-          const degrees = THREE.MathUtils.radToDeg(eulerValue * multiplier);
-          angle.value = THREE.MathUtils.clamp(degrees, angle.min, angle.max);
-        });
+        if (deltaX > threshold && deltaX > deltaY && deltaX > deltaZ) changedAxis = 'x';
+        else if (deltaY > threshold && deltaY > deltaX && deltaY > deltaZ) changedAxis = 'y';
+        else if (deltaZ > threshold && deltaZ > deltaX && deltaZ > deltaY) changedAxis = 'z';
 
-        // Re-apply the clamped angles to the mesh
-        bone.updateTransform();
+        // Only update angles that use the changed axis
+        if (changedAxis) {
+          bone.angles.forEach(angle => {
+            const absAxis = angle.axis.replace('-', '') as 'x' | 'y' | 'z';
 
-        setUpdateTrigger(prev => prev + 1);
+            // Only update this angle if it uses the axis that changed
+            if (absAxis === changedAxis) {
+              const multiplier = angle.axis.startsWith('-') ? -1 : 1;
+              let eulerValue = 0;
+              if (absAxis === 'x') eulerValue = currentEuler.x;
+              else if (absAxis === 'y') eulerValue = currentEuler.y;
+              else if (absAxis === 'z') eulerValue = currentEuler.z;
+
+              const degrees = THREE.MathUtils.radToDeg(eulerValue * multiplier);
+              angle.value = THREE.MathUtils.clamp(degrees, angle.min, angle.max);
+            }
+          });
+
+          // Re-apply the clamped angles to the mesh
+          bone.updateTransform();
+
+          // Store current euler for next comparison
+          previousEulerRef.current.copy(attachedBone.rotation);
+
+          setUpdateTrigger(prev => prev + 1);
+        }
       }
     });
 
@@ -275,6 +367,9 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
       transformControlsRef.current.detach();
       transformControlsRef.current.attach(bone.mesh);
 
+      // Initialize previous euler with current bone rotation
+      previousEulerRef.current.copy(bone.mesh.rotation);
+
       // Enable only the axes that this bone has angles for
       const hasX = bone.angles.some((a: { axis: string }) => a.axis === 'x' || a.axis === '-x');
       const hasY = bone.angles.some((a: { axis: string }) => a.axis === 'y' || a.axis === '-y');
@@ -290,7 +385,26 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
   const handleAngleChange = (boneName: 'leftUpperLeg' | 'leftLowerLeg' | 'leftFoot' | 'rightUpperLeg' | 'rightLowerLeg' | 'rightFoot', angleName: string, value: number) => {
     if (!bones) return;
     bones[boneName].setAngle(angleName, value);
+    // Update previous euler reference after manual slider change
+    if (selectedBone === boneName) {
+      previousEulerRef.current.copy(bones[boneName].mesh.rotation);
+    }
     setUpdateTrigger(prev => prev + 1); // Force re-render
+  };
+
+  const applyPreset = (preset: Preset) => {
+    if (!bones) return;
+
+    preset.angles.forEach(({ bone, angleName, value }) => {
+      bones[bone].setAngle(angleName, value);
+    });
+
+    // Update previous euler reference if current bone was affected
+    if (selectedBone) {
+      previousEulerRef.current.copy(bones[selectedBone].mesh.rotation);
+    }
+
+    setUpdateTrigger(prev => prev + 1);
   };
 
   const currentBone = bones && selectedBone ? bones[selectedBone] : null;
@@ -376,6 +490,21 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
             >
               🟠 Foot
             </button>
+          </div>
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-2">Presets</label>
+          <div className="grid grid-cols-2 gap-2">
+            {PRESETS.map((preset) => (
+              <button
+                key={preset.name}
+                onClick={() => applyPreset(preset)}
+                className="px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded text-sm transition-colors"
+              >
+                {preset.name}
+              </button>
+            ))}
           </div>
         </div>
 
