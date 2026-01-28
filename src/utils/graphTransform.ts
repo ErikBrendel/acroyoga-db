@@ -27,6 +27,7 @@ export interface PosePosition {
 }
 
 export function transformToGraph(poses: Pose[], transitions: Transition[]): GraphData {
+  // First pass: create nodes (needed for edge collision detection)
   const d3Nodes: D3Node[] = poses.map((pose) => {
     return {
       id: pose.id,
@@ -128,11 +129,14 @@ export function transformToGraph(poses: Pose[], transitions: Transition[]): Grap
       id: edgeId,
       source: transition.fromPoseId,
       target: transition.toPoseId,
-      type: 'simplebezier',
+      type: 'smart',
       animated: false,
       style: {
         stroke: color,
         strokeWidth: 2,
+      },
+      data: {
+        nodes, // Pass nodes for collision detection
       },
     };
   });
@@ -152,12 +156,15 @@ export function transformToGraph(poses: Pose[], transitions: Transition[]): Grap
       id: `mirror-${pose.id}`,
       source: pose.id,
       target: pose.mirroredPoseId!,
-      type: 'straight',
+      type: 'smart',
       animated: false,
       style: {
         stroke: '#94a3b8',
         strokeWidth: 2,
         strokeDasharray: '5,5',
+      },
+      data: {
+        nodes,
       },
     }));
 

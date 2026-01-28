@@ -12,6 +12,7 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { PoseNode } from './PoseNode';
+import { SmartEdge } from './SmartEdge';
 import { Flow } from '../types/data';
 
 interface PoseGraphProps {
@@ -37,6 +38,7 @@ export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, onSelectPo
   }, [edges, setEdges]);
 
   const nodeTypes = useMemo(() => ({ pose: PoseNode }), []);
+  const edgeTypes = useMemo(() => ({ smart: SmartEdge }), []);
 
   const onNodeClick = useCallback(
     (_: React.MouseEvent, node: Node) => {
@@ -148,6 +150,7 @@ export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, onSelectPo
         onPaneClick={onPaneClick}
         onNodeDragStop={handleNodeDragStop}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         nodesDraggable={true}
         nodesConnectable={false}
         fitView
