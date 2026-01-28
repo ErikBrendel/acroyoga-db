@@ -6,6 +6,7 @@ import path from 'path'
 const dataDir = path.join(process.cwd(), 'public/data')
 const transitionsPath = path.join(dataDir, 'transitions.json')
 const posesPath = path.join(dataDir, 'poses.json')
+const flowsPath = path.join(dataDir, 'flows.json')
 
 type ApiHandler = (body: any) => { code: number; data: any }
 
@@ -101,6 +102,33 @@ const apiRoutes: Record<string, ApiHandler> = {
     fs.renameSync(tmpPath, posesPath)
 
     return { code: 200, data: { success: true, pose: poses[poseIndex] } }
+  },
+
+  'POST:/api/flows': (body) => {
+    if (!body.name || !body.poseIds) {
+      return { code: 400, data: { error: 'name and poseIds are required' } }
+    }
+
+    if (!Array.isArray(body.poseIds) || body.poseIds.length < 3) {
+      return { code: 400, data: { error: 'Flow must contain at least 3 poses' } }
+    }
+
+    const flows = JSON.parse(fs.readFileSync(flowsPath, 'utf-8'))
+
+    if (flows.some((f: any) => f.name === body.name)) {
+      return { code: 400, data: { error: 'Flow with this name already exists' } }
+    }
+
+    flows.push({
+      name: body.name,
+      poseIds: body.poseIds,
+    })
+
+    const tmpPath = flowsPath + '.tmp'
+    fs.writeFileSync(tmpPath, JSON.stringify(flows, null, 2) + '\n')
+    fs.renameSync(tmpPath, flowsPath)
+
+    return { code: 201, data: { success: true, flow: body } }
   },
 
   'POST:/api/layout/positions': (body) => {

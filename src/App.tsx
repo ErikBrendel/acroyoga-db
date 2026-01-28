@@ -4,6 +4,7 @@ import {PoseGraph} from './components/PoseGraph';
 import {PoseDetailSidebar} from './components/PoseDetailSidebar';
 import {FlowsList} from './components/FlowsList';
 import {AddPoseDialog} from './components/AddPoseDialog';
+import {AddFlowDialog} from './components/AddFlowDialog';
 import {transformToGraph, PosePosition} from './utils/graphTransform';
 import {isLocalEditMode} from './utils/editMode';
 import {updatePosePositions} from './api/layout';
@@ -13,6 +14,7 @@ function App() {
   const [selectedPoseId, setSelectedPoseId] = useState<string | null>(null);
   const [activeFlowName, setActiveFlowName] = useState<string | null>(null);
   const [isAddPoseDialogOpen, setIsAddPoseDialogOpen] = useState(false);
+  const [isAddFlowDialogOpen, setIsAddFlowDialogOpen] = useState(false);
   const [pendingPositions, setPendingPositions] = useState<Record<string, PosePosition | null>>({});
   const [isSaving, setIsSaving] = useState(false);
 
@@ -122,6 +124,12 @@ function App() {
               >
                 + New Pose
               </button>
+              <button
+                onClick={() => setIsAddFlowDialogOpen(true)}
+                className="px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors text-xs font-semibold"
+              >
+                + New Flow
+              </button>
               <div className="h-6 w-px bg-gray-300"></div>
               {isDirty ? (
                 <>
@@ -182,6 +190,13 @@ function App() {
         onClose={() => setIsAddPoseDialogOpen(false)}
         onSuccess={refetch}
         existingPoses={poses}
+      />
+      <AddFlowDialog
+        isOpen={isAddFlowDialogOpen}
+        onClose={() => setIsAddFlowDialogOpen(false)}
+        onSuccess={refetch}
+        poses={poses}
+        transitions={transitions}
       />
     </div>
   );
