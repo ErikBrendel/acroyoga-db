@@ -2,35 +2,35 @@
   {
     "id": "bird-throne",
     "name": "Bird ↔ Throne",
-    "description": "Flyer brings feet to base's shins, base bends knees, flyer stands up.",
+    "description": "Flyer brings feet to base's shins, base bends knees, flyer stands up. (AI generated)",
     "fromPoseId": "bird",
     "toPoseId": "throne"
   },
   {
     "id": "bird-front-plank",
     "name": "Bird ↔ Front Plank",
-    "description": "Base moves feet up to flyer's shoulders, flyer straightens body.",
+    "description": "Base moves feet up to flyer's shoulders, flyer straightens body. (AI generated)",
     "fromPoseId": "bird",
     "toPoseId": "front-plank"
   },
   {
     "id": "bird-star",
     "name": "Bird ↔ Star",
-    "description": "Base splits feet to hip and shoulder, flyer opens up.",
+    "description": "Base splits feet to hip and shoulder, flyer opens up. (AI generated)",
     "fromPoseId": "bird",
     "toPoseId": "star"
   },
   {
     "id": "bird-folded-leaf",
     "name": "Bird ↔ Folded Leaf",
-    "description": "Flyer folds forward bringing hands toward base's head.",
+    "description": "Flyer folds forward bringing hands toward base's head. (AI generated)",
     "fromPoseId": "bird",
     "toPoseId": "folded-leaf"
   },
   {
     "id": "throne-shoulder-stand",
     "name": "Throne → Shoulder Stand",
-    "description": "Flyer dives forward, base catches shoulders, flyer inverts.",
+    "description": "Flyer dives forward, base catches shoulders, flyer inverts. (AI generated)",
     "fromPoseId": "throne",
     "toPoseId": "shoulder-stand",
     "nonReversible": true
@@ -38,35 +38,35 @@
   {
     "id": "throne-reverse-throne",
     "name": "Throne ↔ Reverse Throne",
-    "description": "Flyer rotates 180 degrees while standing on base's feet.",
+    "description": "Flyer rotates 180 degrees while standing on base's feet. (AI generated)",
     "fromPoseId": "throne",
     "toPoseId": "reverse-throne"
   },
   {
     "id": "shoulder-stand-straddlebat",
     "name": "Shoulder Stand ↔ Straddlebat",
-    "description": "From inverted shoulder stand, base adjusts feet to inner thighs for straddlebat.",
+    "description": "From inverted shoulder stand, base adjusts feet to inner thighs for straddlebat. (AI generated)",
     "fromPoseId": "shoulder-stand",
     "toPoseId": "straddlebat"
   },
   {
     "id": "throne-chair",
     "name": "Throne ↔ Chair",
-    "description": "Flyer sits down on base's feet, transitioning from standing to seated position.",
+    "description": "Flyer sits down on base's feet, transitioning from standing to seated position. (AI generated)",
     "fromPoseId": "throne",
     "toPoseId": "chair"
   },
   {
     "id": "chair-whale",
     "name": "Chair ↔ Whale",
-    "description": "Base removes one foot, flyer arches sideways into whale.",
+    "description": "Base removes one foot, flyer arches sideways into whale. (AI generated)",
     "fromPoseId": "chair",
     "toPoseId": "whale"
   },
   {
     "id": "whale-vishnus-couch-left",
     "name": "Whale ↔ Vishnu's Couch (Left)",
-    "description": "Flyer transitions from arched whale to relaxed side-lying position on left side.",
+    "description": "Flyer transitions from arched whale to relaxed side-lying position on left side. (AI generated)",
     "fromPoseId": "whale",
     "toPoseId": "vishnus-couch-left",
     "mirroredTransitionId": "whale-vishnus-couch-right"
@@ -74,7 +74,7 @@
   {
     "id": "whale-vishnus-couch-right",
     "name": "Whale ↔ Vishnu's Couch (Right)",
-    "description": "Flyer transitions from arched whale to relaxed side-lying position on right side.",
+    "description": "Flyer transitions from arched whale to relaxed side-lying position on right side. (AI generated)",
     "fromPoseId": "whale",
     "toPoseId": "vishnus-couch-right",
     "mirroredTransitionId": "whale-vishnus-couch-left"
@@ -82,7 +82,7 @@
   {
     "id": "straddlebat-sidestar-left",
     "name": "Straddlebat ↔ Side Star (Left)",
-    "description": "Flyer rotates from upside-down to sideways left as base adjusts feet.",
+    "description": "Flyer rotates from upside-down to sideways left as base adjusts feet. (AI generated)",
     "fromPoseId": "straddlebat",
     "toPoseId": "sidestar-left",
     "mirroredTransitionId": "straddlebat-sidestar-right"
@@ -90,7 +90,7 @@
   {
     "id": "straddlebat-sidestar-right",
     "name": "Straddlebat ↔ Side Star (Right)",
-    "description": "Flyer rotates from upside-down to sideways right as base adjusts feet.",
+    "description": "Flyer rotates from upside-down to sideways right as base adjusts feet. (AI generated)",
     "fromPoseId": "straddlebat",
     "toPoseId": "sidestar-right",
     "mirroredTransitionId": "straddlebat-sidestar-left"
@@ -98,7 +98,7 @@
   {
     "id": "sidestar-left-reverse-bird",
     "name": "Side Star (Left) ↔ Reverse Bird",
-    "description": "Flyer rotates from left side to face-up as base brings feet together.",
+    "description": "Flyer rotates from left side to face-up as base brings feet together. (AI generated)",
     "fromPoseId": "sidestar-left",
     "toPoseId": "reverse-bird",
     "mirroredTransitionId": "sidestar-right-reverse-bird"
@@ -106,7 +106,7 @@
   {
     "id": "sidestar-right-reverse-bird",
     "name": "Side Star (Right) ↔ Reverse Bird",
-    "description": "Flyer rotates from right side to face-up as base brings feet together.",
+    "description": "Flyer rotates from right side to face-up as base brings feet together. (AI generated)",
     "fromPoseId": "sidestar-right",
     "toPoseId": "reverse-bird",
     "mirroredTransitionId": "sidestar-left-reverse-bird"
@@ -114,7 +114,7 @@
   {
     "id": "star-mono-reverse-shin-left",
     "name": "Star ↔ Mono Reverse Shin (Left)",
-    "description": "From star, base lowers right foot, flyer shifts to left leg, connects hands.",
+    "description": "From star, base lowers right foot, flyer shifts to left leg, connects hands. (AI generated)",
     "fromPoseId": "star",
     "toPoseId": "mono-reverse-shin-left",
     "mirroredTransitionId": "star-mono-reverse-shin-right"
@@ -122,7 +122,7 @@
   {
     "id": "star-mono-reverse-shin-right",
     "name": "Star ↔ Mono Reverse Shin (Right)",
-    "description": "From star, base lowers left foot, flyer shifts to right leg, connects hands.",
+    "description": "From star, base lowers left foot, flyer shifts to right leg, connects hands. (AI generated)",
     "fromPoseId": "star",
     "toPoseId": "mono-reverse-shin-right",
     "mirroredTransitionId": "star-mono-reverse-shin-left"
@@ -130,7 +130,7 @@
   {
     "id": "mono-reverse-shin-kneepit-left",
     "name": "Mono Reverse Shin ↔ Supported Kneepit (Left)",
-    "description": "Flyer transitions shin to knee pit while maintaining hand support.",
+    "description": "Flyer transitions shin to knee pit while maintaining hand support. (AI generated)",
     "fromPoseId": "mono-reverse-shin-left",
     "toPoseId": "supported-mono-kneepit-left",
     "mirroredTransitionId": "mono-reverse-shin-kneepit-right"
@@ -138,7 +138,7 @@
   {
     "id": "mono-reverse-shin-kneepit-right",
     "name": "Mono Reverse Shin ↔ Supported Kneepit (Right)",
-    "description": "Flyer transitions shin to knee pit while maintaining hand support.",
+    "description": "Flyer transitions shin to knee pit while maintaining hand support. (AI generated)",
     "fromPoseId": "mono-reverse-shin-right",
     "toPoseId": "supported-mono-kneepit-right",
     "mirroredTransitionId": "mono-reverse-shin-kneepit-left"
@@ -146,7 +146,7 @@
   {
     "id": "kneepit-mono-backbird-left",
     "name": "Supported Kneepit ↔ Mono Backbird (Left)",
-    "description": "Flyer extends leg from knee pit to horizontal backbird position.",
+    "description": "Flyer extends leg from knee pit to horizontal backbird position. (AI generated)",
     "fromPoseId": "supported-mono-kneepit-left",
     "toPoseId": "mono-backbird-left",
     "mirroredTransitionId": "kneepit-mono-backbird-right"
@@ -154,7 +154,7 @@
   {
     "id": "kneepit-mono-backbird-right",
     "name": "Supported Kneepit ↔ Mono Backbird (Right)",
-    "description": "Flyer extends leg from knee pit to horizontal backbird position.",
+    "description": "Flyer extends leg from knee pit to horizontal backbird position. (AI generated)",
     "fromPoseId": "supported-mono-kneepit-right",
     "toPoseId": "mono-backbird-right",
     "mirroredTransitionId": "kneepit-mono-backbird-left"
@@ -162,7 +162,7 @@
   {
     "id": "mono-backbird-star-left",
     "name": "Mono Backbird ↔ Star (Left)",
-    "description": "Base adds second foot to flyer's shoulder, returning to star position.",
+    "description": "Base adds second foot to flyer's shoulder, returning to star position. (AI generated)",
     "fromPoseId": "mono-backbird-left",
     "toPoseId": "star",
     "mirroredTransitionId": "mono-backbird-star-right"
@@ -170,7 +170,7 @@
   {
     "id": "mono-backbird-star-right",
     "name": "Mono Backbird ↔ Star (Right)",
-    "description": "Base adds second foot to flyer's shoulder, returning to star position.",
+    "description": "Base adds second foot to flyer's shoulder, returning to star position. (AI generated)",
     "fromPoseId": "mono-backbird-right",
     "toPoseId": "star",
     "mirroredTransitionId": "mono-backbird-star-left"
