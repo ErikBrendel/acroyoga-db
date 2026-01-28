@@ -5,6 +5,7 @@ import {PoseDetailSidebar} from './components/PoseDetailSidebar';
 import {FlowsList} from './components/FlowsList';
 import {AddPoseDialog} from './components/AddPoseDialog';
 import {AddFlowDialog} from './components/AddFlowDialog';
+import {PoseEditor3DDemo} from './components/PoseEditor3DDemo';
 import {transformToGraph, PosePosition} from './utils/graphTransform';
 import {isLocalEditMode} from './utils/editMode';
 import {updatePosePositions} from './api/layout';
@@ -15,6 +16,7 @@ function App() {
   const [activeFlowName, setActiveFlowName] = useState<string | null>(null);
   const [isAddPoseDialogOpen, setIsAddPoseDialogOpen] = useState(false);
   const [isAddFlowDialogOpen, setIsAddFlowDialogOpen] = useState(false);
+  const [is3DEditorOpen, setIs3DEditorOpen] = useState(false);
   const [pendingPositions, setPendingPositions] = useState<Record<string, PosePosition | null>>({});
   const [isSaving, setIsSaving] = useState(false);
 
@@ -108,7 +110,7 @@ function App() {
 
   return (
     <div className="w-screen h-screen relative bg-gray-50">
-      <div className="absolute top-0 left-0 p-4 z-10 bg-white shadow-md rounded-br-lg max-w-4xl">
+      <div className="absolute top-0 left-0 p-4 z-10 bg-white shadow-md rounded-br-lg max-w-full">
         <div className="flex items-center gap-3 flex-wrap">
           <div>
             <h1 className="text-xl font-bold text-gray-900">Acroyoga Pose Graph</h1>
@@ -130,6 +132,12 @@ function App() {
                 className="px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors text-xs font-semibold"
               >
                 + New Flow
+              </button>
+              <button
+                onClick={() => setIs3DEditorOpen(true)}
+                className="px-3 py-1 bg-cyan-600 text-white rounded hover:bg-cyan-700 transition-colors text-xs font-semibold"
+              >
+                🎭 3D Editor (Demo)
               </button>
               <div className="h-6 w-px bg-gray-300"></div>
               {isDirty ? (
@@ -198,6 +206,10 @@ function App() {
         onSuccess={refetch}
         poses={poses}
         transitions={transitions}
+      />
+      <PoseEditor3DDemo
+        isOpen={is3DEditorOpen}
+        onClose={() => setIs3DEditorOpen(false)}
       />
     </div>
   );
