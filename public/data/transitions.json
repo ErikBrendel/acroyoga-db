@@ -146,5 +146,17 @@
   {
     "fromPoseId": "front-plank",
     "toPoseId": "folded-leaf"
+  },
+  {
+    "fromPoseId": "shoulder-stand",
+    "toPoseId": "reverse-back-bird"
+  },
+  {
+    "fromPoseId": "reverse-back-bird",
+    "toPoseId": "low-reverse-foot-to-hand"
+  },
+  {
+    "fromPoseId": "low-reverse-foot-to-hand",
+    "toPoseId": "bird"
   }
 ]

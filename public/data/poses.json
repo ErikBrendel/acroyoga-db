@@ -67,8 +67,8 @@
     "name": "Folded Leaf",
     "description": "Base's feet on flyer's hips. Flyer folds forward, hands near base's head. (AI generated)",
     "position": {
-      "x": 810,
-      "y": 895
+      "x": 460,
+      "y": 642
     }
   },
   {
@@ -248,8 +248,8 @@
     "name": "Low Reverse F2H",
     "description": "Base elbows close to chest. Flyer facing towards Base head. C-grip for Base. No High-Heels!",
     "position": {
-      "x": 38,
-      "y": 1364
+      "x": 571,
+      "y": 1447
     }
   },
   {
@@ -266,8 +266,17 @@
     "name": "Foot to Shin",
     "description": "Base tucked, Flyer stands on shins, facing Base head.",
     "position": {
-      "x": 375,
-      "y": 1147
+      "x": 337,
+      "y": 1126
+    }
+  },
+  {
+    "id": "reverse-back-bird",
+    "name": "Reverse Back Bird",
+    "description": "Almost like whale, but centered: Base feet on Flyer butt. Flyer facing the ceiling, head away from Base head.",
+    "position": {
+      "x": 974,
+      "y": 762
     }
   }
 ]
