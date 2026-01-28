@@ -68,12 +68,12 @@ export function AddPoseDialog({ isOpen, onClose, onSuccess, existingPoses }: Add
             <input
               type="text"
               value={id}
-              onChange={(e) => setId(e.target.value)}
+              onChange={(e) => setId(e.target.value.replace(/\s/g, ''))}
               className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="e.g., new-pose-name"
               required
             />
-            <p className="text-xs text-gray-500 mt-1">Lowercase with hyphens</p>
+            <p className="text-xs text-gray-500 mt-1">Lowercase with hyphens, no spaces</p>
           </div>
 
           <div>
