@@ -29,10 +29,10 @@
   },
   {
     "fromPoseId": "chair",
-    "toPoseId": "extended-f2h"
+    "toPoseId": "extended-reverse-f2h"
   },
   {
-    "fromPoseId": "extended-f2h",
+    "fromPoseId": "extended-reverse-f2h",
     "toPoseId": "whale"
   },
   {
@@ -158,5 +158,29 @@
   {
     "fromPoseId": "low-reverse-foot-to-hand",
     "toPoseId": "bird"
+  },
+  {
+    "fromPoseId": "whale",
+    "toPoseId": "iron-cross"
+  },
+  {
+    "fromPoseId": "iron-cross",
+    "toPoseId": "bird"
+  },
+  {
+    "fromPoseId": "star",
+    "toPoseId": "extended-f2h"
+  },
+  {
+    "fromPoseId": "star",
+    "toPoseId": "low-foot-to-hand"
+  },
+  {
+    "fromPoseId": "extended-f2h",
+    "toPoseId": "chair"
+  },
+  {
+    "fromPoseId": "foot-to-shin",
+    "toPoseId": "shoulder-stand"
   }
 ]

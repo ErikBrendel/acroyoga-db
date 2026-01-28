@@ -1,18 +1,76 @@
 [
   {
     "name": "Beginner Flow",
-    "poseIds": ["front-plank", "throne", "chair", "whale", "vishnus-couch-left"]
+    "poseIds": [
+      "front-plank",
+      "throne",
+      "chair",
+      "whale",
+      "vishnus-couch-left"
+    ]
   },
   {
     "name": "Ninja Star Washing Machine",
-    "poseIds": ["straddlebat", "sidestar-left", "reverse-bird", "sidestar-right", "straddlebat"]
+    "poseIds": [
+      "straddlebat",
+      "sidestar-left",
+      "reverse-bird",
+      "sidestar-right",
+      "straddlebat"
+    ]
   },
   {
     "name": "4-Step Mono Flow (Left)",
-    "poseIds": ["star", "mono-reverse-shin-left", "supported-mono-kneepit-left", "mono-backbird-left", "star"]
+    "poseIds": [
+      "star",
+      "mono-reverse-shin-left",
+      "supported-mono-kneepit-left",
+      "mono-backbird-left",
+      "star"
+    ]
   },
   {
     "name": "4-Step Mono Flow (Right)",
-    "poseIds": ["star", "mono-reverse-shin-right", "supported-mono-kneepit-right", "mono-backbird-right", "star"]
+    "poseIds": [
+      "star",
+      "mono-reverse-shin-right",
+      "supported-mono-kneepit-right",
+      "mono-backbird-right",
+      "star"
+    ]
+  },
+  {
+    "name": "Catherines Wheel",
+    "poseIds": [
+      "bird",
+      "shoulder-stand",
+      "reverse-back-bird",
+      "low-reverse-foot-to-hand",
+      "bird"
+    ]
+  },
+  {
+    "name": "Starter Flow",
+    "poseIds": [
+      "front-plank",
+      "throne",
+      "chair",
+      "whale",
+      "iron-cross",
+      "bird",
+      "front-plank"
+    ]
+  },
+  {
+    "name": "20.01.2026: Rotating in Base Hands",
+    "poseIds": [
+      "star",
+      "extended-f2h",
+      "chair",
+      "foot-to-shin",
+      "shoulder-stand",
+      "straddlebat",
+      "star"
+    ]
   }
 ]

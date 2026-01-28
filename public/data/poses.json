@@ -4,8 +4,8 @@
     "name": "Bird",
     "description": "Base lies on back with feet up, supporting flyer's hips. Flyer balances horizontally face-down. (AI generated)",
     "position": {
-      "x": 661,
-      "y": 630
+      "x": 717,
+      "y": 735
     }
   },
   {
@@ -13,8 +13,8 @@
     "name": "Throne",
     "description": "Base sits with feet on flyer's hips. Flyer stands upright on base's feet. (AI generated)",
     "position": {
-      "x": 223,
-      "y": 738
+      "x": 156,
+      "y": 699
     }
   },
   {
@@ -22,8 +22,8 @@
     "name": "Reverse Throne",
     "description": "Base's feet on flyer's hips. Flyer stands upright facing away from base. (AI generated)",
     "position": {
-      "x": 116,
-      "y": 498
+      "x": 11,
+      "y": 373
     }
   },
   {
@@ -31,8 +31,8 @@
     "name": "Front Plank",
     "description": "Base lies on back with feet on flyer's shoulders/chest. Flyer holds plank position. (AI generated)",
     "position": {
-      "x": 476,
-      "y": 924
+      "x": 402,
+      "y": 756
     }
   },
   {
@@ -40,8 +40,8 @@
     "name": "Shoulder Stand",
     "description": "Base lies on back supporting flyer's shoulders with hands, flyer is upside down, facing towards base feet. Base Hands (including thumbs) on flyer's back/shoulders. Base sees flyer back.",
     "position": {
-      "x": 811,
-      "y": 387
+      "x": 775,
+      "y": 409
     }
   },
   {
@@ -67,8 +67,8 @@
     "name": "Folded Leaf",
     "description": "Base's feet on flyer's hips. Flyer folds forward, hands near base's head. (AI generated)",
     "position": {
-      "x": 460,
-      "y": 642
+      "x": 517,
+      "y": 556
     }
   },
   {
@@ -76,14 +76,14 @@
     "name": "Chair",
     "description": "Base's feet on flyer's sit bones. Flyer sits upright as if in a chair. (AI generated)",
     "position": {
-      "x": 38,
-      "y": 1070
+      "x": 111,
+      "y": 1019
     }
   },
   {
-    "id": "extended-f2h",
-    "name": "Extended F2H",
-    "description": "Extended foot-to-hand. Single-leg base pose with flyer's foot in base's hand, flyer extends upward. (AI generated)",
+    "id": "extended-reverse-f2h",
+    "name": "Extended Reverse F2H",
+    "description": "Like Reverse F2H, just straight Base arms.",
     "position": {
       "x": -77,
       "y": 802
@@ -94,8 +94,8 @@
     "name": "Whale",
     "description": "Single-leg base pose. Base's foot on flyer's shoulders, flyer arches back. (AI generated)",
     "position": {
-      "x": -243,
-      "y": 940
+      "x": -191,
+      "y": 1068
     }
   },
   {
@@ -104,8 +104,8 @@
     "description": "Base's left foot supports flyer lying on their left side in a relaxed position. (AI generated)",
     "mirroredPoseId": "vishnus-couch-right",
     "position": {
-      "x": -466,
-      "y": 945
+      "x": -439,
+      "y": 1229
     }
   },
   {
@@ -114,8 +114,8 @@
     "description": "Base's right foot supports flyer lying on their right side in a relaxed position. (AI generated)",
     "mirroredPoseId": "vishnus-couch-left",
     "position": {
-      "x": -404,
-      "y": 772
+      "x": -445,
+      "y": 1032
     }
   },
   {
@@ -124,7 +124,7 @@
     "description": "Base's feet on flyer's inner thighs. Flyer hangs upside-down with legs straddled. (AI generated)",
     "position": {
       "x": 605,
-      "y": 20
+      "y": 47
     }
   },
   {
@@ -133,7 +133,7 @@
     "description": "Base's feet on flyer's inner thighs. Flyer inverted with legs together in forward fold. (AI generated)",
     "position": {
       "x": 556,
-      "y": 273
+      "y": 293
     }
   },
   {
@@ -230,8 +230,8 @@
     "name": "Back Bird",
     "description": "Like Bird, but Flyer turns to face the ceiling. Base Feet on Flyer butt. Hand connection optional.",
     "position": {
-      "x": 382,
-      "y": 451
+      "x": 272,
+      "y": 396
     }
   },
   {
@@ -239,8 +239,8 @@
     "name": "Low F2H",
     "description": "Base elbows close to chest, Flyer faces away, heels at Base fingers and toes at Base wrist. High-Heels!",
     "position": {
-      "x": -62,
-      "y": 99
+      "x": 10,
+      "y": -301
     }
   },
   {
@@ -248,8 +248,8 @@
     "name": "Low Reverse F2H",
     "description": "Base elbows close to chest. Flyer facing towards Base head. C-grip for Base. No High-Heels!",
     "position": {
-      "x": 571,
-      "y": 1447
+      "x": 728,
+      "y": 1169
     }
   },
   {
@@ -257,8 +257,8 @@
     "name": "Reverse Chair",
     "description": "Like Chair, but facing away. Flyer feet dangling or put on Base calves.",
     "position": {
-      "x": -60,
-      "y": 313
+      "x": -93,
+      "y": 12
     }
   },
   {
@@ -266,8 +266,8 @@
     "name": "Foot to Shin",
     "description": "Base tucked, Flyer stands on shins, facing Base head.",
     "position": {
-      "x": 337,
-      "y": 1126
+      "x": 424,
+      "y": 956
     }
   },
   {
@@ -277,6 +277,23 @@
     "position": {
       "x": 974,
       "y": 762
+    }
+  },
+  {
+    "id": "iron-cross",
+    "name": "Iron cross",
+    "description": "Flyer in T-pose (push down with arms!), piked legs. Base feet in Flyer armpits. Base hands support Flyer legs.",
+    "position": {
+      "x": 401,
+      "y": 1409
+    }
+  },
+  {
+    "id": "extended-f2h",
+    "name": "Extended F2H",
+    "position": {
+      "x": 772,
+      "y": 103
     }
   }
 ]
