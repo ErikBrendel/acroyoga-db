@@ -28,10 +28,10 @@
     "toPoseId": "folded-leaf"
   },
   {
-    "id": "throne-shoulder-stand",
-    "name": "Throne → Shoulder Stand",
-    "description": "Flyer dives forward, base catches shoulders, flyer inverts. (AI generated)",
-    "fromPoseId": "throne",
+    "id": "bird-shoulder-stand",
+    "name": "Bird → Shoulder Stand",
+    "description": "From bird, flyer tucks and inverts, base catches shoulders. (AI generated)",
+    "fromPoseId": "bird",
     "toPoseId": "shoulder-stand",
     "nonReversible": true
   },
@@ -55,6 +55,20 @@
     "description": "Flyer sits down on base's feet, transitioning from standing to seated position. (AI generated)",
     "fromPoseId": "throne",
     "toPoseId": "chair"
+  },
+  {
+    "id": "chair-extended-f2h",
+    "name": "Chair ↔ Extended F2H",
+    "description": "From chair, base removes one foot, flyer extends upward with foot in base's hand. (AI generated)",
+    "fromPoseId": "chair",
+    "toPoseId": "extended-f2h"
+  },
+  {
+    "id": "extended-f2h-whale",
+    "name": "Extended F2H ↔ Whale",
+    "description": "From extended F2H, flyer arches back into whale position. (AI generated)",
+    "fromPoseId": "extended-f2h",
+    "toPoseId": "whale"
   },
   {
     "id": "chair-whale",

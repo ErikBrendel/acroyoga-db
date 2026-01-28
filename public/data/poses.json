@@ -40,6 +40,11 @@
     "description": "Base's feet on flyer's sit bones. Flyer sits upright as if in a chair. (AI generated)"
   },
   {
+    "id": "extended-f2h",
+    "name": "Extended F2H",
+    "description": "Extended foot-to-hand. Single-leg base pose with flyer's foot in base's hand, flyer extends upward. (AI generated)"
+  },
+  {
     "id": "whale",
     "name": "Whale",
     "description": "Single-leg base pose. Base's foot on flyer's shoulders, flyer arches back. (AI generated)"
