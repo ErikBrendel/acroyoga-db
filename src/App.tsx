@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { usePoseData } from './hooks/usePoseData';
 import { PoseGraph } from './components/PoseGraph';
 import { PoseDetailSidebar } from './components/PoseDetailSidebar';
@@ -9,6 +9,8 @@ function App() {
   const { poses, transitions, flows, loading, error } = usePoseData();
   const [selectedPoseId, setSelectedPoseId] = useState<string | null>(null);
   const [activeFlowName, setActiveFlowName] = useState<string | null>(null);
+
+  const { nodes, edges } = useMemo(() => transformToGraph(poses, transitions), [poses, transitions]);
 
   if (loading) {
     return (
@@ -33,7 +35,6 @@ function App() {
   }
 
   const activeFlow = flows.find(f => f.name === activeFlowName) || null;
-  const { nodes, edges } = transformToGraph(poses, transitions);
 
   const handleFlowClick = (flowName: string) => {
     setActiveFlowName(prev => prev === flowName ? null : flowName);
