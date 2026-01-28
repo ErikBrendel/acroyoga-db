@@ -1,5 +1,7 @@
 # Acroyoga-DB
 
+## See it here: https://erikbrendel.github.io/acroyoga-db/
+
 #### core ideas
 
 - A web app of acro poses, transitions, and flows
