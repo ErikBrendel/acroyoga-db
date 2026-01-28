@@ -54,6 +54,7 @@ function App() {
 
   const handleDiscardChanges = () => {
     setPendingPositions({});
+    window.location.reload();
   };
 
   const handleRegenerateLayout = async () => {
