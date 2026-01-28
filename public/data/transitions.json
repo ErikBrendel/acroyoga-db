@@ -36,6 +36,11 @@
     "toPoseId": "straddlebat"
   },
   {
+    "id": "straddlebat-floating-paschi",
+    "fromPoseId": "straddlebat",
+    "toPoseId": "floating-paschi"
+  },
+  {
     "id": "throne-chair",
     "fromPoseId": "throne",
     "toPoseId": "chair"
