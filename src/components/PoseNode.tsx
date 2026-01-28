@@ -15,7 +15,7 @@ export function PoseNode({ data }: NodeProps) {
         isConnectable={false}
         style={{ opacity: 0, left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}
       />
-      {data.label}
+      {String(data.label)}
     </div>
   );
 }
