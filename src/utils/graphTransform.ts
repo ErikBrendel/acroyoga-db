@@ -1,22 +1,75 @@
 import { Node, Edge } from '@xyflow/react';
 import { Pose, Transition } from '../types/data';
+import {
+  forceSimulation,
+  forceLink,
+  forceManyBody,
+  forceCenter,
+  forceCollide,
+  SimulationNodeDatum,
+  SimulationLinkDatum,
+} from 'd3-force';
 
 export interface GraphData {
   nodes: Node[];
   edges: Edge[];
 }
 
+interface D3Node extends SimulationNodeDatum {
+  id: string;
+}
+
 export function transformToGraph(poses: Pose[], transitions: Transition[]): GraphData {
-  const nodes: Node[] = poses.map((pose, index) => {
-    const angle = (index / poses.length) * 2 * Math.PI;
-    const radius = 300;
+  const d3Nodes: D3Node[] = poses.map((pose) => ({
+    id: pose.id,
+  }));
+
+  const d3Links: SimulationLinkDatum<D3Node>[] = [
+    ...transitions.map((t) => ({
+      source: t.fromPoseId,
+      target: t.toPoseId,
+    })),
+    ...poses
+      .filter((p) => p.mirroredPoseId)
+      .filter((p, i, arr) => {
+        const pairKey = [p.id, p.mirroredPoseId!].sort().join('-');
+        return arr.findIndex((x) => {
+          const key = [x.id, x.mirroredPoseId!].sort().join('-');
+          return key === pairKey;
+        }) === i;
+      })
+      .map((p) => ({
+        source: p.id,
+        target: p.mirroredPoseId!,
+      })),
+  ];
+
+  const simulation = forceSimulation(d3Nodes)
+    .force(
+      'link',
+      forceLink(d3Links)
+        .id((d: any) => d.id)
+        .distance(200)
+        .strength(0.5)
+    )
+    .force('charge', forceManyBody().strength(-1000))
+    .force('center', forceCenter(400, 300))
+    .force('collide', forceCollide(80))
+    .stop();
+
+  for (let i = 0; i < 300; i++) {
+    simulation.tick();
+  }
+
+  const nodes: Node[] = poses.map((pose) => {
+    const d3Node = d3Nodes.find((n) => n.id === pose.id)!;
 
     return {
       id: pose.id,
       type: 'pose',
       position: {
-        x: Math.cos(angle) * radius + 400,
-        y: Math.sin(angle) * radius + 300,
+        x: d3Node.x || 0,
+        y: d3Node.y || 0,
       },
       data: {
         label: pose.name || pose.id,
