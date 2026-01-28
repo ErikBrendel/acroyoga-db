@@ -15,7 +15,13 @@ export function AddTransitionForm({ currentPoseId, allPoses, onSuccess }: AddTra
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const availablePoses = allPoses.filter(p => p.id !== currentPoseId);
+  const availablePoses = allPoses
+    .filter(p => p.id !== currentPoseId)
+    .sort((a, b) => {
+      const nameA = (a.name || a.id).toLowerCase();
+      const nameB = (b.name || b.id).toLowerCase();
+      return nameA.localeCompare(nameB);
+    });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

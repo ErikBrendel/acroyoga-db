@@ -112,11 +112,18 @@ export function AddPoseDialog({ isOpen, onClose, onSuccess, existingPoses }: Add
               className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">None</option>
-              {existingPoses.map(pose => (
-                <option key={pose.id} value={pose.id}>
-                  {pose.name || pose.id}
-                </option>
-              ))}
+              {existingPoses
+                .slice()
+                .sort((a, b) => {
+                  const nameA = (a.name || a.id).toLowerCase();
+                  const nameB = (b.name || b.id).toLowerCase();
+                  return nameA.localeCompare(nameB);
+                })
+                .map(pose => (
+                  <option key={pose.id} value={pose.id}>
+                    {pose.name || pose.id}
+                  </option>
+                ))}
             </select>
           </div>
 
