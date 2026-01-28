@@ -1,0 +1,54 @@
+[
+  {
+    "id": "bird-throne",
+    "name": "Bird ↔ Throne",
+    "description": "Flyer brings feet to base's shins, base bends knees, flyer stands up.",
+    "fromPoseId": "bird",
+    "toPoseId": "throne"
+  },
+  {
+    "id": "bird-front-plank",
+    "name": "Bird ↔ Front Plank",
+    "description": "Base moves feet up to flyer's shoulders, flyer straightens body.",
+    "fromPoseId": "bird",
+    "toPoseId": "front-plank"
+  },
+  {
+    "id": "bird-star",
+    "name": "Bird ↔ Star",
+    "description": "Base splits feet to hip and shoulder, flyer opens up.",
+    "fromPoseId": "bird",
+    "toPoseId": "star"
+  },
+  {
+    "id": "bird-folded-leaf",
+    "name": "Bird ↔ Folded Leaf",
+    "description": "Flyer folds forward bringing hands toward base's head.",
+    "fromPoseId": "bird",
+    "toPoseId": "folded-leaf"
+  },
+  {
+    "id": "throne-shoulder-stand",
+    "name": "Throne → Shoulder Stand",
+    "description": "Flyer dives forward, base catches shoulders, flyer inverts.",
+    "fromPoseId": "throne",
+    "toPoseId": "shoulder-stand",
+    "nonReversible": true
+  },
+  {
+    "id": "star-whale-left",
+    "name": "Star ↔ Whale (Left)",
+    "description": "Base lowers right foot, flyer shifts weight to left side.",
+    "fromPoseId": "star",
+    "toPoseId": "whale-left",
+    "mirroredTransitionId": "star-whale-right"
+  },
+  {
+    "id": "star-whale-right",
+    "name": "Star ↔ Whale (Right)",
+    "description": "Base lowers left foot, flyer shifts weight to right side.",
+    "fromPoseId": "star",
+    "toPoseId": "whale-right",
+    "mirroredTransitionId": "star-whale-left"
+  }
+]

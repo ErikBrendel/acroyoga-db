@@ -1,0 +1,44 @@
+[
+  {
+    "id": "bird",
+    "name": "Bird",
+    "description": "Base lies on back with feet up, supporting flyer's hips. Flyer balances horizontally face-down."
+  },
+  {
+    "id": "throne",
+    "name": "Throne",
+    "description": "Base sits with feet on flyer's hips. Flyer stands upright on base's feet."
+  },
+  {
+    "id": "front-plank",
+    "name": "Front Plank",
+    "description": "Base lies on back with feet on flyer's shoulders/chest. Flyer holds plank position."
+  },
+  {
+    "id": "shoulder-stand",
+    "name": "Shoulder Stand",
+    "description": "Base lies on back supporting flyer's shoulders with feet. Flyer is vertical, head down."
+  },
+  {
+    "id": "star",
+    "name": "Star",
+    "description": "Base lies on back with one foot on flyer's hip, one on shoulder. Flyer spreads arms and legs like a star."
+  },
+  {
+    "id": "folded-leaf",
+    "name": "Folded Leaf",
+    "description": "Base's feet on flyer's hips. Flyer folds forward, hands near base's head."
+  },
+  {
+    "id": "whale-left",
+    "name": "Whale (Left)",
+    "description": "Single-leg base pose. Base's left foot on flyer's left hip, flyer arches sideways.",
+    "mirroredPoseId": "whale-right"
+  },
+  {
+    "id": "whale-right",
+    "name": "Whale (Right)",
+    "description": "Single-leg base pose. Base's right foot on flyer's right hip, flyer arches sideways.",
+    "mirroredPoseId": "whale-left"
+  }
+]
