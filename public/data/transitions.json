@@ -36,20 +36,48 @@
     "nonReversible": true
   },
   {
-    "id": "star-whale-left",
-    "name": "Star ↔ Whale (Left)",
-    "description": "Base lowers right foot, flyer shifts weight to left side.",
-    "fromPoseId": "star",
-    "toPoseId": "whale-left",
-    "mirroredTransitionId": "star-whale-right"
+    "id": "throne-reverse-throne",
+    "name": "Throne ↔ Reverse Throne",
+    "description": "Flyer rotates 180 degrees while standing on base's feet.",
+    "fromPoseId": "throne",
+    "toPoseId": "reverse-throne"
   },
   {
-    "id": "star-whale-right",
-    "name": "Star ↔ Whale (Right)",
-    "description": "Base lowers left foot, flyer shifts weight to right side.",
-    "fromPoseId": "star",
-    "toPoseId": "whale-right",
-    "mirroredTransitionId": "star-whale-left"
+    "id": "shoulder-stand-straddlebat",
+    "name": "Shoulder Stand ↔ Straddlebat",
+    "description": "From inverted shoulder stand, base adjusts feet to inner thighs for straddlebat.",
+    "fromPoseId": "shoulder-stand",
+    "toPoseId": "straddlebat"
+  },
+  {
+    "id": "throne-chair",
+    "name": "Throne ↔ Chair",
+    "description": "Flyer sits down on base's feet, transitioning from standing to seated position.",
+    "fromPoseId": "throne",
+    "toPoseId": "chair"
+  },
+  {
+    "id": "chair-whale",
+    "name": "Chair ↔ Whale",
+    "description": "Base removes one foot, flyer arches sideways into whale.",
+    "fromPoseId": "chair",
+    "toPoseId": "whale"
+  },
+  {
+    "id": "whale-vishnus-couch-left",
+    "name": "Whale ↔ Vishnu's Couch (Left)",
+    "description": "Flyer transitions from arched whale to relaxed side-lying position on left side.",
+    "fromPoseId": "whale",
+    "toPoseId": "vishnus-couch-left",
+    "mirroredTransitionId": "whale-vishnus-couch-right"
+  },
+  {
+    "id": "whale-vishnus-couch-right",
+    "name": "Whale ↔ Vishnu's Couch (Right)",
+    "description": "Flyer transitions from arched whale to relaxed side-lying position on right side.",
+    "fromPoseId": "whale",
+    "toPoseId": "vishnus-couch-right",
+    "mirroredTransitionId": "whale-vishnus-couch-left"
   },
   {
     "id": "straddlebat-sidestar-left",
