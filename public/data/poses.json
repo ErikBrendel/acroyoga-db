@@ -79,7 +79,7 @@
   {
     "id": "reverse-bird",
     "name": "Reverse Bird",
-    "description": "Base lies on back with feet supporting flyer's hips. Flyer balances horizontally face-up. (AI generated)"
+    "description": "Like Bird, but Flyer faces the other way. Base feet still on Flyer hips. Connecting hands optional, but requires long straight arms."
   },
   {
     "id": "sidestar-left",
