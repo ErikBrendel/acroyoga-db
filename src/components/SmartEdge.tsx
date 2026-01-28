@@ -52,7 +52,6 @@ function generateCubicSpline(controlPoints: Point[]): string {
   // Each segment uses 4 consecutive extended control points
   const numSegments = controlPoints.length - 1;
   for (let i = 0; i < numSegments; i++) {
-    const P0 = extended[i + 1];
     const P1 = extended[i + 2];
     const P2 = extended[i + 3];
     const P3 = extended[i + 4];
@@ -60,25 +59,13 @@ function generateCubicSpline(controlPoints: Point[]): string {
     // Convert B-spline basis to Bezier control points
     // Using uniform cubic B-spline to Bezier conversion matrix
 
-    // Start point of segment
-    let start = {
-      x: (P0.x + 4 * P1.x + P2.x) / 6,
-      y: (P0.y + 4 * P1.y + P2.y) / 6,
-    };
-
-    // End point of segment
-    let end = {
-      x: (P1.x + 4 * P2.x + P3.x) / 6,
-      y: (P1.y + 4 * P2.y + P3.y) / 6,
-    };
-
-    // Force exact endpoints for first and last segments
-    if (i === 0) {
-      start = controlPoints[0];
-    }
-    if (i === numSegments - 1) {
-      end = controlPoints[controlPoints.length - 1];
-    }
+    // End point of segment - force exact position for last segment
+    const end = i === numSegments - 1
+      ? controlPoints[controlPoints.length - 1]
+      : {
+          x: (P1.x + 4 * P2.x + P3.x) / 6,
+          y: (P1.y + 4 * P2.y + P3.y) / 6,
+        };
 
     // First Bezier control point
     const c1 = {
@@ -106,8 +93,8 @@ export function SmartEdge({
   sourceY,
   targetX,
   targetY,
-  sourcePosition,
-  targetPosition,
+  sourcePosition: _sourcePosition,
+  targetPosition: _targetPosition,
   style = {},
   markerEnd,
   data,
