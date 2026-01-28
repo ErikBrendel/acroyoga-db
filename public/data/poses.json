@@ -133,5 +133,20 @@
     "id": "back-bird",
     "name": "Back Bird",
     "description": "Like Bird, but Flyer turns to face the ceiling. Base Feet on Flyer butt. Hand connection optional."
+  },
+  {
+    "id": "low-foot-to-hand",
+    "name": "Low F2H",
+    "description": "Base elbows close to chest, Flyer faces away, heels at Base fingers and toes at Base wrist. High-Heels!"
+  },
+  {
+    "id": "low-reverse-foot-to-hand",
+    "name": "Low Reverse F2H",
+    "description": "Base elbows close to chest. Flyer facing towards Base head. C-grip for Base. No High-Heels!"
+  },
+  {
+    "id": "reverse-chair",
+    "name": "Reverse Chair",
+    "description": "Like Chair, but facing away. Flyer feet dangling or put on Base calves."
   }
 ]

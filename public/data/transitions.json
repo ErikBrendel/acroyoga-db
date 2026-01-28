@@ -114,5 +114,21 @@
   {
     "fromPoseId": "back-bird",
     "toPoseId": "reverse-throne"
+  },
+  {
+    "fromPoseId": "reverse-bird",
+    "toPoseId": "low-foot-to-hand"
+  },
+  {
+    "fromPoseId": "reverse-throne",
+    "toPoseId": "reverse-chair"
+  },
+  {
+    "fromPoseId": "low-foot-to-hand",
+    "toPoseId": "reverse-chair"
+  },
+  {
+    "fromPoseId": "chair",
+    "toPoseId": "low-reverse-foot-to-hand"
   }
 ]
