@@ -2,6 +2,8 @@
 
 ## See it here: https://erikbrendel.github.io/acroyoga-db/
 
+For local development: http://localhost:5173/acroyoga-db/
+
 #### core ideas
 
 - A web app of acro poses, transitions, and flows
