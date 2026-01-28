@@ -5,6 +5,10 @@ export const PoseSchema = z.object({
   name: z.string().optional(),
   description: z.string().optional(),
   mirroredPoseId: z.string().optional(),
+  position: z.object({
+    x: z.number(),
+    y: z.number(),
+  }).optional(),
 });
 
 export const TransitionSchema = z.object({

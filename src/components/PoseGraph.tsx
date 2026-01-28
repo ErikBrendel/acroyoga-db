@@ -20,9 +20,10 @@ interface PoseGraphProps {
   selectedPoseId: string | null;
   activeFlow: Flow | null;
   onSelectPose: (poseId: string | null) => void;
+  onNodeDragStop?: (nodeId: string, position: { x: number; y: number }) => void;
 }
 
-export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, onSelectPose }: PoseGraphProps) {
+export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, onSelectPose, onNodeDragStop }: PoseGraphProps) {
   const [localNodes, setNodes, onNodesChange] = useNodesState(nodes);
   const [localEdges, setEdges, onEdgesChange] = useEdgesState(edges);
 
@@ -47,6 +48,15 @@ export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, onSelectPo
   const onPaneClick = useCallback(() => {
     onSelectPose(null);
   }, [onSelectPose]);
+
+  const handleNodeDragStop = useCallback(
+    (_: React.MouseEvent, node: Node) => {
+      if (onNodeDragStop) {
+        onNodeDragStop(node.id, node.position);
+      }
+    },
+    [onNodeDragStop]
+  );
 
   const flowPoseIds = useMemo(() => new Set(activeFlow?.poseIds || []), [activeFlow]);
 
@@ -136,6 +146,7 @@ export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, onSelectPo
         onEdgesChange={onEdgesChange}
         onNodeClick={onNodeClick}
         onPaneClick={onPaneClick}
+        onNodeDragStop={handleNodeDragStop}
         nodeTypes={nodeTypes}
         nodesDraggable={true}
         nodesConnectable={false}

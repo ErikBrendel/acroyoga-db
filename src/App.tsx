@@ -4,16 +4,76 @@ import {PoseGraph} from './components/PoseGraph';
 import {PoseDetailSidebar} from './components/PoseDetailSidebar';
 import {FlowsList} from './components/FlowsList';
 import {AddPoseDialog} from './components/AddPoseDialog';
-import {transformToGraph} from './utils/graphTransform';
+import {transformToGraph, PosePosition} from './utils/graphTransform';
 import {isLocalEditMode} from './utils/editMode';
+import {updatePosePositions} from './api/layout';
 
 function App() {
   const { poses, transitions, flows, loading, error, refetch } = usePoseData();
   const [selectedPoseId, setSelectedPoseId] = useState<string | null>(null);
   const [activeFlowName, setActiveFlowName] = useState<string | null>(null);
   const [isAddPoseDialogOpen, setIsAddPoseDialogOpen] = useState(false);
+  const [pendingPositions, setPendingPositions] = useState<Record<string, PosePosition | null>>({});
+  const [isSaving, setIsSaving] = useState(false);
 
-  const { nodes, edges } = useMemo(() => transformToGraph(poses, transitions), [poses, transitions]);
+  const isDirty = Object.keys(pendingPositions).length > 0;
+
+  const { nodes, edges } = useMemo(
+    () => transformToGraph(poses, transitions),
+    [poses, transitions]
+  );
+
+  const handleNodeDragStop = (nodeId: string, position: PosePosition) => {
+    setPendingPositions(prev => ({
+      ...prev,
+      [nodeId]: position,
+    }));
+  };
+
+  const handleUnpinNode = (nodeId: string) => {
+    setPendingPositions(prev => ({
+      ...prev,
+      [nodeId]: null,
+    }));
+  };
+
+  const handleSavePositions = async () => {
+    setIsSaving(true);
+    try {
+      await updatePosePositions(pendingPositions);
+      setPendingPositions({});
+      refetch();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to save positions');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDiscardChanges = () => {
+    setPendingPositions({});
+  };
+
+  const handleRegenerateLayout = async () => {
+    if (!confirm('Regenerate layout for all nodes? This will clear all pinned positions.')) {
+      return;
+    }
+    setIsSaving(true);
+    try {
+      // Clear all positions by setting them to null
+      const allPositionsNull = poses.reduce((acc, pose) => {
+        acc[pose.id] = null;
+        return acc;
+      }, {} as Record<string, null>);
+      await updatePosePositions(allPositionsNull);
+      setPendingPositions({});
+      refetch();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to regenerate layout');
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -45,8 +105,8 @@ function App() {
 
   return (
     <div className="w-screen h-screen relative bg-gray-50">
-      <div className="absolute top-0 left-0 p-4 z-10 bg-white shadow-md rounded-br-lg">
-        <div className="flex items-center gap-3">
+      <div className="absolute top-0 left-0 p-4 z-10 bg-white shadow-md rounded-br-lg max-w-4xl">
+        <div className="flex items-center gap-3 flex-wrap">
           <div>
             <h1 className="text-xl font-bold text-gray-900">Acroyoga Pose Graph</h1>
             <p className="text-sm text-gray-600">{poses.length} poses, {transitions.length} transitions</p>
@@ -62,6 +122,32 @@ function App() {
               >
                 + New Pose
               </button>
+              <div className="h-6 w-px bg-gray-300"></div>
+              {isDirty ? (
+                <>
+                  <button
+                    onClick={handleSavePositions}
+                    disabled={isSaving}
+                    className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400 transition-colors text-xs font-semibold"
+                  >
+                    💾 Save Positions ({Object.keys(pendingPositions).length})
+                  </button>
+                  <button
+                    onClick={handleDiscardChanges}
+                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-xs font-semibold"
+                  >
+                    ✕ Discard
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={handleRegenerateLayout}
+                  disabled={isSaving}
+                  className="px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-700 disabled:bg-gray-400 transition-colors text-xs font-semibold"
+                >
+                  ↻ Regenerate Layout
+                </button>
+              )}
             </>
           )}
         </div>
@@ -77,6 +163,7 @@ function App() {
         selectedPoseId={selectedPoseId}
         activeFlow={activeFlow}
         onSelectPose={setSelectedPoseId}
+        onNodeDragStop={isLocalEditMode() ? handleNodeDragStop : undefined}
       />
       <PoseDetailSidebar
         selectedPoseId={selectedPoseId}
@@ -87,6 +174,8 @@ function App() {
         onSelectPose={setSelectedPoseId}
         onFlowClick={handleFlowClick}
         onDataChange={isLocalEditMode() ? refetch : undefined}
+        onUnpinNode={isLocalEditMode() ? handleUnpinNode : undefined}
+        pendingPositions={pendingPositions}
       />
       <AddPoseDialog
         isOpen={isAddPoseDialogOpen}

@@ -17,12 +17,23 @@ export interface GraphData {
 
 interface D3Node extends SimulationNodeDatum {
   id: string;
+  fx?: number | null;
+  fy?: number | null;
+}
+
+export interface PosePosition {
+  x: number;
+  y: number;
 }
 
 export function transformToGraph(poses: Pose[], transitions: Transition[]): GraphData {
-  const d3Nodes: D3Node[] = poses.map((pose) => ({
-    id: pose.id,
-  }));
+  const d3Nodes: D3Node[] = poses.map((pose) => {
+    return {
+      id: pose.id,
+      // Set fx/fy to fix position, or leave undefined for dynamic
+      ...(pose.position && { fx: pose.position.x, fy: pose.position.y }),
+    };
+  });
 
   const transitionLinks: SimulationLinkDatum<D3Node>[] = transitions.map((t) => ({
     source: t.fromPoseId,

@@ -102,6 +102,35 @@ const apiRoutes: Record<string, ApiHandler> = {
 
     return { code: 200, data: { success: true, pose: poses[poseIndex] } }
   },
+
+  'POST:/api/layout/positions': (body) => {
+    if (!body.positions || typeof body.positions !== 'object') {
+      return { code: 400, data: { error: 'positions object is required' } }
+    }
+
+    const poses = JSON.parse(fs.readFileSync(posesPath, 'utf-8'))
+
+    Object.entries(body.positions).forEach(([poseId, position]: [string, any]) => {
+      const pose = poses.find((p: any) => p.id === poseId)
+      if (pose) {
+        if (!position) {
+          delete pose.position
+        } else {
+          // Round to integers
+          pose.position = {
+            x: Math.round(position.x),
+            y: Math.round(position.y),
+          }
+        }
+      }
+    })
+
+    const tmpPath = posesPath + '.tmp'
+    fs.writeFileSync(tmpPath, JSON.stringify(poses, null, 2) + '\n')
+    fs.renameSync(tmpPath, posesPath)
+
+    return { code: 200, data: { success: true } }
+  },
 }
 
 const DataEditApiPlugin: PluginOption = {

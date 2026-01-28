@@ -5,6 +5,7 @@ import { AddTransitionForm } from './AddTransitionForm';
 import { isLocalEditMode } from '../utils/editMode';
 import { deleteTransition } from '../api/transitions';
 import { updatePose } from '../api/poses';
+import { PosePosition } from '../utils/graphTransform';
 
 interface PoseDetailSidebarProps {
   selectedPoseId: string | null;
@@ -15,6 +16,8 @@ interface PoseDetailSidebarProps {
   onSelectPose: (poseId: string | null) => void;
   onFlowClick: (flowName: string) => void;
   onDataChange?: () => void;
+  onUnpinNode?: (nodeId: string) => void;
+  pendingPositions?: Record<string, PosePosition | null>;
 }
 
 export function PoseDetailSidebar({
@@ -26,6 +29,8 @@ export function PoseDetailSidebar({
   onSelectPose,
   onFlowClick,
   onDataChange,
+  onUnpinNode,
+  pendingPositions,
 }: PoseDetailSidebarProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -52,6 +57,10 @@ export function PoseDetailSidebar({
   );
   const mirroredPose = pose.mirroredPoseId ? poses.find((p) => p.id === pose.mirroredPoseId) : null;
   const containingFlows = flows.filter((f) => f.poseIds.includes(selectedPoseId));
+
+  const pendingPosition = pendingPositions?.[selectedPoseId];
+  const hasPosition = pendingPosition !== undefined ? pendingPosition !== null : !!pose.position;
+  const isPendingUnpin = pendingPosition === null;
 
   const handleDeleteTransition = async (fromPoseId: string, toPoseId: string) => {
     if (isDeleting) return;
@@ -175,6 +184,30 @@ export function PoseDetailSidebar({
         {pose.mirroredPoseId && (
           <div className="mb-4 px-3 py-2 bg-blue-100 text-blue-800 rounded text-sm font-medium">
             Handed pose
+          </div>
+        )}
+
+        {isLocalEditMode() && onUnpinNode && (
+          <div className="mb-4">
+            {hasPosition ? (
+              <div className="flex items-center gap-2">
+                <div className="flex-1 px-3 py-2 bg-purple-50 border border-purple-200 rounded text-sm">
+                  <span className="text-purple-700 font-medium">📌 Pinned position{isPendingUnpin ? ' (pending unpin)' : ''}</span>
+                </div>
+                {!isPendingUnpin && (
+                  <button
+                    onClick={() => onUnpinNode(selectedPoseId)}
+                    className="px-3 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors text-sm font-medium"
+                  >
+                    Unpin
+                  </button>
+                )}
+              </div>
+            ) : (
+              <div className="px-3 py-2 bg-gray-50 border border-gray-200 rounded text-sm text-gray-600">
+                💫 Auto-positioned. Drag to pin this node.
+              </div>
+            )}
           </div>
         )}
 
