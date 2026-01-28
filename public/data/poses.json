@@ -13,8 +13,8 @@
     "name": "Throne",
     "description": "Base sits with feet on flyer's hips. Flyer stands upright on base's feet. (AI generated)",
     "position": {
-      "x": 370,
-      "y": 715
+      "x": 223,
+      "y": 738
     }
   },
   {
@@ -31,8 +31,8 @@
     "name": "Front Plank",
     "description": "Base lies on back with feet on flyer's shoulders/chest. Flyer holds plank position. (AI generated)",
     "position": {
-      "x": 671,
-      "y": 899
+      "x": 476,
+      "y": 924
     }
   },
   {
@@ -40,8 +40,8 @@
     "name": "Shoulder Stand",
     "description": "Base lies on back supporting flyer's shoulders with hands, flyer is upside down, facing towards base feet. Base Hands (including thumbs) on flyer's back/shoulders. Base sees flyer back.",
     "position": {
-      "x": 826,
-      "y": 368
+      "x": 811,
+      "y": 387
     }
   },
   {
@@ -67,8 +67,8 @@
     "name": "Folded Leaf",
     "description": "Base's feet on flyer's hips. Flyer folds forward, hands near base's head. (AI generated)",
     "position": {
-      "x": 916,
-      "y": 706
+      "x": 810,
+      "y": 895
     }
   },
   {
@@ -248,8 +248,8 @@
     "name": "Low Reverse F2H",
     "description": "Base elbows close to chest. Flyer facing towards Base head. C-grip for Base. No High-Heels!",
     "position": {
-      "x": 318,
-      "y": 1044
+      "x": 38,
+      "y": 1364
     }
   },
   {
@@ -259,6 +259,15 @@
     "position": {
       "x": -60,
       "y": 313
+    }
+  },
+  {
+    "id": "foot-to-shin",
+    "name": "Foot to Shin",
+    "description": "Base tucked, Flyer stands on shins, facing Base head.",
+    "position": {
+      "x": 375,
+      "y": 1147
     }
   }
 ]

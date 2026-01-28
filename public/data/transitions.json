@@ -1,10 +1,6 @@
 [
   {
     "fromPoseId": "bird",
-    "toPoseId": "throne"
-  },
-  {
-    "fromPoseId": "bird",
     "toPoseId": "front-plank"
   },
   {
@@ -134,5 +130,21 @@
   {
     "fromPoseId": "floating-paschi",
     "toPoseId": "back-bird"
+  },
+  {
+    "fromPoseId": "front-plank",
+    "toPoseId": "foot-to-shin"
+  },
+  {
+    "fromPoseId": "foot-to-shin",
+    "toPoseId": "chair"
+  },
+  {
+    "fromPoseId": "front-plank",
+    "toPoseId": "throne"
+  },
+  {
+    "fromPoseId": "front-plank",
+    "toPoseId": "folded-leaf"
   }
 ]
