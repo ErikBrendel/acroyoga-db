@@ -4,8 +4,8 @@
     "name": "Bird",
     "description": "Base lies on back with feet up, supporting flyer's hips. Flyer balances horizontally face-down. (AI generated)",
     "position": {
-      "x": 717,
-      "y": 735
+      "x": 649,
+      "y": 756
     }
   },
   {
@@ -40,8 +40,8 @@
     "name": "Shoulder Stand",
     "description": "Base lies on back supporting flyer's shoulders with hands, flyer is upside down, facing towards base feet. Base Hands (including thumbs) on flyer's back/shoulders. Base sees flyer back.",
     "position": {
-      "x": 775,
-      "y": 409
+      "x": 681,
+      "y": 430
     }
   },
   {
@@ -123,8 +123,8 @@
     "name": "Straddlebat",
     "description": "Base's feet on flyer's inner thighs. Flyer hangs upside-down with legs straddled. (AI generated)",
     "position": {
-      "x": 605,
-      "y": 47
+      "x": 576,
+      "y": 35
     }
   },
   {
@@ -132,8 +132,8 @@
     "name": "Floating Paschi",
     "description": "Base's feet on flyer's inner thighs. Flyer inverted with legs together in forward fold. (AI generated)",
     "position": {
-      "x": 556,
-      "y": 293
+      "x": 540,
+      "y": 251
     }
   },
   {
@@ -141,8 +141,8 @@
     "name": "Reverse Bird",
     "description": "Like Bird, but Flyer faces the other way. Base feet still on Flyer hips. Connecting hands optional, but requires long straight arms.",
     "position": {
-      "x": 150,
-      "y": -76
+      "x": 184,
+      "y": -93
     }
   },
   {
@@ -151,8 +151,8 @@
     "description": "Base's feet on flyer's left hip and left shoulder. Flyer opens sideways to the left. (AI generated)",
     "mirroredPoseId": "sidestar-right",
     "position": {
-      "x": 331,
-      "y": 53
+      "x": 297,
+      "y": 50
     }
   },
   {
@@ -161,8 +161,8 @@
     "description": "Base's feet on flyer's right hip and right shoulder. Flyer opens sideways to the right. (AI generated)",
     "mirroredPoseId": "sidestar-left",
     "position": {
-      "x": 359,
-      "y": -157
+      "x": 382,
+      "y": -111
     }
   },
   {
@@ -239,8 +239,8 @@
     "name": "Low F2H",
     "description": "Base elbows close to chest, Flyer faces away, heels at Base fingers and toes at Base wrist. High-Heels!",
     "position": {
-      "x": 10,
-      "y": -301
+      "x": 65,
+      "y": -300
     }
   },
   {
@@ -292,8 +292,8 @@
     "id": "extended-f2h",
     "name": "Extended F2H",
     "position": {
-      "x": 772,
-      "y": 103
+      "x": 815,
+      "y": 119
     }
   }
 ]
