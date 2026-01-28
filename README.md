@@ -14,6 +14,15 @@
 - A "Flow" is handed if any of its poses or transitions are handed, and thus there can exist the mirrored version of it
 - "Entry poses" where both stand on ground in specific orientations
 
+#### MVP V1
+
+Focus on interactive graph exploration without 3D complexity:
+- JSON files for poses and transitions (manually edited, no admin UI needed)
+- Interactive graph view showing pose relationships (using react-flow, vis.js, or similar)
+- Pose detail sidebar on node click (name, desc, tags, connected transitions, mirrored version link)
+- Basic filtering by tags/difficulty/handedness
+- Skip for v1: 3D visualization, flow sequences, editing UI, photos/videos
+
 #### React Views
 
 - pose list view
