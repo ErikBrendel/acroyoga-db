@@ -4,6 +4,7 @@ import { PoseButton } from './PoseButton';
 import { AddTransitionForm } from './AddTransitionForm';
 import { isLocalEditMode } from '../utils/editMode';
 import { deleteTransition } from '../api/transitions';
+import { updatePose } from '../api/poses';
 
 interface PoseDetailSidebarProps {
   selectedPoseId: string | null;
@@ -27,6 +28,10 @@ export function PoseDetailSidebar({
   onDataChange,
 }: PoseDetailSidebarProps) {
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editName, setEditName] = useState('');
+  const [editDescription, setEditDescription] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
   if (!selectedPoseId) {
     return null;
   }
@@ -70,21 +75,102 @@ export function PoseDetailSidebar({
     }
   };
 
+  const handleEditClick = () => {
+    setEditName(pose.name || '');
+    setEditDescription(pose.description || '');
+    setIsEditing(true);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditName('');
+    setEditDescription('');
+  };
+
+  const handleSaveEdit = async () => {
+    setIsSaving(true);
+    try {
+      await updatePose({
+        id: pose.id,
+        name: editName,
+        description: editDescription,
+        mirroredPoseId: pose.mirroredPoseId,
+      });
+      setIsEditing(false);
+      if (onDataChange) {
+        onDataChange();
+      }
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to update pose');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <div className="absolute top-0 right-0 h-full w-96 bg-white shadow-2xl border-l border-gray-200 overflow-y-auto z-10">
       <div className="p-6">
         <div className="flex justify-between items-start mb-4">
-          <h2 className="text-2xl font-bold text-gray-900">
-            {pose.name || pose.id}
-          </h2>
-          <button
-            onClick={() => onSelectPose(null)}
-            className="text-gray-500 hover:text-gray-700 text-xl font-bold"
-            aria-label="Close"
-          >
-            ×
-          </button>
+          {isEditing ? (
+            <div className="flex-1 mr-2">
+              <input
+                type="text"
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-xl font-bold"
+                placeholder="Pose name"
+              />
+            </div>
+          ) : (
+            <h2 className="text-2xl font-bold text-gray-900">
+              {pose.name || pose.id}
+            </h2>
+          )}
+          <div className="flex items-center gap-2">
+            {isLocalEditMode() && !isEditing && (
+              <button
+                onClick={handleEditClick}
+                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              >
+                Edit
+              </button>
+            )}
+            <button
+              onClick={() => onSelectPose(null)}
+              className="text-gray-500 hover:text-gray-700 text-xl font-bold"
+              aria-label="Close"
+            >
+              ×
+            </button>
+          </div>
         </div>
+
+        {isEditing && (
+          <div className="mb-4">
+            <textarea
+              value={editDescription}
+              onChange={(e) => setEditDescription(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Description"
+              rows={4}
+            />
+            <div className="flex gap-2 mt-2">
+              <button
+                onClick={handleSaveEdit}
+                disabled={isSaving}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400 transition-colors text-sm font-medium"
+              >
+                {isSaving ? 'Saving...' : 'Save'}
+              </button>
+              <button
+                onClick={handleCancelEdit}
+                className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors text-sm font-medium"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
 
         {pose.mirroredPoseId && (
           <div className="mb-4 px-3 py-2 bg-blue-100 text-blue-800 rounded text-sm font-medium">
@@ -92,7 +178,7 @@ export function PoseDetailSidebar({
           </div>
         )}
 
-        {pose.description && (
+        {!isEditing && pose.description && (
           <div className="mb-6">
             <p className="text-gray-700 leading-relaxed">{pose.description}</p>
           </div>

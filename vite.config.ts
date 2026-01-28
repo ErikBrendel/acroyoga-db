@@ -76,6 +76,32 @@ const apiRoutes: Record<string, ApiHandler> = {
 
     return { code: 201, data: { success: true, pose: body } }
   },
+
+  'PUT:/api/poses': (body) => {
+    if (!body.id) {
+      return { code: 400, data: { error: 'id is required' } }
+    }
+
+    const poses = JSON.parse(fs.readFileSync(posesPath, 'utf-8'))
+    const poseIndex = poses.findIndex((p: any) => p.id === body.id)
+
+    if (poseIndex === -1) {
+      return { code: 404, data: { error: 'Pose not found' } }
+    }
+
+    poses[poseIndex] = {
+      id: body.id,
+      ...(body.name !== undefined && { name: body.name }),
+      ...(body.description !== undefined && { description: body.description }),
+      ...(body.mirroredPoseId !== undefined && { mirroredPoseId: body.mirroredPoseId }),
+    }
+
+    const tmpPath = posesPath + '.tmp'
+    fs.writeFileSync(tmpPath, JSON.stringify(poses, null, 2) + '\n')
+    fs.renameSync(tmpPath, posesPath)
+
+    return { code: 200, data: { success: true, pose: poses[poseIndex] } }
+  },
 }
 
 const DataEditApiPlugin: PluginOption = {

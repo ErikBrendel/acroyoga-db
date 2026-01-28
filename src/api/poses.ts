@@ -5,6 +5,13 @@ export interface PoseCreateRequest {
   mirroredPoseId?: string;
 }
 
+export interface PoseUpdateRequest {
+  id: string;
+  name?: string;
+  description?: string;
+  mirroredPoseId?: string;
+}
+
 export interface ApiResponse<T = any> {
   success?: boolean;
   error?: string;
@@ -25,6 +32,24 @@ export async function createPose(request: PoseCreateRequest): Promise<ApiRespons
 
   if (!response.ok) {
     throw new Error(data.error || 'Failed to create pose');
+  }
+
+  return data;
+}
+
+export async function updatePose(request: PoseUpdateRequest): Promise<ApiResponse> {
+  const response = await fetch('/api/poses', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(request),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to update pose');
   }
 
   return data;
