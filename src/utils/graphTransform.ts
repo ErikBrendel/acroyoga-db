@@ -24,40 +24,55 @@ export function transformToGraph(poses: Pose[], transitions: Transition[]): Grap
     id: pose.id,
   }));
 
-  const d3Links: SimulationLinkDatum<D3Node>[] = [
-    ...transitions.map((t) => ({
-      source: t.fromPoseId,
-      target: t.toPoseId,
-    })),
-    ...poses
-      .filter((p) => p.mirroredPoseId)
-      .filter((p, i, arr) => {
-        const pairKey = [p.id, p.mirroredPoseId!].sort().join('-');
-        return arr.findIndex((x) => {
-          const key = [x.id, x.mirroredPoseId!].sort().join('-');
-          return key === pairKey;
-        }) === i;
-      })
-      .map((p) => ({
-        source: p.id,
-        target: p.mirroredPoseId!,
-      })),
-  ];
+  const transitionLinks: SimulationLinkDatum<D3Node>[] = transitions.map((t) => ({
+    source: t.fromPoseId,
+    target: t.toPoseId,
+  }));
+
+  const mirrorLinks: SimulationLinkDatum<D3Node>[] = poses
+    .filter((p) => p.mirroredPoseId)
+    .filter((p, i, arr) => {
+      const pairKey = [p.id, p.mirroredPoseId!].sort().join('-');
+      return arr.findIndex((x) => {
+        const key = [x.id, x.mirroredPoseId!].sort().join('-');
+        return key === pairKey;
+      }) === i;
+    })
+    .map((p) => ({
+      source: p.id,
+      target: p.mirroredPoseId!,
+    }));
+
+  const d3Links = [...transitionLinks, ...mirrorLinks];
 
   const simulation = forceSimulation(d3Nodes)
     .force(
       'link',
       forceLink(d3Links)
         .id((d: any) => d.id)
-        .distance(200)
-        .strength(0.5)
+        .distance((link: any) => {
+          // Mirror links: shorter distance to pull them closer
+          const isMirror = mirrorLinks.some(
+            ml => (ml.source === link.source.id || ml.source === link.source) &&
+                  (ml.target === link.target.id || ml.target === link.target)
+          );
+          return isMirror ? 120 : 200;
+        })
+        .strength((link: any) => {
+          // Mirror links: stronger force
+          const isMirror = mirrorLinks.some(
+            ml => (ml.source === link.source.id || ml.source === link.source) &&
+                  (ml.target === link.target.id || ml.target === link.target)
+          );
+          return isMirror ? 0.8 : 0.5;
+        })
     )
     .force('charge', forceManyBody().strength(-1000))
     .force('center', forceCenter(400, 300))
     .force('collide', forceCollide(80))
     .stop();
 
-  for (let i = 0; i < 300; i++) {
+  for (let i = 0; i < 1000; i++) {
     simulation.tick();
   }
 
