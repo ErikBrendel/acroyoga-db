@@ -96,9 +96,10 @@ export function transformToGraph(poses: Pose[], transitions: Transition[]): Grap
   const transitionEdges: Edge[] = transitions.map((transition) => {
     const isReversible = !transition.nonReversible;
     const color = isReversible ? '#10b981' : '#3b82f6';
+    const edgeId = `${transition.fromPoseId}-to-${transition.toPoseId}`;
 
     return {
-      id: transition.id,
+      id: edgeId,
       source: transition.fromPoseId,
       target: transition.toPoseId,
       type: 'simplebezier',

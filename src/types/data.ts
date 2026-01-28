@@ -8,12 +8,8 @@ export const PoseSchema = z.object({
 });
 
 export const TransitionSchema = z.object({
-  id: z.string(),
-  name: z.string().optional(),
-  description: z.string().optional(),
   fromPoseId: z.string(),
   toPoseId: z.string(),
-  mirroredTransitionId: z.string().optional(),
   nonReversible: z.boolean().optional(),
 });
 

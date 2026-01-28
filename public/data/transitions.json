@@ -1,147 +1,107 @@
 [
   {
-    "id": "bird-throne",
     "fromPoseId": "bird",
     "toPoseId": "throne"
   },
   {
-    "id": "bird-front-plank",
     "fromPoseId": "bird",
     "toPoseId": "front-plank"
   },
   {
-    "id": "bird-star",
     "fromPoseId": "bird",
     "toPoseId": "star"
   },
   {
-    "id": "bird-folded-leaf",
     "fromPoseId": "bird",
     "toPoseId": "folded-leaf"
   },
   {
-    "id": "bird-shoulder-stand",
     "fromPoseId": "bird",
     "toPoseId": "shoulder-stand",
     "nonReversible": true
   },
   {
-    "id": "throne-reverse-throne",
     "fromPoseId": "throne",
     "toPoseId": "reverse-throne"
   },
   {
-    "id": "shoulder-stand-straddlebat",
     "fromPoseId": "shoulder-stand",
     "toPoseId": "straddlebat"
   },
   {
-    "id": "straddlebat-floating-paschi",
     "fromPoseId": "straddlebat",
     "toPoseId": "floating-paschi"
   },
   {
-    "id": "throne-chair",
     "fromPoseId": "throne",
     "toPoseId": "chair"
   },
   {
-    "id": "chair-extended-f2h",
     "fromPoseId": "chair",
     "toPoseId": "extended-f2h"
   },
   {
-    "id": "extended-f2h-whale",
     "fromPoseId": "extended-f2h",
     "toPoseId": "whale"
   },
   {
-    "id": "chair-whale",
     "fromPoseId": "chair",
     "toPoseId": "whale"
   },
   {
-    "id": "whale-vishnus-couch-left",
     "fromPoseId": "whale",
-    "toPoseId": "vishnus-couch-left",
-    "mirroredTransitionId": "whale-vishnus-couch-right"
+    "toPoseId": "vishnus-couch-left"
   },
   {
-    "id": "whale-vishnus-couch-right",
     "fromPoseId": "whale",
-    "toPoseId": "vishnus-couch-right",
-    "mirroredTransitionId": "whale-vishnus-couch-left"
+    "toPoseId": "vishnus-couch-right"
   },
   {
-    "id": "straddlebat-sidestar-left",
     "fromPoseId": "straddlebat",
-    "toPoseId": "sidestar-left",
-    "mirroredTransitionId": "straddlebat-sidestar-right"
+    "toPoseId": "sidestar-left"
   },
   {
-    "id": "straddlebat-sidestar-right",
     "fromPoseId": "straddlebat",
-    "toPoseId": "sidestar-right",
-    "mirroredTransitionId": "straddlebat-sidestar-left"
+    "toPoseId": "sidestar-right"
   },
   {
-    "id": "sidestar-left-reverse-bird",
     "fromPoseId": "sidestar-left",
-    "toPoseId": "reverse-bird",
-    "mirroredTransitionId": "sidestar-right-reverse-bird"
+    "toPoseId": "reverse-bird"
   },
   {
-    "id": "sidestar-right-reverse-bird",
     "fromPoseId": "sidestar-right",
-    "toPoseId": "reverse-bird",
-    "mirroredTransitionId": "sidestar-left-reverse-bird"
+    "toPoseId": "reverse-bird"
   },
   {
-    "id": "star-mono-reverse-shin-left",
     "fromPoseId": "star",
-    "toPoseId": "mono-reverse-shin-left",
-    "mirroredTransitionId": "star-mono-reverse-shin-right"
+    "toPoseId": "mono-reverse-shin-left"
   },
   {
-    "id": "star-mono-reverse-shin-right",
     "fromPoseId": "star",
-    "toPoseId": "mono-reverse-shin-right",
-    "mirroredTransitionId": "star-mono-reverse-shin-left"
+    "toPoseId": "mono-reverse-shin-right"
   },
   {
-    "id": "mono-reverse-shin-kneepit-left",
     "fromPoseId": "mono-reverse-shin-left",
-    "toPoseId": "supported-mono-kneepit-left",
-    "mirroredTransitionId": "mono-reverse-shin-kneepit-right"
+    "toPoseId": "supported-mono-kneepit-left"
   },
   {
-    "id": "mono-reverse-shin-kneepit-right",
     "fromPoseId": "mono-reverse-shin-right",
-    "toPoseId": "supported-mono-kneepit-right",
-    "mirroredTransitionId": "mono-reverse-shin-kneepit-left"
+    "toPoseId": "supported-mono-kneepit-right"
   },
   {
-    "id": "kneepit-mono-backbird-left",
     "fromPoseId": "supported-mono-kneepit-left",
-    "toPoseId": "mono-backbird-left",
-    "mirroredTransitionId": "kneepit-mono-backbird-right"
+    "toPoseId": "mono-backbird-left"
   },
   {
-    "id": "kneepit-mono-backbird-right",
     "fromPoseId": "supported-mono-kneepit-right",
-    "toPoseId": "mono-backbird-right",
-    "mirroredTransitionId": "kneepit-mono-backbird-left"
+    "toPoseId": "mono-backbird-right"
   },
   {
-    "id": "mono-backbird-star-left",
     "fromPoseId": "mono-backbird-left",
-    "toPoseId": "star",
-    "mirroredTransitionId": "mono-backbird-star-right"
+    "toPoseId": "star"
   },
   {
-    "id": "mono-backbird-star-right",
     "fromPoseId": "mono-backbird-right",
-    "toPoseId": "star",
-    "mirroredTransitionId": "mono-backbird-star-left"
+    "toPoseId": "star"
   }
 ]

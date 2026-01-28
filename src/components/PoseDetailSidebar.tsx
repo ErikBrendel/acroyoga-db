@@ -1,4 +1,5 @@
 import { Pose, Transition } from '../types/data';
+import { PoseButton } from './PoseButton';
 
 interface PoseDetailSidebarProps {
   selectedPoseId: string | null;
@@ -87,20 +88,13 @@ export function PoseDetailSidebar({
                   : transition.fromPoseId;
                 const connectedPose = poses.find((p) => p.id === connectedPoseId);
                 return (
-                  <div key={transition.id} className="border-l-4 border-green-500 pl-3 py-2">
-                    <button
-                      onClick={() => onSelectPose(connectedPoseId)}
-                      className="text-green-600 hover:text-green-800 hover:underline font-medium text-left"
-                    >
-                      ↔ {connectedPose?.name || connectedPoseId}
-                    </button>
-                    {transition.name && (
-                      <p className="text-sm text-gray-600 mt-1">{transition.name}</p>
-                    )}
-                    {transition.description && (
-                      <p className="text-sm text-gray-500 mt-1">{transition.description}</p>
-                    )}
-                  </div>
+                  <PoseButton
+                    key={connectedPoseId}
+                    poseId={connectedPoseId}
+                    poseName={connectedPose?.name}
+                    direction="bidirectional"
+                    onSelectPose={onSelectPose}
+                  />
                 );
               })}
             </div>
@@ -116,20 +110,13 @@ export function PoseDetailSidebar({
               {nonReversibleFrom.map((transition) => {
                 const targetPose = poses.find((p) => p.id === transition.toPoseId);
                 return (
-                  <div key={transition.id} className="border-l-4 border-blue-500 pl-3 py-2">
-                    <button
-                      onClick={() => onSelectPose(transition.toPoseId)}
-                      className="text-blue-600 hover:text-blue-800 hover:underline font-medium text-left"
-                    >
-                      → {targetPose?.name || transition.toPoseId}
-                    </button>
-                    {transition.name && (
-                      <p className="text-sm text-gray-600 mt-1">{transition.name}</p>
-                    )}
-                    {transition.description && (
-                      <p className="text-sm text-gray-500 mt-1">{transition.description}</p>
-                    )}
-                  </div>
+                  <PoseButton
+                    key={transition.toPoseId}
+                    poseId={transition.toPoseId}
+                    poseName={targetPose?.name}
+                    direction="to"
+                    onSelectPose={onSelectPose}
+                  />
                 );
               })}
             </div>
@@ -145,20 +132,13 @@ export function PoseDetailSidebar({
               {nonReversibleTo.map((transition) => {
                 const sourcePose = poses.find((p) => p.id === transition.fromPoseId);
                 return (
-                  <div key={transition.id} className="border-l-4 border-blue-500 pl-3 py-2">
-                    <button
-                      onClick={() => onSelectPose(transition.fromPoseId)}
-                      className="text-blue-600 hover:text-blue-800 hover:underline font-medium text-left"
-                    >
-                      ← {sourcePose?.name || transition.fromPoseId}
-                    </button>
-                    {transition.name && (
-                      <p className="text-sm text-gray-600 mt-1">{transition.name}</p>
-                    )}
-                    {transition.description && (
-                      <p className="text-sm text-gray-500 mt-1">{transition.description}</p>
-                    )}
-                  </div>
+                  <PoseButton
+                    key={transition.fromPoseId}
+                    poseId={transition.fromPoseId}
+                    poseName={sourcePose?.name}
+                    direction="from"
+                    onSelectPose={onSelectPose}
+                  />
                 );
               })}
             </div>
