@@ -63,15 +63,45 @@ export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, onSelectPo
     return edges;
   }, [activeFlow]);
 
+  const connectedNodeIds = useMemo(() => {
+    if (!selectedPoseId) return new Set<string>();
+    const connected = new Set<string>();
+    localEdges.forEach((edge) => {
+      if (edge.source === selectedPoseId) {
+        connected.add(edge.target);
+      }
+      if (edge.target === selectedPoseId) {
+        connected.add(edge.source);
+      }
+    });
+    return connected;
+  }, [selectedPoseId, localEdges]);
+
+  const connectedEdgeIds = useMemo(() => {
+    if (!selectedPoseId) return new Set<string>();
+    const connected = new Set<string>();
+    localEdges.forEach((edge) => {
+      if (edge.source === selectedPoseId || edge.target === selectedPoseId) {
+        connected.add(edge.id);
+      }
+    });
+    return connected;
+  }, [selectedPoseId, localEdges]);
+
   const highlightedNodes = localNodes.map((node) => {
     const isInFlow = flowPoseIds.has(node.id);
     const baseStyle = node.style || {};
+
+    let opacity = 1;
+    if (selectedPoseId && node.id !== selectedPoseId) {
+      opacity = connectedNodeIds.has(node.id) ? 0.6 : 0.25;
+    }
 
     return {
       ...node,
       style: {
         ...baseStyle,
-        opacity: selectedPoseId && node.id !== selectedPoseId ? 0.5 : 1,
+        opacity,
         filter: isInFlow ? 'drop-shadow(0 0 8px #fbbf24) drop-shadow(0 0 12px #f59e0b)' : undefined,
       },
     };
@@ -81,10 +111,16 @@ export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, onSelectPo
     const isInFlow = flowEdges.has(edge.id);
     const baseStyle = edge.style || {};
 
+    let opacity = 1;
+    if (selectedPoseId) {
+      opacity = connectedEdgeIds.has(edge.id) ? 0.6 : 0.2;
+    }
+
     return {
       ...edge,
       style: {
         ...baseStyle,
+        opacity,
         filter: isInFlow ? 'drop-shadow(0 0 3px #fbbf24) drop-shadow(0 0 6px #f59e0b)' : undefined,
         strokeWidth: isInFlow ? 3 : baseStyle.strokeWidth,
       },
