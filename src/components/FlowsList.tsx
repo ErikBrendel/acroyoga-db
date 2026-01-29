@@ -26,7 +26,7 @@ export function FlowsList({ flows, activeFlowName, onFlowClick }: FlowsListProps
 
       {isExpanded && (
         <div className="border-t border-gray-200">
-          {flows.map((flow) => (
+          {flows.slice().sort((a, b) => a.name.localeCompare(b.name)).map((flow) => (
             <button
               key={flow.name}
               onClick={() => onFlowClick(flow.name)}
