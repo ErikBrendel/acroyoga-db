@@ -301,8 +301,8 @@
     "name": "Two High",
     "description": "Base standing, Flyer on shoulders, Base holding back of Flyer kneepits/calves donw",
     "position": {
-      "x": 1623,
-      "y": 492
+      "x": 1625,
+      "y": 468
     }
   },
   {
@@ -348,8 +348,8 @@
     "name": "Standing on Hips",
     "description": "Base in wide squat, Flyer behind, with feet close to Base hips on upper legs",
     "position": {
-      "x": 1430,
-      "y": 608
+      "x": 1422,
+      "y": 454
     }
   },
   {
@@ -366,8 +366,8 @@
     "name": "L-Sit",
     "description": "Base on floor, arms straight up. Flyer pushes with arms down. Fingers opposed, Flyer looks towards Base feet.",
     "position": {
-      "x": 1398,
-      "y": 814
+      "x": 1051,
+      "y": -148
     }
   },
   {
@@ -384,8 +384,8 @@
     "name": "Back on Shins",
     "description": "L-Base, tucked. Flyer back on Base shins, head between Base feet. Flyer butt overhanging Base knees. Hands connected.",
     "position": {
-      "x": 1211,
-      "y": 1010
+      "x": 1082,
+      "y": 1021
     }
   },
   {
@@ -395,6 +395,15 @@
     "position": {
       "x": 1033,
       "y": 147
+    }
+  },
+  {
+    "id": "sitting-on-shoulders",
+    "name": "Sitting on Shoulders",
+    "description": "Like carrying your small child though the zoo :)",
+    "position": {
+      "x": 1817,
+      "y": 428
     }
   }
 ]

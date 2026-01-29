@@ -226,5 +226,13 @@
   {
     "fromPoseId": "flyer-tucked-before-base",
     "toPoseId": "standing-counterbalance"
+  },
+  {
+    "fromPoseId": "two-high",
+    "toPoseId": "sitting-on-shoulders"
+  },
+  {
+    "fromPoseId": "l-sit",
+    "toPoseId": "star"
   }
 ]

@@ -10,7 +10,7 @@
     ]
   },
   {
-    "name": "Ninja Star Washing Machine",
+    "name": "Ninja Star",
     "poseIds": [
       "straddlebat",
       "sidestar-left",
@@ -20,7 +20,7 @@
     ]
   },
   {
-    "name": "4-Step Mono Flow (Left)",
+    "name": "4-Step (Left)",
     "poseIds": [
       "star",
       "mono-reverse-shin-left",
@@ -30,7 +30,7 @@
     ]
   },
   {
-    "name": "4-Step Mono Flow (Right)",
+    "name": "4-Step (Right)",
     "poseIds": [
       "star",
       "mono-reverse-shin-right",
