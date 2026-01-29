@@ -17,6 +17,21 @@ export function AddPoseDialog({ isOpen, onClose, onSuccess, existingPoses }: Add
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const generateSlug = (text: string): string => {
+    return text
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-');
+  };
+
+  const handleNameBlur = () => {
+    if (!id && name) {
+      setId(generateSlug(name));
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!id) return;
@@ -63,6 +78,20 @@ export function AddPoseDialog({ isOpen, onClose, onSuccess, existingPoses }: Add
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
+              Name
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onBlur={handleNameBlur}
+              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="e.g., New Pose Name"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               ID <span className="text-red-500">*</span>
             </label>
             <input
@@ -74,19 +103,6 @@ export function AddPoseDialog({ isOpen, onClose, onSuccess, existingPoses }: Add
               required
             />
             <p className="text-xs text-gray-500 mt-1">Lowercase with hyphens, no spaces</p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Name
-            </label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="e.g., New Pose Name"
-            />
           </div>
 
           <div>
@@ -113,6 +129,7 @@ export function AddPoseDialog({ isOpen, onClose, onSuccess, existingPoses }: Add
             >
               <option value="">None</option>
               {existingPoses
+                .filter(pose => !pose.mirroredPoseId)
                 .slice()
                 .sort((a, b) => {
                   const nameA = (a.name || a.id).toLowerCase();

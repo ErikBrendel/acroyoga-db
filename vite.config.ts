@@ -64,12 +64,31 @@ const apiRoutes: Record<string, ApiHandler> = {
       return { code: 400, data: { error: 'Pose with this ID already exists' } }
     }
 
+    // Validate mirrored pose
+    if (body.mirroredPoseId) {
+      const mirroredPose = poses.find((p: any) => p.id === body.mirroredPoseId)
+      if (!mirroredPose) {
+        return { code: 400, data: { error: `Mirrored pose "${body.mirroredPoseId}" does not exist` } }
+      }
+      if (mirroredPose.mirroredPoseId) {
+        return { code: 400, data: { error: `Pose "${body.mirroredPoseId}" is already mirrored with "${mirroredPose.mirroredPoseId}"` } }
+      }
+    }
+
     poses.push({
       id: body.id,
       ...(body.name && { name: body.name }),
       ...(body.description && { description: body.description }),
       ...(body.mirroredPoseId && { mirroredPoseId: body.mirroredPoseId }),
     })
+
+    // Update the mirrored pose to link back
+    if (body.mirroredPoseId) {
+      const mirroredPose = poses.find((p: any) => p.id === body.mirroredPoseId)
+      if (mirroredPose) {
+        mirroredPose.mirroredPoseId = body.id
+      }
+    }
 
     const tmpPath = posesPath + '.tmp'
     fs.writeFileSync(tmpPath, JSON.stringify(poses, null, 2) + '\n')

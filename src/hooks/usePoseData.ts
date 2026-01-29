@@ -86,11 +86,27 @@ function validateData(poses: Pose[], transitions: Transition[], flows: Flow[]): 
 
   // Check unique pose IDs
   const poseIds = new Set<string>();
+  const poseMap = new Map<string, Pose>();
   poses.forEach((pose, index) => {
     if (poseIds.has(pose.id)) {
       errors.push(`Pose ${index}: duplicate pose ID "${pose.id}"`);
     }
     poseIds.add(pose.id);
+    poseMap.set(pose.id, pose);
+  });
+
+  // Check mirrored poses are bidirectional
+  poses.forEach((pose) => {
+    if (pose.mirroredPoseId) {
+      if (!poseIds.has(pose.mirroredPoseId)) {
+        errors.push(`Pose "${pose.id}": mirroredPoseId "${pose.mirroredPoseId}" does not exist`);
+      } else {
+        const mirroredPose = poseMap.get(pose.mirroredPoseId);
+        if (mirroredPose && mirroredPose.mirroredPoseId !== pose.id) {
+          errors.push(`Pose "${pose.id}": mirrored pose "${pose.mirroredPoseId}" does not mirror back (expected mirroredPoseId="${pose.id}", got "${mirroredPose.mirroredPoseId || 'none'}")`);
+        }
+      }
+    }
   });
 
   // Check unique flow names
