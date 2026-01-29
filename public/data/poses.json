@@ -301,8 +301,8 @@
     "name": "Two High",
     "description": "Base standing, Flyer on shoulders, Base holding back of Flyer kneepits/calves donw",
     "position": {
-      "x": -471,
-      "y": -227
+      "x": 1623,
+      "y": 492
     }
   },
   {
@@ -310,8 +310,8 @@
     "name": "Galionsfigur",
     "description": "Base standing slightly squatting, Flyer standing on Base knees looking away. Base holding Fyler hips, leaning back. Counterbalance",
     "position": {
-      "x": -376,
-      "y": 99
+      "x": 1524,
+      "y": 31
     }
   },
   {
@@ -319,8 +319,8 @@
     "name": "Standing Counterbalance",
     "description": "Base slightly squatting, Flyer standing on knees, facing each other. Both holding wrists with long arms, leaning back",
     "position": {
-      "x": -406,
-      "y": 577
+      "x": 1210,
+      "y": 283
     }
   },
   {
@@ -329,8 +329,8 @@
     "description": "",
     "mirroredPoseId": "standing-flag-right",
     "position": {
-      "x": -579,
-      "y": 286
+      "x": 1417,
+      "y": 210
     }
   },
   {
@@ -339,8 +339,8 @@
     "description": "",
     "mirroredPoseId": "standing-flag-left",
     "position": {
-      "x": -316,
-      "y": 326
+      "x": 1300,
+      "y": 79
     }
   },
   {
@@ -348,8 +348,53 @@
     "name": "Standing on Hips",
     "description": "Base in wide squat, Flyer behind, with feet close to Base hips on upper legs",
     "position": {
-      "x": -680,
-      "y": -79
+      "x": 1430,
+      "y": 608
+    }
+  },
+  {
+    "id": "flyer-stading-on-knees",
+    "name": "Flyer standing on Knees",
+    "description": "Base on ground, feet close to butt, knees up. Flyer standing on knees. Base can support Flyer shins with hands.",
+    "position": {
+      "x": 960,
+      "y": 429
+    }
+  },
+  {
+    "id": "l-sit",
+    "name": "L-Sit",
+    "description": "Base on floor, arms straight up. Flyer pushes with arms down. Fingers opposed, Flyer looks towards Base feet.",
+    "position": {
+      "x": 1398,
+      "y": 814
+    }
+  },
+  {
+    "id": "reverse-l-sit",
+    "name": "Reverse L-Sit",
+    "description": "Base on floor, arms straight up. Flyer pushes with arms down. Fingers aligned, Flyer looks towards Base head.",
+    "position": {
+      "x": 1140,
+      "y": 566
+    }
+  },
+  {
+    "id": "back-on-shins",
+    "name": "Back on Shins",
+    "description": "L-Base, tucked. Flyer back on Base shins, head between Base feet. Flyer butt overhanging Base knees. Hands connected.",
+    "position": {
+      "x": 1211,
+      "y": 1010
+    }
+  },
+  {
+    "id": "flyer-tucked-before-base",
+    "name": "Flyer tucked before Base",
+    "description": "Flyer on ground, tucked. Base standing. Flyer feet on Base knees. Base can grab Flyer knees.",
+    "position": {
+      "x": 1033,
+      "y": 147
     }
   }
 ]

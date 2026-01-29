@@ -72,5 +72,21 @@
       "straddlebat",
       "star"
     ]
+  },
+  {
+    "name": "27.01.2026 Shin scratcher",
+    "poseIds": [
+      "flyer-tucked-before-base",
+      "standing-counterbalance",
+      "flyer-stading-on-knees",
+      "reverse-l-sit",
+      "back-on-shins",
+      "front-plank",
+      "bird",
+      "shoulder-stand",
+      "flyer-stading-on-knees",
+      "standing-counterbalance",
+      "flyer-tucked-before-base"
+    ]
   }
 ]

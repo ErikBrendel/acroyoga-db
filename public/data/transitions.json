@@ -202,5 +202,29 @@
   {
     "fromPoseId": "standing-on-hips",
     "toPoseId": "two-high"
+  },
+  {
+    "fromPoseId": "flyer-stading-on-knees",
+    "toPoseId": "standing-counterbalance"
+  },
+  {
+    "fromPoseId": "shoulder-stand",
+    "toPoseId": "flyer-stading-on-knees"
+  },
+  {
+    "fromPoseId": "flyer-stading-on-knees",
+    "toPoseId": "reverse-l-sit"
+  },
+  {
+    "fromPoseId": "reverse-l-sit",
+    "toPoseId": "back-on-shins"
+  },
+  {
+    "fromPoseId": "back-on-shins",
+    "toPoseId": "front-plank"
+  },
+  {
+    "fromPoseId": "flyer-tucked-before-base",
+    "toPoseId": "standing-counterbalance"
   }
 ]
