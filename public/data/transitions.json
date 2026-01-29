@@ -234,5 +234,73 @@
   {
     "fromPoseId": "l-sit",
     "toPoseId": "star"
+  },
+  {
+    "fromPoseId": "reverse-throne",
+    "toPoseId": "low-foot-to-hand"
+  },
+  {
+    "fromPoseId": "reverse-bird",
+    "toPoseId": "back-bird"
+  },
+  {
+    "fromPoseId": "straddlebat",
+    "toPoseId": "reverse-bird"
+  },
+  {
+    "fromPoseId": "sidestar-right",
+    "toPoseId": "star"
+  },
+  {
+    "fromPoseId": "sidestar-left",
+    "toPoseId": "star"
+  },
+  {
+    "fromPoseId": "star",
+    "toPoseId": "extended-h2h",
+    "nonReversible": true
+  },
+  {
+    "fromPoseId": "extended-h2h",
+    "toPoseId": "reverse-bird",
+    "nonReversible": true
+  },
+  {
+    "fromPoseId": "reverse-shoulder-stand",
+    "toPoseId": "reverse-throne"
+  },
+  {
+    "fromPoseId": "throne",
+    "toPoseId": "extended-reverse-h2h",
+    "nonReversible": true
+  },
+  {
+    "fromPoseId": "extended-reverse-h2h",
+    "toPoseId": "reverse-back-bird",
+    "nonReversible": true
+  },
+  {
+    "fromPoseId": "reverse-back-bird",
+    "toPoseId": "bird-on-hands"
+  },
+  {
+    "fromPoseId": "bird-on-hands",
+    "toPoseId": "chair"
+  },
+  {
+    "fromPoseId": "sidestar-right",
+    "toPoseId": "reverse-throne"
+  },
+  {
+    "fromPoseId": "sidestar-left",
+    "toPoseId": "reverse-throne"
+  },
+  {
+    "fromPoseId": "sidestar-right",
+    "toPoseId": "reverse-star"
+  },
+  {
+    "fromPoseId": "sidestar-left",
+    "toPoseId": "reverse-star"
   }
 ]
