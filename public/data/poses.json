@@ -171,8 +171,8 @@
     "description": "Single-leg base on left side. Flyer's shin to base's foot, hands connected, flyer faces away. (AI generated)",
     "mirroredPoseId": "mono-reverse-shin-right",
     "position": {
-      "x": 1141,
-      "y": -422
+      "x": 1133,
+      "y": -450
     }
   },
   {
@@ -294,6 +294,62 @@
     "position": {
       "x": 815,
       "y": 119
+    }
+  },
+  {
+    "id": "two-high",
+    "name": "Two High",
+    "description": "Base standing, Flyer on shoulders, Base holding back of Flyer kneepits/calves donw",
+    "position": {
+      "x": -471,
+      "y": -227
+    }
+  },
+  {
+    "id": "galionsfigur",
+    "name": "Galionsfigur",
+    "description": "Base standing slightly squatting, Flyer standing on Base knees looking away. Base holding Fyler hips, leaning back. Counterbalance",
+    "position": {
+      "x": -376,
+      "y": 99
+    }
+  },
+  {
+    "id": "standing-counterbalance",
+    "name": "Standing Counterbalance",
+    "description": "Base slightly squatting, Flyer standing on knees, facing each other. Both holding wrists with long arms, leaning back",
+    "position": {
+      "x": -406,
+      "y": 577
+    }
+  },
+  {
+    "id": "standing-flag-left",
+    "name": "Standing Flag (Left)",
+    "description": "",
+    "mirroredPoseId": "standing-flag-right",
+    "position": {
+      "x": -579,
+      "y": 286
+    }
+  },
+  {
+    "id": "standing-flag-right",
+    "name": "Standing Flag (Right)",
+    "description": "",
+    "mirroredPoseId": "standing-flag-left",
+    "position": {
+      "x": -316,
+      "y": 326
+    }
+  },
+  {
+    "id": "standing-on-hips",
+    "name": "Standing on Hips",
+    "description": "Base in wide squat, Flyer behind, with feet close to Base hips on upper legs",
+    "position": {
+      "x": -680,
+      "y": -79
     }
   }
 ]

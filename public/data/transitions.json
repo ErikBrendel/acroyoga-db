@@ -182,5 +182,25 @@
   {
     "fromPoseId": "foot-to-shin",
     "toPoseId": "shoulder-stand"
+  },
+  {
+    "fromPoseId": "standing-counterbalance",
+    "toPoseId": "standing-flag-left"
+  },
+  {
+    "fromPoseId": "standing-counterbalance",
+    "toPoseId": "standing-flag-right"
+  },
+  {
+    "fromPoseId": "standing-flag-right",
+    "toPoseId": "galionsfigur"
+  },
+  {
+    "fromPoseId": "standing-flag-left",
+    "toPoseId": "galionsfigur"
+  },
+  {
+    "fromPoseId": "standing-on-hips",
+    "toPoseId": "two-high"
   }
 ]
