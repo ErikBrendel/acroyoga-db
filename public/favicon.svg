@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 100 100"
+   version="1.1"
+   id="svg2"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs2">
+    <clipPath id="rounded-corners">
+      <rect width="100" height="100" rx="12" />
+    </clipPath>
+  </defs>
+  <g clip-path="url(#rounded-corners)">
+    <!-- Background -->
+    <rect
+       width="100"
+       height="100"
+       fill="#ffffff"
+       id="rect1" />
+    <!-- Connecting line -->
+    <line
+       x1="45.3587"
+       y1="45.3587"
+       x2="54.6413"
+       y2="54.6413"
+       stroke="rgb(30, 64, 175)"
+       stroke-width="4.52324"
+       id="line1" />
+    <!-- Top-left circle with A -->
+    <circle
+       cx="8.0438"
+       cy="8.0438"
+       r="52.771194"
+       fill="rgb(99, 102, 241)"
+       stroke="rgb(30, 64, 175)"
+       stroke-width="4.52324"
+       id="circle1" />
+    <!-- Letter A (3 lines) -->
+    <g id="letter-a">
+      <line x1="8" y1="39" x2="21" y2="9" stroke="#ffffff" stroke-width="6" stroke-linecap="round" />
+      <line x1="21" y1="9" x2="34" y2="39" stroke="#ffffff" stroke-width="6" stroke-linecap="round" />
+      <line x1="14.5" y1="27" x2="27.5" y2="27" stroke="#ffffff" stroke-width="6" stroke-linecap="round" />
+    </g>
+    <!-- Bottom-right circle with Y -->
+    <circle
+       cx="91.9562"
+       cy="91.9562"
+       r="52.771194"
+       fill="rgb(99, 102, 241)"
+       stroke="rgb(30, 64, 175)"
+       stroke-width="4.52324"
+       id="circle2" />
+    <!-- Letter Y (3 lines) -->
+    <g id="letter-y">
+      <line x1="66" y1="59" x2="79" y2="78" stroke="#ffffff" stroke-width="6" stroke-linecap="round" />
+      <line x1="92" y1="59" x2="79" y2="78" stroke="#ffffff" stroke-width="6" stroke-linecap="round" />
+      <line x1="79" y1="78" x2="79" y2="93" stroke="#ffffff" stroke-width="6" stroke-linecap="round" />
+    </g>
+  </g>
+</svg>
