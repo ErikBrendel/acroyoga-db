@@ -45,13 +45,18 @@ export function getFlowVariants(flow: Flow, poses: Pose[]): FlowVariant[] {
 }
 
 export function getFlowVariantKey(flowName: string, isMirrored: boolean): string {
-  return isMirrored ? `${flowName}:mirrored` : flowName;
+  return isMirrored ? `${flowName}:::mirrored` : flowName;
 }
 
 export function parseFlowVariantKey(key: string): { flowName: string; isMirrored: boolean } {
-  const parts = key.split(':');
+  if (key.endsWith(':::mirrored')) {
+    return {
+      flowName: key.slice(0, -11), // Remove ':::mirrored'
+      isMirrored: true,
+    };
+  }
   return {
-    flowName: parts[0],
-    isMirrored: parts[1] === 'mirrored',
+    flowName: key,
+    isMirrored: false,
   };
 }
