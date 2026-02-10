@@ -1,19 +1,18 @@
 import { useState } from 'react';
-import { Pose } from '../types/data';
 import { createPose } from '../api/poses';
+import { mirrorText } from '../utils/mirrorText';
 
 interface AddPoseDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  existingPoses: Pose[];
 }
 
-export function AddPoseDialog({ isOpen, onClose, onSuccess, existingPoses }: AddPoseDialogProps) {
+export function AddPoseDialog({ isOpen, onClose, onSuccess }: AddPoseDialogProps) {
   const [id, setId] = useState('');
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [mirroredPoseId, setMirroredPoseId] = useState('');
+  const [createMirrored, setCreateMirrored] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -40,17 +39,36 @@ export function AddPoseDialog({ isOpen, onClose, onSuccess, existingPoses }: Add
     setError(null);
 
     try {
-      await createPose({
-        id,
-        ...(name && { name }),
-        ...(description && { description }),
-        ...(mirroredPoseId && { mirroredPoseId }),
-      });
+      if (createMirrored) {
+        const mirroredId = mirrorText(id);
+        const mirroredName = name ? mirrorText(name) : undefined;
+        const mirroredDescription = description ? mirrorText(description) : undefined;
+
+        await createPose({
+          id,
+          ...(name && { name }),
+          ...(description && { description }),
+          mirroredPoseId: mirroredId,
+        });
+
+        await createPose({
+          id: mirroredId,
+          ...(mirroredName && { name: mirroredName }),
+          ...(mirroredDescription && { description: mirroredDescription }),
+          mirroredPoseId: id,
+        });
+      } else {
+        await createPose({
+          id,
+          ...(name && { name }),
+          ...(description && { description }),
+        });
+      }
 
       setId('');
       setName('');
       setDescription('');
-      setMirroredPoseId('');
+      setCreateMirrored(false);
       onSuccess();
       onClose();
     } catch (err) {
@@ -64,7 +82,7 @@ export function AddPoseDialog({ isOpen, onClose, onSuccess, existingPoses }: Add
     setId('');
     setName('');
     setDescription('');
-    setMirroredPoseId('');
+    setCreateMirrored(false);
     setError(null);
     onClose();
   };
@@ -118,30 +136,17 @@ export function AddPoseDialog({ isOpen, onClose, onSuccess, existingPoses }: Add
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Mirrored Pose ID (optional)
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="createMirrored"
+              checked={createMirrored}
+              onChange={(e) => setCreateMirrored(e.target.checked)}
+              className="mr-2"
+            />
+            <label htmlFor="createMirrored" className="text-sm text-gray-700">
+              Create mirrored pose (swap Left/Right)
             </label>
-            <select
-              value={mirroredPoseId}
-              onChange={(e) => setMirroredPoseId(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">None</option>
-              {existingPoses
-                .filter(pose => !pose.mirroredPoseId)
-                .slice()
-                .sort((a, b) => {
-                  const nameA = (a.name || a.id).toLowerCase();
-                  const nameB = (b.name || b.id).toLowerCase();
-                  return nameA.localeCompare(nameB);
-                })
-                .map(pose => (
-                  <option key={pose.id} value={pose.id}>
-                    {pose.name || pose.id}
-                  </option>
-                ))}
-            </select>
           </div>
 
           {error && (

@@ -198,7 +198,6 @@ function App() {
         isOpen={isAddPoseDialogOpen}
         onClose={() => setIsAddPoseDialogOpen(false)}
         onSuccess={refetch}
-        existingPoses={poses}
       />
       <AddFlowDialog
         isOpen={isAddFlowDialogOpen}

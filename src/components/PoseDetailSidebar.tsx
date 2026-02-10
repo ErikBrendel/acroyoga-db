@@ -6,6 +6,7 @@ import { isLocalEditMode } from '../utils/editMode';
 import { deleteTransition } from '../api/transitions';
 import { updatePose } from '../api/poses';
 import { PosePosition } from '../utils/graphTransform';
+import { mirrorText } from '../utils/mirrorText';
 
 interface PoseDetailSidebarProps {
   selectedPoseId: string | null;
@@ -105,6 +106,16 @@ export function PoseDetailSidebar({
         description: editDescription,
         mirroredPoseId: pose.mirroredPoseId,
       });
+
+      if (pose.mirroredPoseId && mirroredPose) {
+        await updatePose({
+          id: mirroredPose.id,
+          name: editName ? mirrorText(editName) : '',
+          description: editDescription ? mirrorText(editDescription) : '',
+          mirroredPoseId: pose.id,
+        });
+      }
+
       setIsEditing(false);
       if (onDataChange) {
         onDataChange();

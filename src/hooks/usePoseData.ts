@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { z } from 'zod';
 import { Pose, Transition, Flow, PoseSchema, TransitionSchema, FlowSchema } from '../types/data';
+import { mirrorText } from '../utils/mirrorText';
 
 interface PoseData {
   poses: Pose[];
@@ -95,7 +96,7 @@ function validateData(poses: Pose[], transitions: Transition[], flows: Flow[]): 
     poseMap.set(pose.id, pose);
   });
 
-  // Check mirrored poses are bidirectional
+  // Check mirrored poses are bidirectional and have matching mirrored content
   poses.forEach((pose) => {
     if (pose.mirroredPoseId) {
       if (!poseIds.has(pose.mirroredPoseId)) {
@@ -104,6 +105,29 @@ function validateData(poses: Pose[], transitions: Transition[], flows: Flow[]): 
         const mirroredPose = poseMap.get(pose.mirroredPoseId);
         if (mirroredPose && mirroredPose.mirroredPoseId !== pose.id) {
           errors.push(`Pose "${pose.id}": mirrored pose "${pose.mirroredPoseId}" does not mirror back (expected mirroredPoseId="${pose.id}", got "${mirroredPose.mirroredPoseId || 'none'}")`);
+        }
+
+        if (mirroredPose) {
+          if (pose.id && mirroredPose.id) {
+            const expectedMirroredId = mirrorText(pose.id);
+            if (mirroredPose.id !== expectedMirroredId) {
+              errors.push(`Pose "${pose.id}": mirrored pose ID should be "${expectedMirroredId}" but is "${mirroredPose.id}"`);
+            }
+          }
+
+          if (pose.name && mirroredPose.name) {
+            const expectedMirroredName = mirrorText(pose.name);
+            if (mirroredPose.name !== expectedMirroredName) {
+              errors.push(`Pose "${pose.id}": mirrored pose name should be "${expectedMirroredName}" but is "${mirroredPose.name}"`);
+            }
+          }
+
+          if (pose.description && mirroredPose.description) {
+            const expectedMirroredDesc = mirrorText(pose.description);
+            if (mirroredPose.description !== expectedMirroredDesc) {
+              errors.push(`Pose "${pose.id}": mirrored pose description does not match (expected mirrored version)`);
+            }
+          }
         }
       }
     }
@@ -157,6 +181,38 @@ function validateData(poses: Pose[], transitions: Transition[], flows: Flow[]): 
     // Check if a reversible transition conflicts with a reverse transition
     if (!transition.nonReversible && transitionPairs.has(reversePairKey)) {
       errors.push(`Transition ${index}: reversible transition from "${transition.fromPoseId}" to "${transition.toPoseId}" conflicts with reverse direction`);
+    }
+  });
+
+  // Check mirrored transitions exist
+  transitions.forEach((transition) => {
+    const fromPose = poseMap.get(transition.fromPoseId);
+    const toPose = poseMap.get(transition.toPoseId);
+
+    if (!fromPose || !toPose) return;
+
+    const fromMirrorId = fromPose.mirroredPoseId;
+    const toMirrorId = toPose.mirroredPoseId;
+
+    // If at least one pose has a mirror, check for mirrored transition
+    if (fromMirrorId || toMirrorId) {
+      const expectedFromId = fromMirrorId || transition.fromPoseId;
+      const expectedToId = toMirrorId || transition.toPoseId;
+
+      // Skip if this is the same transition (both poses not mirrored, or only one mirrored to itself)
+      if (expectedFromId === transition.fromPoseId && expectedToId === transition.toPoseId) {
+        return;
+      }
+
+      const mirroredPairKey = `${expectedFromId}->${expectedToId}`;
+      const mirroredReversePairKey = `${expectedToId}->${expectedFromId}`;
+
+      const hasMirroredTransition = transitionPairs.has(mirroredPairKey) ||
+        (!transition.nonReversible && transitionPairs.has(mirroredReversePairKey));
+
+      if (!hasMirroredTransition) {
+        errors.push(`Transition "${transition.fromPoseId}" → "${transition.toPoseId}": missing mirrored transition "${expectedFromId}" → "${expectedToId}"`);
+      }
     }
   });
 

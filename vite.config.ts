@@ -17,12 +17,39 @@ const apiRoutes: Record<string, ApiHandler> = {
     }
 
     const transitions = JSON.parse(fs.readFileSync(transitionsPath, 'utf-8'))
+    const poses = JSON.parse(fs.readFileSync(posesPath, 'utf-8'))
 
     transitions.push({
       fromPoseId: body.fromPoseId,
       toPoseId: body.toPoseId,
       ...(body.nonReversible && { nonReversible: true }),
     })
+
+    const fromPose = poses.find((p: any) => p.id === body.fromPoseId)
+    const toPose = poses.find((p: any) => p.id === body.toPoseId)
+
+    const fromMirrorId = fromPose?.mirroredPoseId
+    const toMirrorId = toPose?.mirroredPoseId
+
+    // Create mirrored transition if at least one pose has a mirror
+    if (fromMirrorId || toMirrorId) {
+      const expectedFromId = fromMirrorId || body.fromPoseId
+      const expectedToId = toMirrorId || body.toPoseId
+
+      // Skip if this is the same transition (no actual mirroring needed)
+      if (expectedFromId !== body.fromPoseId || expectedToId !== body.toPoseId) {
+        const mirroredTransitionExists = transitions.some((t: any) =>
+          t.fromPoseId === expectedFromId && t.toPoseId === expectedToId
+        )
+        if (!mirroredTransitionExists) {
+          transitions.push({
+            fromPoseId: expectedFromId,
+            toPoseId: expectedToId,
+            ...(body.nonReversible && { nonReversible: true }),
+          })
+        }
+      }
+    }
 
     const tmpPath = transitionsPath + '.tmp'
     fs.writeFileSync(tmpPath, JSON.stringify(transitions, null, 2) + '\n')
@@ -37,6 +64,7 @@ const apiRoutes: Record<string, ApiHandler> = {
     }
 
     const transitions = JSON.parse(fs.readFileSync(transitionsPath, 'utf-8'))
+    const poses = JSON.parse(fs.readFileSync(posesPath, 'utf-8'))
 
     const filtered = transitions.filter((t: any) =>
       !(t.fromPoseId === body.fromPoseId && t.toPoseId === body.toPoseId)
@@ -46,8 +74,28 @@ const apiRoutes: Record<string, ApiHandler> = {
       return { code: 404, data: { error: 'Transition not found' } }
     }
 
+    const fromPose = poses.find((p: any) => p.id === body.fromPoseId)
+    const toPose = poses.find((p: any) => p.id === body.toPoseId)
+
+    const fromMirrorId = fromPose?.mirroredPoseId
+    const toMirrorId = toPose?.mirroredPoseId
+
+    let finalFiltered = filtered
+    // Delete mirrored transition if at least one pose has a mirror
+    if (fromMirrorId || toMirrorId) {
+      const expectedFromId = fromMirrorId || body.fromPoseId
+      const expectedToId = toMirrorId || body.toPoseId
+
+      // Skip if this is the same transition (no actual mirroring)
+      if (expectedFromId !== body.fromPoseId || expectedToId !== body.toPoseId) {
+        finalFiltered = filtered.filter((t: any) =>
+          !(t.fromPoseId === expectedFromId && t.toPoseId === expectedToId)
+        )
+      }
+    }
+
     const tmpPath = transitionsPath + '.tmp'
-    fs.writeFileSync(tmpPath, JSON.stringify(filtered, null, 2) + '\n')
+    fs.writeFileSync(tmpPath, JSON.stringify(finalFiltered, null, 2) + '\n')
     fs.renameSync(tmpPath, transitionsPath)
 
     return { code: 200, data: { success: true } }
@@ -64,13 +112,12 @@ const apiRoutes: Record<string, ApiHandler> = {
       return { code: 400, data: { error: 'Pose with this ID already exists' } }
     }
 
-    // Validate mirrored pose
+    // Validate mirrored pose (only if it already exists)
     if (body.mirroredPoseId) {
       const mirroredPose = poses.find((p: any) => p.id === body.mirroredPoseId)
-      if (!mirroredPose) {
-        return { code: 400, data: { error: `Mirrored pose "${body.mirroredPoseId}" does not exist` } }
-      }
-      if (mirroredPose.mirroredPoseId) {
+      // Only validate if the pose exists - allow creating with non-existent mirroredPoseId
+      // (both poses might be created together)
+      if (mirroredPose && mirroredPose.mirroredPoseId && mirroredPose.mirroredPoseId !== body.id) {
         return { code: 400, data: { error: `Pose "${body.mirroredPoseId}" is already mirrored with "${mirroredPose.mirroredPoseId}"` } }
       }
     }
