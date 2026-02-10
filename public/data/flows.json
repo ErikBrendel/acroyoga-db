@@ -100,5 +100,15 @@
       "l-sit-with-outside-legs",
       "star"
     ]
+  },
+  {
+    "name": "Trapdoor",
+    "poseIds": [
+      "reverse-bird",
+      "sidestar-left",
+      "back-bird",
+      "low-foot-to-hand",
+      "reverse-bird"
+    ]
   }
 ]

@@ -358,5 +358,17 @@
   {
     "fromPoseId": "l-sit-with-outside-legs",
     "toPoseId": "star"
+  },
+  {
+    "fromPoseId": "sidestar-right",
+    "toPoseId": "back-bird"
+  },
+  {
+    "fromPoseId": "sidestar-left",
+    "toPoseId": "back-bird"
+  },
+  {
+    "fromPoseId": "back-bird",
+    "toPoseId": "low-foot-to-hand"
   }
 ]

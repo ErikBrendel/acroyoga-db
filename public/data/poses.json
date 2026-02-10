@@ -151,8 +151,8 @@
     "description": "Base's feet on flyer's left hip and left shoulder. Flyer opens sideways to the left. (AI generated)",
     "mirroredPoseId": "sidestar-right",
     "position": {
-      "x": 314,
-      "y": 91
+      "x": 348,
+      "y": 36
     }
   },
   {
@@ -230,8 +230,8 @@
     "name": "Back Bird",
     "description": "Like Bird, but Flyer turns to face the ceiling. Base Feet on Flyer butt. Hand connection optional.",
     "position": {
-      "x": 312,
-      "y": 425
+      "x": 223,
+      "y": 418
     }
   },
   {
