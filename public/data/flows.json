@@ -78,5 +78,18 @@
       "standing-counterbalance",
       "flyer-tucked-before-base"
     ]
+  },
+  {
+    "name": "03.02.2026: Cross-legged Straddlebat",
+    "poseIds": [
+      "front-plank",
+      "front-plank-twisted-hands-left",
+      "outside-sidestar-left",
+      "star",
+      "cross-legged-straddlebat-left",
+      "folded-leaf-tucket-through",
+      "folded-leaf",
+      "front-plank"
+    ]
   }
 ]

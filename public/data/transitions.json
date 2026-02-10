@@ -326,5 +326,25 @@
   {
     "fromPoseId": "outside-sidestar-left",
     "toPoseId": "star"
+  },
+  {
+    "fromPoseId": "star",
+    "toPoseId": "cross-legged-straddlebat-left"
+  },
+  {
+    "fromPoseId": "star",
+    "toPoseId": "cross-legged-straddlebat-right"
+  },
+  {
+    "fromPoseId": "folded-leaf",
+    "toPoseId": "folded-leaf-tucket-through"
+  },
+  {
+    "fromPoseId": "cross-legged-straddlebat-left",
+    "toPoseId": "folded-leaf-tucket-through"
+  },
+  {
+    "fromPoseId": "cross-legged-straddlebat-right",
+    "toPoseId": "folded-leaf-tucket-through"
   }
 ]

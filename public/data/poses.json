@@ -13,8 +13,8 @@
     "name": "Straddle Throne",
     "description": "Base sits with feet on flyer's hips. Flyer stands upright on base's feet. (AI generated)",
     "position": {
-      "x": 83,
-      "y": 593
+      "x": 45,
+      "y": 635
     }
   },
   {
@@ -67,8 +67,8 @@
     "name": "Folded Leaf",
     "description": "Base's feet on flyer's hips. Flyer folds forward, hands near base's head. (AI generated)",
     "position": {
-      "x": 497,
-      "y": 930
+      "x": 500,
+      "y": 931
     }
   },
   {
@@ -85,8 +85,8 @@
     "name": "Extended Reverse F2H",
     "description": "Like Reverse F2H, just straight Base arms.",
     "position": {
-      "x": -77,
-      "y": 802
+      "x": -144,
+      "y": 928
     }
   },
   {
@@ -104,8 +104,8 @@
     "description": "Base's left foot supports flyer lying on their left side in a relaxed position. (AI generated)",
     "mirroredPoseId": "vishnus-couch-right",
     "position": {
-      "x": -439,
-      "y": 1229
+      "x": -235,
+      "y": 1301
     }
   },
   {
@@ -114,8 +114,8 @@
     "description": "Base's right foot supports flyer lying on their right side in a relaxed position. (AI generated)",
     "mirroredPoseId": "vishnus-couch-left",
     "position": {
-      "x": -445,
-      "y": 1032
+      "x": -392,
+      "y": 1208
     }
   },
   {
@@ -478,6 +478,35 @@
     "position": {
       "x": 825,
       "y": 512
+    }
+  },
+  {
+    "id": "cross-legged-straddlebat-left",
+    "name": "Cross-legged Straddlebat (left)",
+    "description": "Like Straddlebat, but base has X-legs, and the left knee is on Flyers back, and right Base leg behind.",
+    "mirroredPoseId": "cross-legged-straddlebat-right",
+    "position": {
+      "x": -92,
+      "y": 586
+    }
+  },
+  {
+    "id": "cross-legged-straddlebat-right",
+    "name": "Cross-legged Straddlebat (right)",
+    "description": "Like Straddlebat, but base has X-legs, and the right knee is on Flyers back, and left Base leg behind.",
+    "mirroredPoseId": "cross-legged-straddlebat-left",
+    "position": {
+      "x": -188,
+      "y": 480
+    }
+  },
+  {
+    "id": "folded-leaf-tucket-through",
+    "name": "Folded Leaf tucked through",
+    "description": "Like folded leaf, but the Flyer put their upper body through the Base legs and rests their back on the underside of the Base legs.",
+    "position": {
+      "x": -256,
+      "y": 745
     }
   }
 ]
