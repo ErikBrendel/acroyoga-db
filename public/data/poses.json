@@ -439,5 +439,45 @@
       "x": 250,
       "y": -244
     }
+  },
+  {
+    "id": "outside-sidestar-left",
+    "name": "Outside Sidestar (Left)",
+    "description": "Flyer on left Base leg, head towards left.",
+    "mirroredPoseId": "outside-sidestar-right",
+    "position": {
+      "x": 1424,
+      "y": 1492
+    }
+  },
+  {
+    "id": "outside-sidestar-right",
+    "name": "Outside Sidestar (Right)",
+    "description": "Flyer on right Base leg, head towards right.",
+    "mirroredPoseId": "outside-sidestar-left",
+    "position": {
+      "x": 1626,
+      "y": 1403
+    }
+  },
+  {
+    "id": "front-plank-twisted-hands-left",
+    "name": "Front plank twisted hands (left)",
+    "description": "Prepare to twist into a star",
+    "mirroredPoseId": "front-plank-twisted-hands-right",
+    "position": {
+      "x": 1305,
+      "y": 1342
+    }
+  },
+  {
+    "id": "front-plank-twisted-hands-right",
+    "name": "Front plank twisted hands (right)",
+    "description": "Prepare to twist into a star",
+    "mirroredPoseId": "front-plank-twisted-hands-left",
+    "position": {
+      "x": 1455,
+      "y": 1222
+    }
   }
 ]

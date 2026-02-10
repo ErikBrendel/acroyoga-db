@@ -302,5 +302,29 @@
   {
     "fromPoseId": "sidestar-left",
     "toPoseId": "reverse-star"
+  },
+  {
+    "fromPoseId": "front-plank",
+    "toPoseId": "front-plank-twisted-hands-left"
+  },
+  {
+    "fromPoseId": "front-plank",
+    "toPoseId": "front-plank-twisted-hands-right"
+  },
+  {
+    "fromPoseId": "front-plank-twisted-hands-left",
+    "toPoseId": "outside-sidestar-left"
+  },
+  {
+    "fromPoseId": "front-plank-twisted-hands-right",
+    "toPoseId": "outside-sidestar-right"
+  },
+  {
+    "fromPoseId": "outside-sidestar-right",
+    "toPoseId": "star"
+  },
+  {
+    "fromPoseId": "outside-sidestar-left",
+    "toPoseId": "star"
   }
 ]
