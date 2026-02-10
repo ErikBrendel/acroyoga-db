@@ -346,5 +346,17 @@
   {
     "fromPoseId": "cross-legged-straddlebat-right",
     "toPoseId": "folded-leaf-tucket-through"
+  },
+  {
+    "fromPoseId": "standing-on-flyer-legs",
+    "toPoseId": "reverse-throne"
+  },
+  {
+    "fromPoseId": "reverse-throne",
+    "toPoseId": "l-sit-with-outside-legs"
+  },
+  {
+    "fromPoseId": "l-sit-with-outside-legs",
+    "toPoseId": "star"
   }
 ]

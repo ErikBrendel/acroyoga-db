@@ -4,8 +4,8 @@
     "name": "Bird",
     "description": "Base lies on back with feet up, supporting flyer's hips. Flyer balances horizontally face-down. (AI generated)",
     "position": {
-      "x": 655,
-      "y": 710
+      "x": 502,
+      "y": 947
     }
   },
   {
@@ -31,8 +31,8 @@
     "name": "Front Plank",
     "description": "Base lies on back with feet on flyer's shoulders/chest. Flyer holds plank position. (AI generated)",
     "position": {
-      "x": 477,
-      "y": 747
+      "x": 472,
+      "y": 758
     }
   },
   {
@@ -67,8 +67,8 @@
     "name": "Folded Leaf",
     "description": "Base's feet on flyer's hips. Flyer folds forward, hands near base's head. (AI generated)",
     "position": {
-      "x": 500,
-      "y": 931
+      "x": 174,
+      "y": 764
     }
   },
   {
@@ -257,8 +257,8 @@
     "name": "Reverse Chair",
     "description": "Like Chair, but facing away. Flyer feet dangling or put on Base calves.",
     "position": {
-      "x": -237,
-      "y": -107
+      "x": -175,
+      "y": -126
     }
   },
   {
@@ -507,6 +507,24 @@
     "position": {
       "x": -256,
       "y": 745
+    }
+  },
+  {
+    "id": "standing-on-flyer-legs",
+    "name": "Standing on Flyer Legs",
+    "description": "Flyer lies on floor on belly. Base stands on upper legs of Flyer. Flyer can hook their feet on Base shins. Base grab Flyer hands and lean squat down into L-Basing.",
+    "position": {
+      "x": -221,
+      "y": 325
+    }
+  },
+  {
+    "id": "l-sit-with-outside-legs",
+    "name": "L-Sit with outside legs",
+    "description": "L-Sit, but Flyer straddles and has arms inside the legs",
+    "position": {
+      "x": -131,
+      "y": 132
     }
   }
 ]

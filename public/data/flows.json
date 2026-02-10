@@ -64,7 +64,7 @@
     ]
   },
   {
-    "name": "27.01.2026 Shin scratcher",
+    "name": "27.01.2026: Shin scratcher",
     "poseIds": [
       "flyer-tucked-before-base",
       "standing-counterbalance",
@@ -90,6 +90,15 @@
       "folded-leaf-tucket-through",
       "folded-leaf",
       "front-plank"
+    ]
+  },
+  {
+    "name": "10.02.2026: Starpops",
+    "poseIds": [
+      "standing-on-flyer-legs",
+      "reverse-throne",
+      "l-sit-with-outside-legs",
+      "star"
     ]
   }
 ]
