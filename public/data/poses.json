@@ -4,8 +4,8 @@
     "name": "Bird",
     "description": "Base lies on back with feet up, supporting flyer's hips. Flyer balances horizontally face-down. (AI generated)",
     "position": {
-      "x": 648,
-      "y": 685
+      "x": 655,
+      "y": 710
     }
   },
   {
@@ -31,8 +31,8 @@
     "name": "Front Plank",
     "description": "Base lies on back with feet on flyer's shoulders/chest. Flyer holds plank position. (AI generated)",
     "position": {
-      "x": 404,
-      "y": 768
+      "x": 477,
+      "y": 747
     }
   },
   {
@@ -67,8 +67,8 @@
     "name": "Folded Leaf",
     "description": "Base's feet on flyer's hips. Flyer folds forward, hands near base's head. (AI generated)",
     "position": {
-      "x": 516,
-      "y": 918
+      "x": 497,
+      "y": 930
     }
   },
   {
@@ -248,8 +248,8 @@
     "name": "Low Reverse F2H",
     "description": "Base elbows close to chest. Flyer facing towards Base head. C-grip for Base. No High-Heels!",
     "position": {
-      "x": 839,
-      "y": 1129
+      "x": 820,
+      "y": 1195
     }
   },
   {
@@ -275,8 +275,8 @@
     "name": "Reverse Back Bird",
     "description": "Almost like whale, but centered: Base feet on Flyer butt. Flyer facing the ceiling, head away from Base head.",
     "position": {
-      "x": 883,
-      "y": 743
+      "x": 899,
+      "y": 770
     }
   },
   {
@@ -310,8 +310,8 @@
     "name": "Galionsfigur",
     "description": "Base standing slightly squatting, Flyer standing on Base knees looking away. Base holding Fyler hips, leaning back. Counterbalance",
     "position": {
-      "x": 1524,
-      "y": 31
+      "x": 1735,
+      "y": -82
     }
   },
   {
@@ -319,8 +319,8 @@
     "name": "Standing Counterbalance",
     "description": "Base slightly squatting, Flyer standing on knees, facing each other. Both holding wrists with long arms, leaning back",
     "position": {
-      "x": 1210,
-      "y": 283
+      "x": 1400,
+      "y": 215
     }
   },
   {
@@ -329,8 +329,8 @@
     "description": "",
     "mirroredPoseId": "standing-flag-right",
     "position": {
-      "x": 1417,
-      "y": 210
+      "x": 1600,
+      "y": 163
     }
   },
   {
@@ -339,8 +339,8 @@
     "description": "",
     "mirroredPoseId": "standing-flag-left",
     "position": {
-      "x": 1300,
-      "y": 79
+      "x": 1454,
+      "y": 28
     }
   },
   {
@@ -357,8 +357,8 @@
     "name": "Flyer standing on Knees",
     "description": "Base on ground, feet close to butt, knees up. Flyer standing on knees. Base can support Flyer shins with hands.",
     "position": {
-      "x": 960,
-      "y": 368
+      "x": 1101,
+      "y": 120
     }
   },
   {
@@ -375,8 +375,8 @@
     "name": "Reverse L-Sit",
     "description": "Base on floor, arms straight up. Flyer pushes with arms down. Fingers aligned, Flyer looks towards Base head.",
     "position": {
-      "x": 1165,
-      "y": 553
+      "x": 1280,
+      "y": 621
     }
   },
   {
@@ -393,8 +393,8 @@
     "name": "Flyer tucked before Base",
     "description": "Flyer on ground, tucked. Base standing. Flyer feet on Base knees. Base can grab Flyer knees.",
     "position": {
-      "x": 1033,
-      "y": 147
+      "x": 1258,
+      "y": 24
     }
   },
   {
@@ -410,8 +410,8 @@
     "id": "bird-on-hands",
     "name": "Bird on Hands",
     "position": {
-      "x": 691,
-      "y": 982
+      "x": 684,
+      "y": 992
     }
   },
   {
@@ -446,8 +446,8 @@
     "description": "Flyer on left Base leg, head towards left.",
     "mirroredPoseId": "outside-sidestar-right",
     "position": {
-      "x": 1424,
-      "y": 1492
+      "x": 1024,
+      "y": 393
     }
   },
   {
@@ -456,8 +456,8 @@
     "description": "Flyer on right Base leg, head towards right.",
     "mirroredPoseId": "outside-sidestar-left",
     "position": {
-      "x": 1626,
-      "y": 1403
+      "x": 904,
+      "y": 335
     }
   },
   {
@@ -466,8 +466,8 @@
     "description": "Prepare to twist into a star",
     "mirroredPoseId": "front-plank-twisted-hands-right",
     "position": {
-      "x": 1305,
-      "y": 1342
+      "x": 949,
+      "y": 569
     }
   },
   {
@@ -476,8 +476,8 @@
     "description": "Prepare to twist into a star",
     "mirroredPoseId": "front-plank-twisted-hands-left",
     "position": {
-      "x": 1455,
-      "y": 1222
+      "x": 825,
+      "y": 512
     }
   }
 ]
