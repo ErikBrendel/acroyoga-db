@@ -1,13 +1,15 @@
 import { useState } from 'react';
-import { Flow } from '../types/data';
+import { Flow, Pose } from '../types/data';
+import { getFlowVariants, getFlowVariantKey } from '../utils/flowMirror';
 
 interface FlowsListProps {
   flows: Flow[];
+  poses: Pose[];
   activeFlowName: string | null;
   onFlowClick: (flowName: string) => void;
 }
 
-export function FlowsList({ flows, activeFlowName, onFlowClick }: FlowsListProps) {
+export function FlowsList({ flows, poses, activeFlowName, onFlowClick }: FlowsListProps) {
   const [isExpanded, setIsExpanded] = useState(true);
 
   if (flows.length === 0) {
@@ -26,20 +28,41 @@ export function FlowsList({ flows, activeFlowName, onFlowClick }: FlowsListProps
 
       {isExpanded && (
         <div className="border-t border-gray-200">
-          {flows.slice().sort((a, b) => a.name.localeCompare(b.name)).map((flow) => (
-            <button
-              key={flow.name}
-              onClick={() => onFlowClick(flow.name)}
-              className={`w-full px-4 py-2 text-left text-sm hover:bg-gray-50 transition-colors ${
-                activeFlowName === flow.name
-                  ? 'bg-yellow-50 text-yellow-900 font-medium border-l-4 border-yellow-500'
-                  : 'text-gray-700'
-              }`}
-            >
-              {flow.name}
-              <span className="text-xs text-gray-500 ml-2">({flow.poseIds.length} poses)</span>
-            </button>
-          ))}
+          {flows.slice().sort((a, b) => a.name.localeCompare(b.name)).map((flow) => {
+            const variants = getFlowVariants(flow, poses);
+            const hasMirror = variants.length > 1;
+
+            return (
+              <div key={flow.name} className="border-b border-gray-100 last:border-b-0">
+                <div className="flex items-stretch">
+                  <button
+                    onClick={() => onFlowClick(getFlowVariantKey(flow.name, false))}
+                    className={`flex-1 px-4 py-2 text-left text-sm hover:bg-gray-50 transition-colors ${
+                      activeFlowName === getFlowVariantKey(flow.name, false)
+                        ? 'bg-yellow-50 text-yellow-900 font-medium border-l-4 border-yellow-500'
+                        : 'text-gray-700'
+                    }`}
+                  >
+                    {flow.name}
+                    <span className="text-xs text-gray-500 ml-2">({flow.poseIds.length})</span>
+                  </button>
+                  {hasMirror && (
+                    <button
+                      onClick={() => onFlowClick(getFlowVariantKey(flow.name, true))}
+                      className={`px-3 py-2 text-xs font-medium border-l border-gray-200 hover:bg-gray-50 transition-colors ${
+                        activeFlowName === getFlowVariantKey(flow.name, true)
+                          ? 'bg-blue-50 text-blue-700'
+                          : 'text-gray-500'
+                      }`}
+                      title="Mirrored variant"
+                    >
+                      ⇄
+                    </button>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

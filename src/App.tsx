@@ -9,6 +9,7 @@ import {PoseEditor3DDemo} from './components/PoseEditor3DDemo';
 import {transformToGraph, PosePosition} from './utils/graphTransform';
 import {isLocalEditMode} from './utils/editMode';
 import {updatePosePositions} from './api/layout';
+import {parseFlowVariantKey, getMirroredFlow} from './utils/flowMirror';
 
 function App() {
   const { poses, transitions, flows, loading, error, refetch } = usePoseData();
@@ -26,6 +27,24 @@ function App() {
     () => transformToGraph(poses, transitions),
     [poses, transitions]
   );
+
+  const activeFlow = useMemo(() => {
+    if (!activeFlowName) return null;
+
+    const { flowName, isMirrored } = parseFlowVariantKey(activeFlowName);
+    const flow = flows.find(f => f.name === flowName);
+
+    if (!flow) return null;
+
+    if (isMirrored) {
+      return {
+        name: flow.name,
+        poseIds: getMirroredFlow(flow, poses),
+      };
+    }
+
+    return flow;
+  }, [activeFlowName, flows, poses]);
 
   const handleNodeDragStop = (nodeId: string, position: PosePosition) => {
     setPendingPositions(prev => ({
@@ -102,10 +121,8 @@ function App() {
     );
   }
 
-  const activeFlow = flows.find(f => f.name === activeFlowName) || null;
-
-  const handleFlowClick = (flowName: string) => {
-    setActiveFlowName(prev => prev === flowName ? null : flowName);
+  const handleFlowClick = (flowVariantKey: string) => {
+    setActiveFlowName(prev => prev === flowVariantKey ? null : flowVariantKey);
   };
 
   return (
@@ -171,6 +188,7 @@ function App() {
       </div>
       <FlowsList
         flows={flows}
+        poses={poses}
         activeFlowName={activeFlowName}
         onFlowClick={handleFlowClick}
       />

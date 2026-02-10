@@ -20,22 +20,12 @@
     ]
   },
   {
-    "name": "4-Step (Left)",
+    "name": "4-Step",
     "poseIds": [
       "star",
       "mono-reverse-shin-left",
       "supported-mono-kneepit-left",
       "mono-backbird-left",
-      "star"
-    ]
-  },
-  {
-    "name": "4-Step (Right)",
-    "poseIds": [
-      "star",
-      "mono-reverse-shin-right",
-      "supported-mono-kneepit-right",
-      "mono-backbird-right",
       "star"
     ]
   },
