@@ -51,13 +51,52 @@ export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, onSelectPo
     onSelectPose(null);
   }, [onSelectPose]);
 
+  const MAX_MIRROR_DISTANCE = 400;
+
+  const handleNodeDrag = useCallback(
+    (_: React.MouseEvent, node: Node) => {
+      const mirroredPoseId = node.data?.mirroredPoseId;
+      if (!mirroredPoseId) return;
+
+      const mirrorNode = localNodes.find(n => n.id === mirroredPoseId);
+      if (!mirrorNode) return;
+
+      const dx = node.position.x - mirrorNode.position.x;
+      const dy = node.position.y - mirrorNode.position.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance > MAX_MIRROR_DISTANCE) {
+        const angle = Math.atan2(dy, dx);
+        const newMirrorX = node.position.x - Math.cos(angle) * MAX_MIRROR_DISTANCE;
+        const newMirrorY = node.position.y - Math.sin(angle) * MAX_MIRROR_DISTANCE;
+
+        setNodes(nodes =>
+          nodes.map(n =>
+            n.id === mirroredPoseId
+              ? { ...n, position: { x: newMirrorX, y: newMirrorY } }
+              : n
+          )
+        );
+      }
+    },
+    [localNodes, setNodes]
+  );
+
   const handleNodeDragStop = useCallback(
     (_: React.MouseEvent, node: Node) => {
       if (onNodeDragStop) {
         onNodeDragStop(node.id, node.position);
+
+        const mirroredPoseId = node.data?.mirroredPoseId;
+        if (mirroredPoseId) {
+          const mirrorNode = localNodes.find(n => n.id === mirroredPoseId);
+          if (mirrorNode) {
+            onNodeDragStop(mirrorNode.id, mirrorNode.position);
+          }
+        }
       }
     },
-    [onNodeDragStop]
+    [onNodeDragStop, localNodes]
   );
 
   const flowPoseIds = useMemo(() => new Set(activeFlow?.poseIds || []), [activeFlow]);
@@ -148,6 +187,7 @@ export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, onSelectPo
         onEdgesChange={onEdgesChange}
         onNodeClick={onNodeClick}
         onPaneClick={onPaneClick}
+        onNodeDrag={handleNodeDrag}
         onNodeDragStop={handleNodeDragStop}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}

@@ -101,6 +101,7 @@ export function transformToGraph(poses: Pose[], transitions: Transition[]): Grap
       data: {
         label: pose.name || pose.id,
         isHanded: !!pose.mirroredPoseId,
+        mirroredPoseId: pose.mirroredPoseId,
       },
       style: {
         background: pose.mirroredPoseId ? '#93c5fd' : '#6366f1',
