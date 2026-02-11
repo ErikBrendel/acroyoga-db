@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Pose, Transition, Flow } from '../types/data';
 import { PoseButton } from './PoseButton';
 import { AddTransitionForm } from './AddTransitionForm';
@@ -7,6 +7,7 @@ import { deleteTransition } from '../api/transitions';
 import { updatePose } from '../api/poses';
 import { PosePosition } from '../utils/graphTransform';
 import { mirrorText } from '../utils/mirrorText';
+import { getFlowVariants, getFlowVariantKey } from '../utils/flowMirror';
 
 interface PoseDetailSidebarProps {
   selectedPoseId: string | null;
@@ -38,6 +39,40 @@ export function PoseDetailSidebar({
   const [editName, setEditName] = useState('');
   const [editDescription, setEditDescription] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+
+  const containingFlowVariants = useMemo(() => {
+    if (!selectedPoseId) return [];
+
+    const flowMap = new Map<string, { hasOriginal: boolean; hasMirrored: boolean }>();
+
+    flows.forEach(flow => {
+      const flowVariants = getFlowVariants(flow, poses);
+
+      let hasOriginal = false;
+      let hasMirrored = false;
+
+      flowVariants.forEach(variant => {
+        if (variant.poseIds.includes(selectedPoseId)) {
+          if (variant.isMirrored) {
+            hasMirrored = true;
+          } else {
+            hasOriginal = true;
+          }
+        }
+      });
+
+      if (hasOriginal || hasMirrored) {
+        flowMap.set(flow.name, { hasOriginal, hasMirrored });
+      }
+    });
+
+    return Array.from(flowMap.entries()).map(([flowName, variants]) => ({
+      flowName,
+      hasOriginal: variants.hasOriginal,
+      hasMirrored: variants.hasMirrored,
+    }));
+  }, [flows, poses, selectedPoseId]);
+
   if (!selectedPoseId) {
     return null;
   }
@@ -57,7 +92,6 @@ export function PoseDetailSidebar({
     (t) => t.nonReversible && t.toPoseId === selectedPoseId
   );
   const mirroredPose = pose.mirroredPoseId ? poses.find((p) => p.id === pose.mirroredPoseId) : null;
-  const containingFlows = flows.filter((f) => f.poseIds.includes(selectedPoseId));
 
   const pendingPosition = pendingPositions?.[selectedPoseId];
   const hasPosition = pendingPosition !== undefined ? pendingPosition !== null : !!pose.position;
@@ -242,25 +276,50 @@ export function PoseDetailSidebar({
           </div>
         )}
 
-        {containingFlows.length > 0 && (
+        {containingFlowVariants.length > 0 && (
           <div className="mb-6">
             <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">
               Part of Flows
             </h3>
             <div className="space-y-2">
-              {containingFlows.map((flow) => (
-                <button
-                  key={flow.name}
-                  onClick={() => onFlowClick(flow.name)}
-                  className={`block w-full text-left px-3 py-2 rounded text-sm font-medium transition-colors ${
-                    activeFlowName === flow.name
-                      ? 'bg-yellow-100 text-yellow-900 border border-yellow-300'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  {flow.name}
-                </button>
-              ))}
+              {containingFlowVariants.map((flowVariant) => {
+                const originalKey = getFlowVariantKey(flowVariant.flowName, false);
+                const mirroredKey = getFlowVariantKey(flowVariant.flowName, true);
+                const isOriginalActive = activeFlowName === originalKey;
+                const isMirroredActive = activeFlowName === mirroredKey;
+
+                return (
+                  <div key={flowVariant.flowName} className="flex items-stretch">
+                    {flowVariant.hasOriginal && (
+                      <button
+                        onClick={() => onFlowClick(originalKey)}
+                        className={`flex-1 px-3 py-2 text-left text-sm rounded-l transition-colors font-medium border ${
+                          isOriginalActive
+                            ? 'bg-yellow-100 text-yellow-900 border-yellow-300'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border-transparent'
+                        } ${!flowVariant.hasMirrored ? 'rounded-r' : ''}`}
+                      >
+                        {flowVariant.flowName}
+                      </button>
+                    )}
+                    {flowVariant.hasMirrored && (
+                      <button
+                        onClick={() => onFlowClick(mirroredKey)}
+                        className={`px-3 py-2 font-medium transition-colors border ${
+                          flowVariant.hasOriginal ? 'text-xs border-l border-gray-300 rounded-r' : 'text-sm flex-1 text-left rounded'
+                        } ${
+                          isMirroredActive
+                            ? 'bg-yellow-100 text-yellow-900 border-yellow-300'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200 border-transparent'
+                        }`}
+                        title="Mirrored variant"
+                      >
+                        {flowVariant.hasOriginal ? '⇄' : `${flowVariant.flowName} (mirrored)`}
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}

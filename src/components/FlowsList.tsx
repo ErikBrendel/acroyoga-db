@@ -51,7 +51,7 @@ export function FlowsList({ flows, poses, activeFlowName, onFlowClick }: FlowsLi
                       onClick={() => onFlowClick(getFlowVariantKey(flow.name, true))}
                       className={`px-3 py-2 text-xs font-medium border-l border-gray-200 hover:bg-gray-50 transition-colors ${
                         activeFlowName === getFlowVariantKey(flow.name, true)
-                          ? 'bg-blue-50 text-blue-700'
+                          ? 'bg-yellow-50 text-yellow-900 border-l-yellow-300'
                           : 'text-gray-500'
                       }`}
                       title="Mirrored variant"
