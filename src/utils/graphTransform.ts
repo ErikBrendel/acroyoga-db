@@ -10,6 +10,7 @@ import {
   SimulationLinkDatum,
 } from 'd3-force';
 import { getPoseColor, getTransitionColor } from './difficultyColors';
+import { NODE_DIAMETER } from './nodeConstants';
 
 export interface GraphData {
   nodes: Node[];
@@ -99,6 +100,7 @@ export function transformToGraph(poses: Pose[], transitions: Transition[]): Grap
         x: d3Node.x || 0,
         y: d3Node.y || 0,
       },
+      zIndex: 10,
       data: {
         label: pose.name || pose.id,
         isHanded: !!pose.mirroredPoseId,
@@ -112,8 +114,8 @@ export function transformToGraph(poses: Pose[], transitions: Transition[]): Grap
         padding: '20px',
         fontSize: '14px',
         fontWeight: '500',
-        width: '120px',
-        height: '120px',
+        width: `${NODE_DIAMETER}px`,
+        height: `${NODE_DIAMETER}px`,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -133,6 +135,7 @@ export function transformToGraph(poses: Pose[], transitions: Transition[]): Grap
       target: transition.toPoseId,
       type: 'smart',
       animated: false,
+      zIndex: 5,
       style: {
         stroke: color,
         strokeWidth: 2,
@@ -161,10 +164,11 @@ export function transformToGraph(poses: Pose[], transitions: Transition[]): Grap
       target: pose.mirroredPoseId!,
       type: 'smart',
       animated: false,
+      zIndex: 1,
       style: {
-        stroke: '#94a3b8',
-        strokeWidth: 2,
-        strokeDasharray: '5,5',
+        stroke: getPoseColor(pose.difficulty),
+        strokeWidth: NODE_DIAMETER * 0.5,
+        strokeLinecap: 'round',
       },
       data: {
         nodes,

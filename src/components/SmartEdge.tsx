@@ -1,13 +1,14 @@
 import { EdgeProps, Node } from '@xyflow/react';
 import { useMemo } from 'react';
+import { NODE_RADIUS } from '../utils/nodeConstants';
 
 // Configuration constants
 const CONTROL_POINT_SPACING = 100; // Target distance between control points (adaptive density)
 const NUM_ITERATIONS = 10;
-const NODE_RADIUS = 70; // Approximate radius for collision detection with the "hard core" of nodes
 const INFLUENCE_RADIUS = 200; // Distance at which nodes influence control points
 const FORCE_STRENGTH = 20; // Base strength of repulsive force
 const MAX_FORCE = 50; // Maximum force that can be applied to a control point
+const ALIGNMENT_OFFSET_Y = 2; // Vertical offset for edge alignment
 
 
 interface SmartEdgeProps extends EdgeProps {
@@ -101,31 +102,46 @@ export function SmartEdge({
 }: SmartEdgeProps) {
   const nodes = (data as any)?.nodes as Node[] | undefined;
 
-  const edgePath = useMemo(() => {
-    if (!nodes || nodes.length === 0) {
-      // Fallback to simple line
-      return `M ${sourceX},${sourceY} L ${targetX},${targetY}`;
-    }
-
+  const edgeData = useMemo(() => {
     // Direction vector of the direct line
     const dx = targetX - sourceX;
     const dy = targetY - sourceY;
     const lineLength = Math.sqrt(dx * dx + dy * dy);
 
-    if (lineLength === 0) {
-      return `M ${sourceX},${sourceY} L ${targetX},${targetY}`;
+    if (!nodes || nodes.length === 0 || lineLength === 0) {
+      // Fallback to simple line
+      return {
+        path: `M ${sourceX},${sourceY} L ${targetX},${targetY}`,
+        startX: sourceX,
+        startY: sourceY,
+        endX: targetX,
+        endY: targetY,
+      };
     }
+
+    // Check if this is a mirror connection band (skip padding for those)
+    const isMirrorEdge = id.startsWith('mirror-');
+
+    // Add padding at each endpoint by moving them towards each other (except for mirror edges)
+    const ENDPOINT_PADDING = isMirrorEdge ? 0 : NODE_RADIUS * 0.95;
+    const unitDx = dx / lineLength;
+    const unitDy = dy / lineLength;
+
+    const paddedSourceX = sourceX + unitDx * ENDPOINT_PADDING;
+    const paddedSourceY = sourceY + unitDy * ENDPOINT_PADDING;
+    const paddedTargetX = targetX - unitDx * ENDPOINT_PADDING;
+    const paddedTargetY = targetY - unitDy * ENDPOINT_PADDING;
 
     // Calculate adaptive number of control points based on distance
     const numControlPoints = Math.max(3, Math.ceil(lineLength / CONTROL_POINT_SPACING));
 
-    // Initialize control points evenly spaced along direct line
+    // Initialize control points evenly spaced along direct line (using padded endpoints)
     const controlPoints: Point[] = [];
     for (let i = 0; i < numControlPoints; i++) {
       const t = i / (numControlPoints - 1);
       controlPoints.push({
-        x: sourceX + t * (targetX - sourceX),
-        y: sourceY + t * (targetY - sourceY),
+        x: paddedSourceX + t * (paddedTargetX - paddedSourceX),
+        y: paddedSourceY + t * (paddedTargetY - paddedSourceY),
       });
     }
 
@@ -140,8 +156,8 @@ export function SmartEdge({
         return node.id !== source && node.id !== target && node.position;
       })
       .map(node => ({
-        x: node.position!.x + 60, // Center of 120px node
-        y: node.position!.y + 60,
+        x: node.position!.x + NODE_RADIUS,
+        y: node.position!.y + NODE_RADIUS,
       }));
 
     // Iterative relaxation
@@ -183,18 +199,24 @@ export function SmartEdge({
       }
     }
 
-    return generateCubicSpline(controlPoints);
-  }, [source, target, sourceX, sourceY, targetX, targetY, nodes]);
+    return {
+      path: generateCubicSpline(controlPoints),
+      startX: paddedSourceX,
+      startY: paddedSourceY,
+      endX: paddedTargetX,
+      endY: paddedTargetY,
+    };
+  }, [id, source, target, sourceX, sourceY, targetX, targetY, nodes]);
 
   return (
-    <>
+    <g transform={`translate(0, ${ALIGNMENT_OFFSET_Y})`}>
       <path
         id={id}
         style={style}
         className="react-flow__edge-path"
-        d={edgePath}
+        d={edgeData.path}
         markerEnd={markerEnd}
       />
-    </>
+    </g>
   );
 }

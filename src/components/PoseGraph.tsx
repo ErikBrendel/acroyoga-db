@@ -20,11 +20,12 @@ interface PoseGraphProps {
   edges: Edge[];
   selectedPoseId: string | null;
   activeFlow: Flow | null;
+  matchingPoseIds: Set<string> | undefined;
   onSelectPose: (poseId: string | null) => void;
   onNodeDragStop?: (nodeId: string, position: { x: number; y: number }) => void;
 }
 
-export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, onSelectPose, onNodeDragStop }: PoseGraphProps) {
+export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, matchingPoseIds, onSelectPose, onNodeDragStop }: PoseGraphProps) {
   const [localNodes, setNodes, onNodesChange] = useNodesState(nodes);
   const [localEdges, setEdges, onEdgesChange] = useEdgesState(edges);
 
@@ -141,6 +142,7 @@ export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, onSelectPo
 
   const highlightedNodes = localNodes.map((node) => {
     const isInFlow = flowPoseIds.has(node.id);
+    const isSearchMatch = matchingPoseIds ? matchingPoseIds.has(node.id) : false;
     const baseStyle = node.style || {};
 
     let opacity = 1;
@@ -148,12 +150,20 @@ export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, onSelectPo
       opacity = connectedNodeIds.has(node.id) ? 0.6 : 0.25;
     }
 
+    // Search highlight overrides flow highlight with stronger green glow
+    let filter: string | undefined;
+    if (isSearchMatch) {
+      filter = 'drop-shadow(0 0 30px #10b981) drop-shadow(0 0 50px #059669)';
+    } else if (isInFlow) {
+      filter = 'drop-shadow(0 0 8px #fbbf24) drop-shadow(0 0 12px #f59e0b)';
+    }
+
     return {
       ...node,
       style: {
         ...baseStyle,
         opacity,
-        filter: isInFlow ? 'drop-shadow(0 0 8px #fbbf24) drop-shadow(0 0 12px #f59e0b)' : undefined,
+        filter,
       },
     };
   });

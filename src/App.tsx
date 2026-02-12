@@ -1,4 +1,4 @@
-import {useMemo, useState} from 'react';
+import {useMemo, useState, useEffect} from 'react';
 import {usePoseData} from './hooks/usePoseData';
 import {PoseGraph} from './components/PoseGraph';
 import {PoseDetailSidebar} from './components/PoseDetailSidebar';
@@ -21,8 +21,31 @@ function App() {
   const [is3DEditorOpen, setIs3DEditorOpen] = useState(false);
   const [pendingPositions, setPendingPositions] = useState<Record<string, PosePosition | null>>({});
   const [isSaving, setIsSaving] = useState(false);
+  const [searchInput, setSearchInput] = useState('');
 
   const isDirty = Object.keys(pendingPositions).length > 0;
+
+  const matchingPoseIds = useMemo(() => {
+    if (!searchInput.trim()) {
+      return undefined; // Show all poses with full opacity
+    }
+
+    const words = searchInput.toLowerCase().trim().split(/\s+/);
+
+    return new Set(
+      poses
+        .filter(pose => {
+          const searchText = [
+            pose.id,
+            pose.name || '',
+            pose.description || ''
+          ].join(' ').toLowerCase();
+
+          return words.every(word => searchText.includes(word));
+        })
+        .map(p => p.id)
+    );
+  }, [poses, searchInput]);
 
   const { nodes, edges } = useMemo(
     () => transformToGraph(poses, transitions),
@@ -128,66 +151,91 @@ function App() {
 
   return (
     <div className="w-screen h-screen relative bg-gray-50">
-      <div className="absolute top-0 left-0 p-4 z-20 bg-white shadow-md rounded-br-lg max-w-full">
-        <div className="flex items-center gap-3 flex-wrap">
+      {/* Top bar - always visible */}
+      <div className="absolute top-0 left-0 p-4 z-20 bg-white shadow-md rounded-br-lg">
+        <div className="flex items-center gap-4">
           <div>
             <h1 className="text-xl font-bold text-gray-900">Acroyoga Pose Graph</h1>
             <p className="text-sm text-gray-600">{poses.length} poses, {transitions.length} transitions</p>
           </div>
           <DifficultyGuide />
-          {isLocalEditMode() && (
-            <>
-              <div className="px-3 py-1 bg-green-100 border border-green-300 rounded-full">
-                <span className="text-xs font-semibold text-green-700">Local Edit Mode</span>
-              </div>
+          <div className="relative w-64">
+            <input
+              type="text"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder="Search poses..."
+              className="px-3 py-2 pr-8 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+            />
+            {searchInput && (
               <button
-                onClick={() => setIsAddPoseDialogOpen(true)}
-                className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-xs font-semibold"
+                onClick={() => setSearchInput('')}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                title="Clear search"
               >
-                + New Pose
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
-              <button
-                onClick={() => setIsAddFlowDialogOpen(true)}
-                className="px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors text-xs font-semibold"
-              >
-                + New Flow
-              </button>
-              <button
-                onClick={() => setIs3DEditorOpen(true)}
-                className="px-3 py-1 bg-cyan-600 text-white rounded hover:bg-cyan-700 transition-colors text-xs font-semibold"
-              >
-                🎭 3D Editor (Demo)
-              </button>
-              <div className="h-6 w-px bg-gray-300"></div>
-              {isDirty ? (
-                <>
-                  <button
-                    onClick={handleSavePositions}
-                    disabled={isSaving}
-                    className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400 transition-colors text-xs font-semibold"
-                  >
-                    💾 Save Positions ({Object.keys(pendingPositions).length})
-                  </button>
-                  <button
-                    onClick={handleDiscardChanges}
-                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-xs font-semibold"
-                  >
-                    ✕ Discard
-                  </button>
-                </>
-              ) : (
-                <button
-                  onClick={handleRegenerateLayout}
-                  disabled={isSaving}
-                  className="px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-700 disabled:bg-gray-400 transition-colors text-xs font-semibold"
-                >
-                  ↻ Regenerate Layout
-                </button>
-              )}
-            </>
-          )}
+            )}
+          </div>
         </div>
       </div>
+
+      {/* Edit mode floating toolbar - bottom left */}
+      {isLocalEditMode() && (
+        <div className="absolute bottom-4 left-4 z-20 bg-white shadow-lg rounded-lg border border-gray-200 p-3">
+          <div className="flex flex-col gap-2">
+            <div className="px-3 py-1 bg-green-100 border border-green-300 rounded text-center mb-2">
+              <span className="text-xs font-semibold text-green-700">Edit Mode</span>
+            </div>
+            <button
+              onClick={() => setIsAddPoseDialogOpen(true)}
+              className="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm font-semibold"
+            >
+              + New Pose
+            </button>
+            <button
+              onClick={() => setIsAddFlowDialogOpen(true)}
+              className="px-3 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors text-sm font-semibold"
+            >
+              + New Flow
+            </button>
+            <button
+              onClick={() => setIs3DEditorOpen(true)}
+              className="px-3 py-2 bg-cyan-600 text-white rounded hover:bg-cyan-700 transition-colors text-sm font-semibold"
+            >
+              🎭 3D Editor
+            </button>
+            <div className="h-px bg-gray-300 my-1"></div>
+            {isDirty ? (
+              <>
+                <button
+                  onClick={handleSavePositions}
+                  disabled={isSaving}
+                  className="px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400 transition-colors text-sm font-semibold"
+                >
+                  💾 Save ({Object.keys(pendingPositions).length})
+                </button>
+                <button
+                  onClick={handleDiscardChanges}
+                  className="px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-sm font-semibold"
+                >
+                  ✕ Discard
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={handleRegenerateLayout}
+                disabled={isSaving}
+                className="px-3 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 disabled:bg-gray-400 transition-colors text-sm font-semibold"
+              >
+                ↻ Regenerate
+              </button>
+            )}
+          </div>
+        </div>
+      )}
       <FlowsList
         flows={flows}
         poses={poses}
@@ -199,6 +247,7 @@ function App() {
         edges={edges}
         selectedPoseId={selectedPoseId}
         activeFlow={activeFlow}
+        matchingPoseIds={matchingPoseIds}
         onSelectPose={setSelectedPoseId}
         onNodeDragStop={isLocalEditMode() ? handleNodeDragStop : undefined}
       />
