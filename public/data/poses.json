@@ -3,6 +3,7 @@
     "id": "bird",
     "name": "Bird",
     "description": "Base lies on back with feet up, supporting flyer's hips. Flyer balances horizontally face-down. (AI generated)",
+    "difficulty": "easy",
     "position": {
       "x": 502,
       "y": 947
@@ -12,6 +13,7 @@
     "id": "throne",
     "name": "Straddle Throne",
     "description": "Base sits with feet on flyer's hips. Flyer stands upright on base's feet. (AI generated)",
+    "difficulty": "easy",
     "position": {
       "x": 45,
       "y": 635
@@ -21,6 +23,7 @@
     "id": "reverse-throne",
     "name": "Reverse Straddle Throne",
     "description": "Base's feet on flyer's hips. Flyer stands upright facing away from base. (AI generated)",
+    "difficulty": "easy",
     "position": {
       "x": 46,
       "y": 248
@@ -30,6 +33,7 @@
     "id": "front-plank",
     "name": "Front Plank",
     "description": "Base lies on back with feet on flyer's shoulders/chest. Flyer holds plank position. (AI generated)",
+    "difficulty": "easy",
     "position": {
       "x": 472,
       "y": 758
@@ -39,6 +43,7 @@
     "id": "shoulder-stand",
     "name": "Shoulder Stand",
     "description": "Base lies on back supporting flyer's shoulders with hands, flyer is upside down, facing towards base feet. Base Hands (including thumbs) on flyer's back/shoulders. Base sees flyer back.",
+    "difficulty": "intermediate",
     "position": {
       "x": 671,
       "y": 404
@@ -48,15 +53,17 @@
     "id": "reverse-shoulder-stand",
     "name": "Reverse Shoulder Stand",
     "description": "Base lies on back supporting flyer's shoulders with hands, flyer is upside down facing towards base head. Base thumbs on flyer's back. Base sees flyer front.",
+    "difficulty": "intermediate",
     "position": {
-      "x": 404,
-      "y": 223
+      "x": 392,
+      "y": 211
     }
   },
   {
     "id": "star",
     "name": "Star",
     "description": "Base lies on back with one foot on flyer's hip, one on shoulder. Flyer spreads arms and legs like a star. (AI generated)",
+    "difficulty": "easy",
     "position": {
       "x": 775,
       "y": -216
@@ -66,6 +73,7 @@
     "id": "folded-leaf",
     "name": "Folded Leaf",
     "description": "Base's feet on flyer's hips. Flyer folds forward, hands near base's head. (AI generated)",
+    "difficulty": "easy",
     "position": {
       "x": 174,
       "y": 764
@@ -75,6 +83,7 @@
     "id": "chair",
     "name": "Chair",
     "description": "Base's feet on flyer's sit bones. Flyer sits upright as if in a chair. (AI generated)",
+    "difficulty": "easy",
     "position": {
       "x": 46,
       "y": 1022
@@ -84,6 +93,7 @@
     "id": "extended-reverse-f2h",
     "name": "Extended Reverse F2H",
     "description": "Like Reverse F2H, just straight Base arms.",
+    "difficulty": "intermediate",
     "position": {
       "x": -144,
       "y": 928
@@ -93,6 +103,7 @@
     "id": "whale",
     "name": "Whale",
     "description": "Single-leg base pose. Base's foot on flyer's shoulders, flyer arches back. (AI generated)",
+    "difficulty": "easy",
     "position": {
       "x": -191,
       "y": 1068
@@ -103,6 +114,7 @@
     "name": "Vishnu's Couch (Left)",
     "description": "Base's left foot supports flyer lying on their left side in a relaxed position. (AI generated)",
     "mirroredPoseId": "vishnus-couch-right",
+    "difficulty": "easy",
     "position": {
       "x": -235,
       "y": 1301
@@ -113,6 +125,7 @@
     "name": "Vishnu's Couch (Right)",
     "description": "Base's right foot supports flyer lying on their right side in a relaxed position. (AI generated)",
     "mirroredPoseId": "vishnus-couch-left",
+    "difficulty": "easy",
     "position": {
       "x": -392,
       "y": 1208
@@ -122,6 +135,7 @@
     "id": "straddlebat",
     "name": "Straddlebat",
     "description": "Base's feet on flyer's inner thighs. Flyer hangs upside-down with legs straddled. (AI generated)",
+    "difficulty": "easy",
     "position": {
       "x": 601,
       "y": 26
@@ -131,6 +145,7 @@
     "id": "floating-paschi",
     "name": "Floating Paschi",
     "description": "Base's feet on flyer's inner thighs. Flyer inverted with legs together in forward fold. (AI generated)",
+    "difficulty": "intermediate",
     "position": {
       "x": 580,
       "y": 258
@@ -140,6 +155,7 @@
     "id": "reverse-bird",
     "name": "Reverse Bird",
     "description": "Like Bird, but Flyer faces the other way. Base feet still on Flyer hips. Connecting hands optional, but requires long straight arms.",
+    "difficulty": "easy",
     "position": {
       "x": 133,
       "y": -29
@@ -150,9 +166,10 @@
     "name": "Side Star (Left)",
     "description": "Base's feet on flyer's left hip and left shoulder. Flyer opens sideways to the left. (AI generated)",
     "mirroredPoseId": "sidestar-right",
+    "difficulty": "intermediate",
     "position": {
-      "x": 348,
-      "y": 36
+      "x": 339,
+      "y": 48
     }
   },
   {
@@ -160,8 +177,9 @@
     "name": "Side Star (Right)",
     "description": "Base's feet on flyer's right hip and right shoulder. Flyer opens sideways to the right. (AI generated)",
     "mirroredPoseId": "sidestar-left",
+    "difficulty": "intermediate",
     "position": {
-      "x": 352,
+      "x": 357,
       "y": -97
     }
   },
@@ -170,6 +188,7 @@
     "name": "Mono Reverse Shin-to-Foot Connected Hands (Left)",
     "description": "Single-leg base on left side. Flyer's shin to base's foot, hands connected, flyer faces away. (AI generated)",
     "mirroredPoseId": "mono-reverse-shin-right",
+    "difficulty": "intermediate",
     "position": {
       "x": 1133,
       "y": -450
@@ -180,6 +199,7 @@
     "name": "Mono Reverse Shin-to-Foot Connected Hands (Right)",
     "description": "Single-leg base on right side. Flyer's shin to base's foot, hands connected, flyer faces away. (AI generated)",
     "mirroredPoseId": "mono-reverse-shin-left",
+    "difficulty": "intermediate",
     "position": {
       "x": 952,
       "y": -439
@@ -190,6 +210,7 @@
     "name": "Supported Mono Kneepit (Left)",
     "description": "Single-leg base on left side. Base's foot in flyer's knee pit with hand support. (AI generated)",
     "mirroredPoseId": "supported-mono-kneepit-right",
+    "difficulty": "intermediate",
     "position": {
       "x": 800,
       "y": -759
@@ -200,6 +221,7 @@
     "name": "Supported Mono Kneepit (Right)",
     "description": "Single-leg base on right side. Base's foot in flyer's knee pit with hand support. (AI generated)",
     "mirroredPoseId": "supported-mono-kneepit-left",
+    "difficulty": "intermediate",
     "position": {
       "x": 810,
       "y": -583
@@ -210,6 +232,7 @@
     "name": "Mono Backbird (Left)",
     "description": "Single-leg base on left side. Flyer balances horizontally face-up on one foot. (AI generated)",
     "mirroredPoseId": "mono-backbird-right",
+    "difficulty": "intermediate",
     "position": {
       "x": 504,
       "y": -450
@@ -220,6 +243,7 @@
     "name": "Mono Backbird (Right)",
     "description": "Single-leg base on right side. Flyer balances horizontally face-up on one foot. (AI generated)",
     "mirroredPoseId": "mono-backbird-left",
+    "difficulty": "intermediate",
     "position": {
       "x": 675,
       "y": -457
@@ -229,6 +253,7 @@
     "id": "back-bird",
     "name": "Back Bird",
     "description": "Like Bird, but Flyer turns to face the ceiling. Base Feet on Flyer butt. Hand connection optional.",
+    "difficulty": "easy",
     "position": {
       "x": 223,
       "y": 418
@@ -238,6 +263,7 @@
     "id": "low-foot-to-hand",
     "name": "Low F2H",
     "description": "Base elbows close to chest, Flyer faces away, heels at Base fingers and toes at Base wrist. High-Heels!",
+    "difficulty": "intermediate",
     "position": {
       "x": 21,
       "y": -333
@@ -247,6 +273,7 @@
     "id": "low-reverse-foot-to-hand",
     "name": "Low Reverse F2H",
     "description": "Base elbows close to chest. Flyer facing towards Base head. C-grip for Base. No High-Heels!",
+    "difficulty": "easy",
     "position": {
       "x": 820,
       "y": 1195
@@ -256,6 +283,7 @@
     "id": "reverse-chair",
     "name": "Reverse Chair",
     "description": "Like Chair, but facing away. Flyer feet dangling or put on Base calves.",
+    "difficulty": "easy",
     "position": {
       "x": -175,
       "y": -126
@@ -265,6 +293,7 @@
     "id": "foot-to-shin",
     "name": "Foot to Shin",
     "description": "Base tucked, Flyer stands on shins, facing Base head.",
+    "difficulty": "easy",
     "position": {
       "x": 266,
       "y": 936
@@ -274,6 +303,7 @@
     "id": "reverse-back-bird",
     "name": "Reverse Back Bird",
     "description": "Almost like whale, but centered: Base feet on Flyer butt. Flyer facing the ceiling, head away from Base head.",
+    "difficulty": "easy",
     "position": {
       "x": 899,
       "y": 770
@@ -283,6 +313,7 @@
     "id": "iron-cross",
     "name": "Iron cross",
     "description": "Flyer in T-pose (push down with arms!), piked legs. Base feet in Flyer armpits. Base hands support Flyer legs.",
+    "difficulty": "easy",
     "position": {
       "x": 401,
       "y": 1409
@@ -291,6 +322,8 @@
   {
     "id": "extended-f2h",
     "name": "Extended F2H",
+    "description": "",
+    "difficulty": "intermediate",
     "position": {
       "x": 815,
       "y": 119
@@ -300,6 +333,7 @@
     "id": "two-high",
     "name": "Two High",
     "description": "Base standing, Flyer on shoulders, Base holding back of Flyer kneepits/calves donw",
+    "difficulty": "intermediate",
     "position": {
       "x": 1625,
       "y": 468
@@ -309,6 +343,7 @@
     "id": "galionsfigur",
     "name": "Galionsfigur",
     "description": "Base standing slightly squatting, Flyer standing on Base knees looking away. Base holding Fyler hips, leaning back. Counterbalance",
+    "difficulty": "intermediate",
     "position": {
       "x": 1735,
       "y": -82
@@ -318,6 +353,7 @@
     "id": "standing-counterbalance",
     "name": "Standing Counterbalance",
     "description": "Base slightly squatting, Flyer standing on knees, facing each other. Both holding wrists with long arms, leaning back",
+    "difficulty": "easy",
     "position": {
       "x": 1400,
       "y": 215
@@ -328,6 +364,7 @@
     "name": "Standing Flag (Left)",
     "description": "",
     "mirroredPoseId": "standing-flag-right",
+    "difficulty": "intermediate",
     "position": {
       "x": 1600,
       "y": 163
@@ -338,6 +375,7 @@
     "name": "Standing Flag (Right)",
     "description": "",
     "mirroredPoseId": "standing-flag-left",
+    "difficulty": "intermediate",
     "position": {
       "x": 1454,
       "y": 28
@@ -347,6 +385,7 @@
     "id": "standing-on-hips",
     "name": "Standing on Hips",
     "description": "Base in wide squat, Flyer behind, with feet close to Base hips on upper legs",
+    "difficulty": "easy",
     "position": {
       "x": 1422,
       "y": 454
@@ -356,6 +395,7 @@
     "id": "flyer-stading-on-knees",
     "name": "Flyer standing on Knees",
     "description": "Base on ground, feet close to butt, knees up. Flyer standing on knees. Base can support Flyer shins with hands.",
+    "difficulty": "easy",
     "position": {
       "x": 1101,
       "y": 120
@@ -365,6 +405,7 @@
     "id": "l-sit",
     "name": "L-Sit",
     "description": "Base on floor, arms straight up. Flyer pushes with arms down. Fingers opposed, Flyer looks towards Base feet.",
+    "difficulty": "easy",
     "position": {
       "x": 1051,
       "y": -148
@@ -374,6 +415,7 @@
     "id": "reverse-l-sit",
     "name": "Reverse L-Sit",
     "description": "Base on floor, arms straight up. Flyer pushes with arms down. Fingers aligned, Flyer looks towards Base head.",
+    "difficulty": "easy",
     "position": {
       "x": 1280,
       "y": 621
@@ -383,6 +425,7 @@
     "id": "back-on-shins",
     "name": "Back on Shins",
     "description": "L-Base, tucked. Flyer back on Base shins, head between Base feet. Flyer butt overhanging Base knees. Hands connected.",
+    "difficulty": "easy",
     "position": {
       "x": 1085,
       "y": 965
@@ -392,6 +435,7 @@
     "id": "flyer-tucked-before-base",
     "name": "Flyer tucked before Base",
     "description": "Flyer on ground, tucked. Base standing. Flyer feet on Base knees. Base can grab Flyer knees.",
+    "difficulty": "easy",
     "position": {
       "x": 1258,
       "y": 24
@@ -401,6 +445,7 @@
     "id": "sitting-on-shoulders",
     "name": "Sitting on Shoulders",
     "description": "Like carrying your small child though the zoo :)",
+    "difficulty": "easy",
     "position": {
       "x": 1817,
       "y": 428
@@ -409,6 +454,8 @@
   {
     "id": "bird-on-hands",
     "name": "Bird on Hands",
+    "description": "",
+    "difficulty": "intermediate",
     "position": {
       "x": 684,
       "y": 992
@@ -418,6 +465,7 @@
     "id": "extended-h2h",
     "name": "Extended H2H",
     "description": "L-Base, but straight long arms handstand. Hands are gripping opposed, Flyer facing Base head.",
+    "difficulty": "hard",
     "position": {
       "x": 150,
       "y": -516
@@ -426,7 +474,8 @@
   {
     "id": "extended-reverse-h2h",
     "name": "Extended Reverse H2H",
-    "description": "Hands gripping awit aligned fingers, Flyer faces Base feet.",
+    "description": "Hands gripping with aligned fingers, Flyer faces Base feet.",
+    "difficulty": "hard",
     "position": {
       "x": 307,
       "y": 573
@@ -435,6 +484,8 @@
   {
     "id": "reverse-star",
     "name": "Reverse Star",
+    "description": "",
+    "difficulty": "intermediate",
     "position": {
       "x": 250,
       "y": -244
@@ -445,6 +496,7 @@
     "name": "Outside Sidestar (Left)",
     "description": "Flyer on left Base leg, head towards left.",
     "mirroredPoseId": "outside-sidestar-right",
+    "difficulty": "intermediate",
     "position": {
       "x": 1024,
       "y": 393
@@ -455,6 +507,7 @@
     "name": "Outside Sidestar (Right)",
     "description": "Flyer on right Base leg, head towards right.",
     "mirroredPoseId": "outside-sidestar-left",
+    "difficulty": "intermediate",
     "position": {
       "x": 904,
       "y": 335
@@ -465,6 +518,7 @@
     "name": "Front plank twisted hands (left)",
     "description": "Prepare to twist into a star",
     "mirroredPoseId": "front-plank-twisted-hands-right",
+    "difficulty": "easy",
     "position": {
       "x": 949,
       "y": 569
@@ -475,6 +529,7 @@
     "name": "Front plank twisted hands (right)",
     "description": "Prepare to twist into a star",
     "mirroredPoseId": "front-plank-twisted-hands-left",
+    "difficulty": "easy",
     "position": {
       "x": 825,
       "y": 512
@@ -485,6 +540,7 @@
     "name": "Cross-legged Straddlebat (left)",
     "description": "Like Straddlebat, but base has X-legs, and the left knee is on Flyers back, and right Base leg behind.",
     "mirroredPoseId": "cross-legged-straddlebat-right",
+    "difficulty": "intermediate",
     "position": {
       "x": -92,
       "y": 586
@@ -495,6 +551,7 @@
     "name": "Cross-legged Straddlebat (right)",
     "description": "Like Straddlebat, but base has X-legs, and the right knee is on Flyers back, and left Base leg behind.",
     "mirroredPoseId": "cross-legged-straddlebat-left",
+    "difficulty": "intermediate",
     "position": {
       "x": -188,
       "y": 480
@@ -504,6 +561,7 @@
     "id": "folded-leaf-tucket-through",
     "name": "Folded Leaf tucked through",
     "description": "Like folded leaf, but the Flyer put their upper body through the Base legs and rests their back on the underside of the Base legs.",
+    "difficulty": "easy",
     "position": {
       "x": -256,
       "y": 745
@@ -513,6 +571,7 @@
     "id": "standing-on-flyer-legs",
     "name": "Standing on Flyer Legs",
     "description": "Flyer lies on floor on belly. Base stands on upper legs of Flyer. Flyer can hook their feet on Base shins. Base grab Flyer hands and lean squat down into L-Basing.",
+    "difficulty": "easy",
     "position": {
       "x": -221,
       "y": 325
@@ -522,6 +581,7 @@
     "id": "l-sit-with-outside-legs",
     "name": "L-Sit with outside legs",
     "description": "L-Sit, but Flyer straddles and has arms inside the legs",
+    "difficulty": "intermediate",
     "position": {
       "x": -131,
       "y": 132
