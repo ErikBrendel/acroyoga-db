@@ -224,7 +224,8 @@
   {
     "fromPoseId": "extended-f2h",
     "toPoseId": "chair",
-    "difficulty": "intermediate"
+    "difficulty": "intermediate",
+    "name": "rotation"
   },
   {
     "fromPoseId": "foot-to-shin",
@@ -470,5 +471,15 @@
     "fromPoseId": "back-bird",
     "toPoseId": "straddlebat",
     "difficulty": "easy"
+  },
+  {
+    "fromPoseId": "extended-f2h",
+    "toPoseId": "low-foot-to-hand",
+    "difficulty": "hard"
+  },
+  {
+    "fromPoseId": "extended-reverse-f2h",
+    "toPoseId": "low-reverse-foot-to-hand",
+    "difficulty": "hard"
   }
 ]

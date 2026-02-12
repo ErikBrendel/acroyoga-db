@@ -95,8 +95,8 @@
     "description": "Like Reverse F2H, just straight Base arms.",
     "difficulty": "intermediate",
     "position": {
-      "x": -144,
-      "y": 928
+      "x": 181,
+      "y": 1178
     }
   },
   {
@@ -116,8 +116,8 @@
     "mirroredPoseId": "vishnus-couch-right",
     "difficulty": "easy",
     "position": {
-      "x": -235,
-      "y": 1301
+      "x": -297,
+      "y": 1289
     }
   },
   {
@@ -190,8 +190,8 @@
     "mirroredPoseId": "mono-reverse-shin-right",
     "difficulty": "intermediate",
     "position": {
-      "x": 1133,
-      "y": -450
+      "x": 1078,
+      "y": -444
     }
   },
   {
@@ -212,8 +212,8 @@
     "mirroredPoseId": "supported-mono-kneepit-right",
     "difficulty": "intermediate",
     "position": {
-      "x": 800,
-      "y": -759
+      "x": 805,
+      "y": -711
     }
   },
   {
@@ -234,8 +234,8 @@
     "mirroredPoseId": "mono-backbird-right",
     "difficulty": "intermediate",
     "position": {
-      "x": 504,
-      "y": -450
+      "x": 538,
+      "y": -449
     }
   },
   {
@@ -325,8 +325,8 @@
     "description": "",
     "difficulty": "intermediate",
     "position": {
-      "x": 815,
-      "y": 119
+      "x": -361,
+      "y": -498
     }
   },
   {
@@ -355,8 +355,8 @@
     "description": "Base slightly squatting, Flyer standing on knees, facing each other. Both holding wrists with long arms, leaning back",
     "difficulty": "easy",
     "position": {
-      "x": 1400,
-      "y": 215
+      "x": 1419,
+      "y": 231
     }
   },
   {
@@ -377,8 +377,8 @@
     "mirroredPoseId": "standing-flag-left",
     "difficulty": "intermediate",
     "position": {
-      "x": 1454,
-      "y": 28
+      "x": 1509,
+      "y": 71
     }
   },
   {
@@ -510,7 +510,7 @@
     "difficulty": "intermediate",
     "position": {
       "x": 904,
-      "y": 335
+      "y": 342
     }
   },
   {
@@ -542,8 +542,8 @@
     "mirroredPoseId": "cross-legged-straddlebat-right",
     "difficulty": "intermediate",
     "position": {
-      "x": -92,
-      "y": 586
+      "x": -90,
+      "y": 566
     }
   },
   {
