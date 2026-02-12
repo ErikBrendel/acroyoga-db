@@ -17,7 +17,8 @@
   {
     "fromPoseId": "throne",
     "toPoseId": "reverse-throne",
-    "difficulty": "intermediate"
+    "difficulty": "intermediate",
+    "name": "Throne rotation"
   },
   {
     "fromPoseId": "shoulder-stand",
@@ -342,8 +343,7 @@
     "fromPoseId": "throne",
     "toPoseId": "extended-reverse-h2h",
     "nonReversible": true,
-    "difficulty": "intermediate",
-    "name": "Throne rotation"
+    "difficulty": "intermediate"
   },
   {
     "fromPoseId": "extended-reverse-h2h",
