@@ -1,4 +1,4 @@
-import {useMemo, useState, useEffect} from 'react';
+import {useMemo, useState} from 'react';
 import {usePoseData} from './hooks/usePoseData';
 import {PoseGraph} from './components/PoseGraph';
 import {PoseDetailSidebar} from './components/PoseDetailSidebar';
