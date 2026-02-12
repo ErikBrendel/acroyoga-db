@@ -23,6 +23,8 @@ const apiRoutes: Record<string, ApiHandler> = {
       fromPoseId: body.fromPoseId,
       toPoseId: body.toPoseId,
       ...(body.nonReversible && { nonReversible: true }),
+      ...(body.difficulty && { difficulty: body.difficulty }),
+      ...(body.name && { name: body.name }),
     })
 
     const fromPose = poses.find((p: any) => p.id === body.fromPoseId)
@@ -46,6 +48,8 @@ const apiRoutes: Record<string, ApiHandler> = {
             fromPoseId: expectedFromId,
             toPoseId: expectedToId,
             ...(body.nonReversible && { nonReversible: true }),
+            ...(body.difficulty && { difficulty: body.difficulty }),
+            ...(body.name && { name: body.name }),
           })
         }
       }
@@ -101,6 +105,65 @@ const apiRoutes: Record<string, ApiHandler> = {
     return { code: 200, data: { success: true } }
   },
 
+  'PUT:/api/transitions': (body) => {
+    if (!body.fromPoseId || !body.toPoseId) {
+      return { code: 400, data: { error: 'fromPoseId and toPoseId are required' } }
+    }
+
+    const transitions = JSON.parse(fs.readFileSync(transitionsPath, 'utf-8'))
+
+    const transitionIndex = transitions.findIndex((t: any) =>
+      t.fromPoseId === body.fromPoseId && t.toPoseId === body.toPoseId
+    )
+
+    if (transitionIndex === -1) {
+      return { code: 404, data: { error: 'Transition not found' } }
+    }
+
+    transitions[transitionIndex] = {
+      fromPoseId: body.fromPoseId,
+      toPoseId: body.toPoseId,
+      ...(body.nonReversible !== undefined && { nonReversible: body.nonReversible }),
+      ...(body.difficulty !== undefined && body.difficulty !== '' && { difficulty: body.difficulty }),
+      ...(body.name !== undefined && body.name !== '' && { name: body.name }),
+    }
+
+    // Update mirrored transition if it exists
+    const poses = JSON.parse(fs.readFileSync(posesPath, 'utf-8'))
+    const fromPose = poses.find((p: any) => p.id === body.fromPoseId)
+    const toPose = poses.find((p: any) => p.id === body.toPoseId)
+
+    const fromMirrorId = fromPose?.mirroredPoseId
+    const toMirrorId = toPose?.mirroredPoseId
+
+    if (fromMirrorId || toMirrorId) {
+      const expectedFromId = fromMirrorId || body.fromPoseId
+      const expectedToId = toMirrorId || body.toPoseId
+
+      if (expectedFromId !== body.fromPoseId || expectedToId !== body.toPoseId) {
+        const mirroredTransitionIndex = transitions.findIndex((t: any) =>
+          t.fromPoseId === expectedFromId && t.toPoseId === expectedToId
+        )
+
+        if (mirroredTransitionIndex !== -1) {
+          transitions[mirroredTransitionIndex] = {
+            fromPoseId: expectedFromId,
+            toPoseId: expectedToId,
+            ...(body.nonReversible !== undefined && { nonReversible: body.nonReversible }),
+            ...(body.difficulty !== undefined && body.difficulty !== '' && { difficulty: body.difficulty }),
+            ...(body.name !== undefined && body.name !== '' && { name: body.name }),
+          }
+        }
+      }
+    }
+
+    const tmpPath = transitionsPath + '.tmp'
+    fs.writeFileSync(tmpPath, JSON.stringify(transitions, null, 2) + '\n')
+    fs.renameSync(tmpPath, transitionsPath)
+
+    return { code: 200, data: { success: true, transition: transitions[transitionIndex] } }
+  },
+
   'POST:/api/poses': (body) => {
     if (!body.id) {
       return { code: 400, data: { error: 'id is required' } }
@@ -127,6 +190,7 @@ const apiRoutes: Record<string, ApiHandler> = {
       ...(body.name && { name: body.name }),
       ...(body.description && { description: body.description }),
       ...(body.mirroredPoseId && { mirroredPoseId: body.mirroredPoseId }),
+      ...(body.difficulty && { difficulty: body.difficulty }),
     })
 
     // Update the mirrored pose to link back
@@ -156,11 +220,30 @@ const apiRoutes: Record<string, ApiHandler> = {
       return { code: 404, data: { error: 'Pose not found' } }
     }
 
+    const existingPose = poses[poseIndex]
     poses[poseIndex] = {
       id: body.id,
       ...(body.name !== undefined && { name: body.name }),
       ...(body.description !== undefined && { description: body.description }),
       ...(body.mirroredPoseId !== undefined && { mirroredPoseId: body.mirroredPoseId }),
+      ...(body.difficulty !== undefined && body.difficulty !== '' && { difficulty: body.difficulty }),
+      ...(existingPose.position && { position: existingPose.position }),
+    }
+
+    // Update mirrored pose difficulty if it exists
+    if (body.difficulty !== undefined && existingPose.mirroredPoseId) {
+      const mirroredPoseIndex = poses.findIndex((p: any) => p.id === existingPose.mirroredPoseId)
+      if (mirroredPoseIndex !== -1) {
+        const mirroredPose = poses[mirroredPoseIndex]
+        poses[mirroredPoseIndex] = {
+          ...mirroredPose,
+          ...(body.difficulty !== '' ? { difficulty: body.difficulty } : {}),
+        }
+        // Remove difficulty if setting to empty string
+        if (body.difficulty === '' && poses[mirroredPoseIndex].difficulty !== undefined) {
+          delete poses[mirroredPoseIndex].difficulty
+        }
+      }
     }
 
     const tmpPath = posesPath + '.tmp'

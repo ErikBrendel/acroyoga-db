@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { PoseDifficulty } from '../types/data';
 import { createPose } from '../api/poses';
 import { mirrorText } from '../utils/mirrorText';
 
@@ -12,6 +13,7 @@ export function AddPoseDialog({ isOpen, onClose, onSuccess }: AddPoseDialogProps
   const [id, setId] = useState('');
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const [difficulty, setDifficulty] = useState<PoseDifficulty>('easy');
   const [createMirrored, setCreateMirrored] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -48,6 +50,7 @@ export function AddPoseDialog({ isOpen, onClose, onSuccess }: AddPoseDialogProps
           id,
           ...(name && { name }),
           ...(description && { description }),
+          difficulty,
           mirroredPoseId: mirroredId,
         });
 
@@ -55,6 +58,7 @@ export function AddPoseDialog({ isOpen, onClose, onSuccess }: AddPoseDialogProps
           id: mirroredId,
           ...(mirroredName && { name: mirroredName }),
           ...(mirroredDescription && { description: mirroredDescription }),
+          difficulty,
           mirroredPoseId: id,
         });
       } else {
@@ -62,12 +66,14 @@ export function AddPoseDialog({ isOpen, onClose, onSuccess }: AddPoseDialogProps
           id,
           ...(name && { name }),
           ...(description && { description }),
+          difficulty,
         });
       }
 
       setId('');
       setName('');
       setDescription('');
+      setDifficulty('easy');
       setCreateMirrored(false);
       onSuccess();
       onClose();
@@ -82,6 +88,7 @@ export function AddPoseDialog({ isOpen, onClose, onSuccess }: AddPoseDialogProps
     setId('');
     setName('');
     setDescription('');
+    setDifficulty('easy');
     setCreateMirrored(false);
     setError(null);
     onClose();
@@ -134,6 +141,22 @@ export function AddPoseDialog({ isOpen, onClose, onSuccess }: AddPoseDialogProps
               placeholder="Describe the pose..."
               rows={3}
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Difficulty <span className="text-red-500">*</span>
+            </label>
+            <select
+              value={difficulty}
+              onChange={(e) => setDifficulty(e.target.value as PoseDifficulty)}
+              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            >
+              <option value="easy">Easy</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="hard">Hard</option>
+            </select>
           </div>
 
           <div className="flex items-center">

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Pose } from '../types/data';
+import { Pose, TransitionDifficulty } from '../types/data';
 import { createTransition } from '../api/transitions';
 
 interface AddTransitionFormProps {
@@ -12,6 +12,7 @@ export function AddTransitionForm({ currentPoseId, allPoses, onSuccess }: AddTra
   const [isOpen, setIsOpen] = useState(false);
   const [targetPoseId, setTargetPoseId] = useState('');
   const [nonReversible, setNonReversible] = useState(false);
+  const [difficulty, setDifficulty] = useState<TransitionDifficulty>('easy');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,11 +36,13 @@ export function AddTransitionForm({ currentPoseId, allPoses, onSuccess }: AddTra
         fromPoseId: currentPoseId,
         toPoseId: targetPoseId,
         nonReversible,
+        difficulty,
       });
 
       setIsOpen(false);
       setTargetPoseId('');
       setNonReversible(false);
+      setDifficulty('easy');
       onSuccess();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create transition');
@@ -82,6 +85,23 @@ export function AddTransitionForm({ currentPoseId, allPoses, onSuccess }: AddTra
           </select>
         </div>
 
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Difficulty <span className="text-red-500">*</span>
+          </label>
+          <select
+            value={difficulty}
+            onChange={(e) => setDifficulty(e.target.value as TransitionDifficulty)}
+            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+            required
+          >
+            <option value="trivial">Trivial</option>
+            <option value="easy">Easy</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+
         <div className="flex items-center">
           <input
             type="checkbox"
@@ -115,6 +135,7 @@ export function AddTransitionForm({ currentPoseId, allPoses, onSuccess }: AddTra
               setIsOpen(false);
               setTargetPoseId('');
               setNonReversible(false);
+              setDifficulty('easy');
               setError(null);
             }}
             className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors font-medium text-sm"

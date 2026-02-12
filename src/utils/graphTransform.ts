@@ -9,6 +9,7 @@ import {
   SimulationNodeDatum,
   SimulationLinkDatum,
 } from 'd3-force';
+import { getPoseColor, getTransitionColor } from './difficultyColors';
 
 export interface GraphData {
   nodes: Node[];
@@ -104,7 +105,7 @@ export function transformToGraph(poses: Pose[], transitions: Transition[]): Grap
         mirroredPoseId: pose.mirroredPoseId,
       },
       style: {
-        background: pose.mirroredPoseId ? '#93c5fd' : '#6366f1',
+        background: getPoseColor(pose.difficulty),
         color: 'white',
         border: '2px solid #1e40af',
         borderRadius: '50%',
@@ -124,7 +125,7 @@ export function transformToGraph(poses: Pose[], transitions: Transition[]): Grap
   const transitionEdges: Edge[] = transitions.map((transition) => {
     const isReversible = !transition.nonReversible;
     const edgeId = `${transition.fromPoseId}-to-${transition.toPoseId}`;
-    const color = isReversible ? '#10b981' : '#3b82f6';
+    const color = getTransitionColor(transition.difficulty);
 
     return {
       id: edgeId,
@@ -138,6 +139,7 @@ export function transformToGraph(poses: Pose[], transitions: Transition[]): Grap
       },
       data: {
         nodes, // Pass nodes for collision detection
+        isReversible,
       },
     };
   });

@@ -2,6 +2,16 @@ export interface TransitionCreateRequest {
   fromPoseId: string;
   toPoseId: string;
   nonReversible?: boolean;
+  difficulty: 'trivial' | 'easy' | 'intermediate' | 'hard';
+  name?: string;
+}
+
+export interface TransitionUpdateRequest {
+  fromPoseId: string;
+  toPoseId: string;
+  nonReversible?: boolean;
+  difficulty: 'trivial' | 'easy' | 'intermediate' | 'hard';
+  name?: string;
 }
 
 export interface TransitionDeleteRequest {
@@ -29,6 +39,24 @@ export async function createTransition(request: TransitionCreateRequest): Promis
 
   if (!response.ok) {
     throw new Error(data.error || 'Failed to create transition');
+  }
+
+  return data;
+}
+
+export async function updateTransition(request: TransitionUpdateRequest): Promise<ApiResponse> {
+  const response = await fetch('/api/transitions', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(request),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to update transition');
   }
 
   return data;

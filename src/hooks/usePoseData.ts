@@ -128,6 +128,11 @@ function validateData(poses: Pose[], transitions: Transition[], flows: Flow[]): 
               errors.push(`Pose "${pose.id}": mirrored pose description does not match (expected mirrored version)`);
             }
           }
+
+          // Check that mirrored poses have the same difficulty
+          if (pose.difficulty !== mirroredPose.difficulty) {
+            errors.push(`Pose "${pose.id}": difficulty "${pose.difficulty || 'unset'}" does not match mirrored pose "${mirroredPose.id}" difficulty "${mirroredPose.difficulty || 'unset'}"`);
+          }
         }
       }
     }
@@ -212,6 +217,16 @@ function validateData(poses: Pose[], transitions: Transition[], flows: Flow[]): 
 
       if (!hasMirroredTransition) {
         errors.push(`Transition "${transition.fromPoseId}" → "${transition.toPoseId}": missing mirrored transition "${expectedFromId}" → "${expectedToId}"`);
+      } else {
+        // Check that mirrored transitions have the same difficulty
+        const mirroredTransition = transitions.find(t =>
+          (t.fromPoseId === expectedFromId && t.toPoseId === expectedToId) ||
+          (!transition.nonReversible && !t.nonReversible && t.fromPoseId === expectedToId && t.toPoseId === expectedFromId)
+        );
+
+        if (mirroredTransition && transition.difficulty !== mirroredTransition.difficulty) {
+          errors.push(`Transition "${transition.fromPoseId}" → "${transition.toPoseId}": difficulty "${transition.difficulty || 'unset'}" does not match mirrored transition "${expectedFromId}" → "${expectedToId}" difficulty "${mirroredTransition.difficulty || 'unset'}"`);
+        }
       }
     }
   });

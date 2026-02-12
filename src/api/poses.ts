@@ -3,6 +3,7 @@ export interface PoseCreateRequest {
   name?: string;
   description?: string;
   mirroredPoseId?: string;
+  difficulty: 'easy' | 'intermediate' | 'hard';
 }
 
 export interface PoseUpdateRequest {
@@ -10,6 +11,7 @@ export interface PoseUpdateRequest {
   name?: string;
   description?: string;
   mirroredPoseId?: string;
+  difficulty: 'easy' | 'intermediate' | 'hard';
 }
 
 export interface ApiResponse<T = any> {

@@ -1,33 +1,29 @@
 import {useState} from 'react';
 import {isLocalEditMode} from '../utils/editMode';
+import {TransitionDifficulty} from '../types/data';
+import {getTransitionColor} from '../utils/difficultyColors';
 
 interface PoseButtonProps {
   poseId: string;
   poseName: string | undefined;
   direction: 'bidirectional' | 'to' | 'from';
+  difficulty: TransitionDifficulty;
+  transitionName?: string;
   onSelectPose: (poseId: string) => void;
   onDelete?: () => void;
+  onDifficultyChange?: (difficulty: TransitionDifficulty) => void;
+  onNameChange?: (name: string) => void;
 }
 
-export function PoseButton({ poseId, poseName, direction, onSelectPose, onDelete }: PoseButtonProps) {
+export function PoseButton({ poseId, poseName, direction, difficulty, transitionName, onSelectPose, onDelete, onDifficultyChange, onNameChange }: PoseButtonProps) {
   const [showConfirm, setShowConfirm] = useState(false);
-    const symbols = {
+  const symbols = {
     bidirectional: '↔',
     to: '→',
     from: '←',
   };
 
-  const colors = {
-    bidirectional: 'text-green-600 hover:text-green-800',
-    to: 'text-blue-600 hover:text-blue-800',
-    from: 'text-blue-600 hover:text-blue-800',
-  };
-
-  const borderColors = {
-    bidirectional: 'border-green-500',
-    to: 'border-blue-500',
-    from: 'border-blue-500',
-  };
+  const difficultyColor = getTransitionColor(difficulty);
 
   const handleDelete = () => {
     if (showConfirm && onDelete) {
@@ -39,14 +35,45 @@ export function PoseButton({ poseId, poseName, direction, onSelectPose, onDelete
   };
 
   return (
-    <div className={`border-l-4 ${borderColors[direction]} pl-3 py-2 ${showConfirm ? 'bg-red-50' : ''}`}>
-      <div className="flex items-center justify-between">
-        <button
-          onClick={() => onSelectPose(poseId)}
-          className={`${colors[direction]} hover:underline font-medium text-left flex-1`}
-        >
-          {symbols[direction]} {poseName || poseId}
-        </button>
+    <div className={`border-l-4 pl-3 py-2 ${showConfirm ? 'bg-red-50' : ''}`} style={{ borderColor: difficultyColor }}>
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex-1">
+          <button
+            onClick={() => onSelectPose(poseId)}
+            className="hover:underline font-medium text-left block"
+            style={{ color: difficultyColor }}
+          >
+            {symbols[direction]} {poseName || poseId}
+          </button>
+          {transitionName && (
+            <div className="text-xs text-gray-600 italic ml-4">
+              {transitionName}
+            </div>
+          )}
+          {isLocalEditMode() && onNameChange && (
+            <input
+              type="text"
+              value={transitionName || ''}
+              onChange={(e) => onNameChange(e.target.value)}
+              placeholder="Transition name (optional)"
+              className="w-full mt-1 px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+              onClick={(e) => e.stopPropagation()}
+            />
+          )}
+        </div>
+        {isLocalEditMode() && onDifficultyChange && (
+          <select
+            value={difficulty}
+            onChange={(e) => onDifficultyChange(e.target.value as TransitionDifficulty)}
+            className="px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <option value="trivial">Trivial</option>
+            <option value="easy">Easy</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="hard">Hard</option>
+          </select>
+        )}
         {isLocalEditMode() && onDelete && (
           <div className="ml-2 flex items-center gap-1">
             {showConfirm ? (

@@ -6,6 +6,7 @@ import {FlowsList} from './components/FlowsList';
 import {AddPoseDialog} from './components/AddPoseDialog';
 import {AddFlowDialog} from './components/AddFlowDialog';
 import {PoseEditor3DDemo} from './components/PoseEditor3DDemo';
+import {DifficultyGuide} from './components/DifficultyGuide';
 import {transformToGraph, PosePosition} from './utils/graphTransform';
 import {isLocalEditMode} from './utils/editMode';
 import {updatePosePositions} from './api/layout';
@@ -127,12 +128,13 @@ function App() {
 
   return (
     <div className="w-screen h-screen relative bg-gray-50">
-      <div className="absolute top-0 left-0 p-4 z-10 bg-white shadow-md rounded-br-lg max-w-full">
+      <div className="absolute top-0 left-0 p-4 z-20 bg-white shadow-md rounded-br-lg max-w-full">
         <div className="flex items-center gap-3 flex-wrap">
           <div>
             <h1 className="text-xl font-bold text-gray-900">Acroyoga Pose Graph</h1>
             <p className="text-sm text-gray-600">{poses.length} poses, {transitions.length} transitions</p>
           </div>
+          <DifficultyGuide />
           {isLocalEditMode() && (
             <>
               <div className="px-3 py-1 bg-green-100 border border-green-300 rounded-full">
