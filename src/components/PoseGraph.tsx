@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useEffect } from 'react';
+import { useCallback, useMemo, useEffect, useState } from 'react';
 import {
   ReactFlow,
   Controls,
@@ -9,6 +9,8 @@ import {
   useEdgesState,
   Node,
   Edge,
+  useReactFlow,
+  useViewport,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { PoseNode } from './PoseNode';
@@ -24,6 +26,37 @@ interface PoseGraphProps {
   onSelectPose: (poseId: string | null) => void;
   onNodeDragStop?: (nodeId: string, position: { x: number; y: number }) => void;
   isEditMode?: boolean;
+}
+
+function SelectionRings({ selectedPoseId, nodes }: { selectedPoseId: string | null; nodes: Node[] }) {
+  const { x, y, zoom } = useViewport();
+  const selectedNode = selectedPoseId ? nodes.find(n => n.id === selectedPoseId) : null;
+
+  if (!selectedNode) return null;
+
+  const centerX = selectedNode.position.x + 60;
+  const centerY = selectedNode.position.y + 60;
+
+  return (
+    <svg
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        pointerEvents: 'none',
+        overflow: 'visible',
+        zIndex: 100,
+      }}
+    >
+      <g transform={`translate(${x}, ${y}) scale(${zoom})`}>
+        <circle cx={centerX} cy={centerY} r="70" fill="none" stroke="#3b82f6" strokeWidth={4} opacity="0.6" />
+        <circle cx={centerX} cy={centerY} r="80" fill="none" stroke="#3b82f6" strokeWidth={4} opacity="0.4" />
+        <circle cx={centerX} cy={centerY} r="90" fill="none" stroke="#3b82f6" strokeWidth={4} opacity="0.2" />
+      </g>
+    </svg>
+  );
 }
 
 export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, matchingPoseIds, onSelectPose, onNodeDragStop, isEditMode = false }: PoseGraphProps) {
@@ -146,25 +179,24 @@ export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, matchingPo
     const isSearchMatch = matchingPoseIds ? matchingPoseIds.has(node.id) : false;
     const baseStyle = node.style || {};
 
-    let opacity = 1;
-    if (selectedPoseId && node.id !== selectedPoseId) {
-      opacity = connectedNodeIds.has(node.id) ? 0.6 : 0.25;
+    // Build combined filter with glows (no selected glow - using SVG circles instead)
+    const filters: string[] = [];
+
+    if (isSearchMatch) {
+      // Green glow for search match
+      filters.push('drop-shadow(0 0 30px #10b981) drop-shadow(0 0 50px #059669)');
     }
 
-    // Search highlight overrides flow highlight with stronger green glow
-    let filter: string | undefined;
-    if (isSearchMatch) {
-      filter = 'drop-shadow(0 0 30px #10b981) drop-shadow(0 0 50px #059669)';
-    } else if (isInFlow) {
-      filter = 'drop-shadow(0 0 8px #fbbf24) drop-shadow(0 0 12px #f59e0b)';
+    if (isInFlow) {
+      // Amber glow for flow
+      filters.push('drop-shadow(0 0 8px #fbbf24) drop-shadow(0 0 12px #f59e0b)');
     }
 
     return {
       ...node,
       style: {
         ...baseStyle,
-        opacity,
-        filter,
+        filter: filters.length > 0 ? filters.join(' ') : undefined,
       },
     };
   });
@@ -211,6 +243,7 @@ export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, matchingPo
         <Background variant={BackgroundVariant.Dots} gap={16} size={1} />
         <Controls />
         <MiniMap />
+        <SelectionRings selectedPoseId={selectedPoseId} nodes={localNodes} />
       </ReactFlow>
     </div>
   );
