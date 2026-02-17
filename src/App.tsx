@@ -205,6 +205,7 @@ function App() {
             matchingPoseIds={matchingPoseIds}
             onSelectPose={setSelectedPoseId}
             onNodeDragStop={isLocalEditMode() ? handleNodeDragStop : undefined}
+            isEditMode={isLocalEditMode()}
           />
         </div>
 

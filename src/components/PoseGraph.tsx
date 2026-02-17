@@ -23,9 +23,10 @@ interface PoseGraphProps {
   matchingPoseIds: Set<string> | undefined;
   onSelectPose: (poseId: string | null) => void;
   onNodeDragStop?: (nodeId: string, position: { x: number; y: number }) => void;
+  isEditMode?: boolean;
 }
 
-export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, matchingPoseIds, onSelectPose, onNodeDragStop }: PoseGraphProps) {
+export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, matchingPoseIds, onSelectPose, onNodeDragStop, isEditMode = false }: PoseGraphProps) {
   const [localNodes, setNodes, onNodesChange] = useNodesState(nodes);
   const [localEdges, setEdges, onEdgesChange] = useEdgesState(edges);
 
@@ -201,7 +202,7 @@ export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, matchingPo
         onNodeDragStop={handleNodeDragStop}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
-        nodesDraggable={true}
+        nodesDraggable={isEditMode}
         nodesConnectable={false}
         fitView
         minZoom={0.1}
