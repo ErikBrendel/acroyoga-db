@@ -152,7 +152,7 @@ function App() {
   return (
     <div className="w-screen h-screen flex flex-col md:relative bg-gray-50">
       {/* Header wrapper - flows positioned absolutely relative to this */}
-      <div className="relative shrink-0 md:absolute md:top-0 md:left-0 z-20">
+      <div className={`relative shrink-0 md:absolute md:top-0 md:left-0 z-20 transition-transform ${selectedPoseId ? 'max-md:hidden' : ''}`}>
         {/* Top bar - always visible */}
         <div className="p-4 bg-white shadow-md md:rounded-br-lg">
           <div className="flex flex-wrap items-center gap-4">
