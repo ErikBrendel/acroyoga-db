@@ -187,6 +187,7 @@ function App() {
         <FlowsList
           flows={flows}
           poses={poses}
+          transitions={transitions}
           activeFlowName={activeFlowName}
           onFlowClick={handleFlowClick}
         />

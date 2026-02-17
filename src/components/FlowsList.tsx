@@ -1,15 +1,18 @@
 import { useState } from 'react';
-import { Flow, Pose } from '../types/data';
+import { Flow, Pose, Transition } from '../types/data';
 import { getFlowVariants, getFlowVariantKey } from '../utils/flowMirror';
+import { calculateFlowDifficulty } from '../utils/flowDifficulty';
+import { StarDifficulty } from './StarDifficulty';
 
 interface FlowsListProps {
   flows: Flow[];
   poses: Pose[];
+  transitions: Transition[];
   activeFlowName: string | null;
   onFlowClick: (flowName: string) => void;
 }
 
-export function FlowsList({ flows, poses, activeFlowName, onFlowClick }: FlowsListProps) {
+export function FlowsList({ flows, poses, transitions, activeFlowName, onFlowClick }: FlowsListProps) {
   const [isExpanded, setIsExpanded] = useState(true);
 
   if (flows.length === 0) {
@@ -31,6 +34,7 @@ export function FlowsList({ flows, poses, activeFlowName, onFlowClick }: FlowsLi
           {flows.slice().sort((a, b) => a.name.localeCompare(b.name)).map((flow) => {
             const variants = getFlowVariants(flow, poses);
             const hasMirror = variants.length > 1;
+            const difficulty = calculateFlowDifficulty(flow, poses, transitions);
 
             return (
               <div key={flow.name} className="border-b border-gray-100 last:border-b-0">
@@ -43,8 +47,11 @@ export function FlowsList({ flows, poses, activeFlowName, onFlowClick }: FlowsLi
                         : 'text-gray-700'
                     }`}
                   >
-                    {flow.name}
-                    <span className="text-xs text-gray-500 ml-2">({flow.poseIds.length})</span>
+                    <div className="flex items-center gap-2">
+                      <span>{flow.name}</span>
+                      <span className="text-xs text-gray-500">({flow.poseIds.length})</span>
+                      <StarDifficulty rating={difficulty} />
+                    </div>
                   </button>
                   {hasMirror && (
                     <button
