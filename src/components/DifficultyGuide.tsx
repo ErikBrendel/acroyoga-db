@@ -8,7 +8,11 @@ export function DifficultyGuide() {
     <div className="relative inline-block">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="text-gray-500 hover:text-gray-700 text-sm font-medium flex items-center gap-1"
+        className={`text-sm font-medium flex items-center gap-1 px-3 py-1.5 rounded-full transition-all ${
+          isOpen
+            ? 'text-blue-600 bg-blue-50 shadow-md'
+            : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+        }`}
         title="Difficulty Guidelines"
       >
         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -18,7 +22,7 @@ export function DifficultyGuide() {
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-[-150px] mt-6 w-96 bg-white border border-gray-300 rounded-lg shadow-lg p-4 z-[100] text-xs">
+        <div className="fixed top-20 left-2 w-96 max-w-[calc(100vw-1rem)] bg-white border border-gray-300 rounded-lg shadow-lg p-4 z-[100] text-xs">
           <h3 className="font-semibold text-gray-900 mb-3 text-sm">Difficulty Guidelines</h3>
 
           <div className="space-y-2">

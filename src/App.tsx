@@ -150,16 +150,16 @@ function App() {
   };
 
   return (
-    <div className="w-screen h-screen relative bg-gray-50">
+    <div className="w-screen h-screen flex flex-col md:relative bg-gray-50">
       {/* Top bar - always visible */}
-      <div className="absolute top-0 left-0 p-4 z-20 bg-white shadow-md rounded-br-lg">
-        <div className="flex items-center gap-4">
-          <div>
+      <div className="md:absolute md:top-0 md:left-0 p-4 z-20 bg-white shadow-md md:rounded-br-lg">
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="flex-shrink-0">
             <h1 className="text-xl font-bold text-gray-900">Acroyoga Pose Graph</h1>
             <p className="text-sm text-gray-600">{poses.length} poses, {transitions.length} transitions</p>
           </div>
           <DifficultyGuide />
-          <div className="relative w-64">
+          <div className="relative w-full md:w-64">
             <input
               type="text"
               value={searchInput}
@@ -180,6 +180,46 @@ function App() {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Flows list - positioned differently on mobile vs desktop */}
+      <div className="md:absolute md:top-20 md:left-4 z-10 shrink-0">
+        <FlowsList
+          flows={flows}
+          poses={poses}
+          activeFlowName={activeFlowName}
+          onFlowClick={handleFlowClick}
+        />
+      </div>
+
+      {/* Main content area - flex column on mobile, fills remaining space */}
+      <div className="flex-1 flex flex-col overflow-hidden md:contents">
+        {/* Graph - top half on mobile, absolute positioned on desktop */}
+        <div className="flex-1 relative md:absolute md:inset-0">
+          <PoseGraph
+            nodes={nodes}
+            edges={edges}
+            selectedPoseId={selectedPoseId}
+            activeFlow={activeFlow}
+            matchingPoseIds={matchingPoseIds}
+            onSelectPose={setSelectedPoseId}
+            onNodeDragStop={isLocalEditMode() ? handleNodeDragStop : undefined}
+          />
+        </div>
+
+        {/* Sidebar - bottom half on mobile, absolute right side on desktop */}
+        <PoseDetailSidebar
+          selectedPoseId={selectedPoseId}
+          poses={poses}
+          transitions={transitions}
+          flows={flows}
+          activeFlowName={activeFlowName}
+          onSelectPose={setSelectedPoseId}
+          onFlowClick={handleFlowClick}
+          onDataChange={isLocalEditMode() ? refetch : undefined}
+          onUnpinNode={isLocalEditMode() ? handleUnpinNode : undefined}
+          pendingPositions={pendingPositions}
+        />
       </div>
 
       {/* Edit mode floating toolbar - bottom left */}
@@ -236,33 +276,6 @@ function App() {
           </div>
         </div>
       )}
-      <FlowsList
-        flows={flows}
-        poses={poses}
-        activeFlowName={activeFlowName}
-        onFlowClick={handleFlowClick}
-      />
-      <PoseGraph
-        nodes={nodes}
-        edges={edges}
-        selectedPoseId={selectedPoseId}
-        activeFlow={activeFlow}
-        matchingPoseIds={matchingPoseIds}
-        onSelectPose={setSelectedPoseId}
-        onNodeDragStop={isLocalEditMode() ? handleNodeDragStop : undefined}
-      />
-      <PoseDetailSidebar
-        selectedPoseId={selectedPoseId}
-        poses={poses}
-        transitions={transitions}
-        flows={flows}
-        activeFlowName={activeFlowName}
-        onSelectPose={setSelectedPoseId}
-        onFlowClick={handleFlowClick}
-        onDataChange={isLocalEditMode() ? refetch : undefined}
-        onUnpinNode={isLocalEditMode() ? handleUnpinNode : undefined}
-        pendingPositions={pendingPositions}
-      />
       <AddPoseDialog
         isOpen={isAddPoseDialogOpen}
         onClose={() => setIsAddPoseDialogOpen(false)}

@@ -17,7 +17,7 @@ export function FlowsList({ flows, poses, activeFlowName, onFlowClick }: FlowsLi
   }
 
   return (
-    <div className="absolute top-20 z-10 bg-white shadow-lg rounded-lg border border-gray-200 w-64">
+    <div className="bg-white shadow-lg rounded-lg border border-gray-200 w-full md:w-64">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full px-4 py-3 flex items-center justify-between text-left font-semibold text-gray-900 hover:bg-gray-50"

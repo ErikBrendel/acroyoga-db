@@ -275,7 +275,7 @@ export function PoseDetailSidebar({
   };
 
   return (
-    <div className="absolute top-0 right-0 h-full w-96 bg-white shadow-2xl border-l border-gray-200 overflow-y-auto z-10">
+    <div className="flex-1 md:absolute md:top-0 md:right-0 md:h-full w-full md:w-96 bg-white shadow-2xl border-t md:border-t-0 md:border-l border-gray-200 overflow-y-auto z-10">
       <div className="p-6">
         <div className="flex justify-between items-start mb-4">
           {isEditing ? (
