@@ -151,46 +151,49 @@ function App() {
 
   return (
     <div className="w-screen h-screen flex flex-col md:relative bg-gray-50">
-      {/* Top bar - always visible */}
-      <div className="md:absolute md:top-0 md:left-0 p-4 z-20 bg-white shadow-md md:rounded-br-lg">
-        <div className="flex flex-wrap items-center gap-4">
-          <div className="flex-shrink-0">
-            <h1 className="text-xl font-bold text-gray-900">Acroyoga Pose Graph</h1>
-            <p className="text-sm text-gray-600">{poses.length} poses, {transitions.length} transitions</p>
-          </div>
-          <DifficultyGuide />
-          <div className="relative w-full md:w-64">
-            <input
-              type="text"
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              placeholder="Search poses..."
-              className="px-3 py-2 pr-8 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
-            />
-            {searchInput && (
-              <button
-                onClick={() => setSearchInput('')}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                title="Clear search"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            )}
+      {/* Header wrapper - flows positioned absolutely relative to this */}
+      <div className="relative shrink-0 md:absolute md:top-0 md:left-0 z-20">
+        {/* Top bar - always visible */}
+        <div className="p-4 bg-white shadow-md md:rounded-br-lg">
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex-shrink-0">
+              <h1 className="text-xl font-bold text-gray-900">Acroyoga Pose Graph</h1>
+              <p className="text-sm text-gray-600">{poses.length} poses, {transitions.length} transitions</p>
+            </div>
+            <DifficultyGuide />
+            <div className="relative w-full md:w-64">
+              <input
+                type="text"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder="Search poses..."
+                className="px-3 py-2 pr-8 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+              />
+              {searchInput && (
+                <button
+                  onClick={() => setSearchInput('')}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  title="Clear search"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Flows list - positioned differently on mobile vs desktop */}
-      <div className="md:absolute md:top-20 md:left-4 z-10 shrink-0">
-        <FlowsList
-          flows={flows}
-          poses={poses}
-          transitions={transitions}
-          activeFlowName={activeFlowName}
-          onFlowClick={handleFlowClick}
-        />
+        {/* Flows list - absolutely positioned below header with gap */}
+        <div className="absolute top-full left-0 right-0 px-2 mt-2 md:left-4 md:right-auto md:px-0 z-10">
+          <FlowsList
+            flows={flows}
+            poses={poses}
+            transitions={transitions}
+            activeFlowName={activeFlowName}
+            onFlowClick={handleFlowClick}
+          />
+        </div>
       </div>
 
       {/* Main content area - flex column on mobile, fills remaining space */}

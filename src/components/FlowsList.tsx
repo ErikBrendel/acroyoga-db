@@ -13,14 +13,14 @@ interface FlowsListProps {
 }
 
 export function FlowsList({ flows, poses, transitions, activeFlowName, onFlowClick }: FlowsListProps) {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   if (flows.length === 0) {
     return null;
   }
 
   return (
-    <div className="bg-white shadow-lg rounded-lg border border-gray-200 w-full md:w-64">
+    <div className="bg-white shadow-lg rounded-lg border border-gray-200 w-96 max-w-full">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full px-4 py-3 flex items-center justify-between text-left font-semibold text-gray-900 hover:bg-gray-50"
