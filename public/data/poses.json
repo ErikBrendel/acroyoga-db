@@ -586,5 +586,15 @@
       "x": 457,
       "y": 516
     }
+  },
+  {
+    "id": "standing-behind-counterbalance",
+    "name": "Standing behind counterbalance",
+    "description": "Base stands behind Flyer, both hold hands, counterbalance leaning away from each other",
+    "difficulty": "easy",
+    "position": {
+      "x": -287,
+      "y": 94
+    }
   }
 ]

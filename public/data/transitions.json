@@ -481,5 +481,10 @@
     "fromPoseId": "extended-reverse-f2h",
     "toPoseId": "low-reverse-foot-to-hand",
     "difficulty": "hard"
+  },
+  {
+    "fromPoseId": "standing-behind-counterbalance",
+    "toPoseId": "back-bird",
+    "difficulty": "easy"
   }
 ]
