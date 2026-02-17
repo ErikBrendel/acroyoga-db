@@ -486,5 +486,20 @@
     "fromPoseId": "standing-behind-counterbalance",
     "toPoseId": "back-bird",
     "difficulty": "easy"
+  },
+  {
+    "fromPoseId": "reverse-vishnus-couch-left",
+    "toPoseId": "bird-on-hands",
+    "difficulty": "intermediate"
+  },
+  {
+    "fromPoseId": "reverse-vishnus-couch-right",
+    "toPoseId": "bird-on-hands",
+    "difficulty": "intermediate"
+  },
+  {
+    "fromPoseId": "bird-on-hands",
+    "toPoseId": "reverse-star",
+    "difficulty": "intermediate"
   }
 ]

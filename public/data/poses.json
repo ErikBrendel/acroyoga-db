@@ -138,7 +138,7 @@
     "difficulty": "easy",
     "position": {
       "x": 652,
-      "y": 49
+      "y": -34
     }
   },
   {
@@ -147,8 +147,8 @@
     "description": "Base's feet on flyer's inner thighs. Flyer inverted with legs together in forward fold. (AI generated)",
     "difficulty": "intermediate",
     "position": {
-      "x": 389,
-      "y": 213
+      "x": 394,
+      "y": 240
     }
   },
   {
@@ -168,8 +168,8 @@
     "mirroredPoseId": "sidestar-right",
     "difficulty": "intermediate",
     "position": {
-      "x": 343,
-      "y": 32
+      "x": 352,
+      "y": -14
     }
   },
   {
@@ -179,8 +179,8 @@
     "mirroredPoseId": "sidestar-left",
     "difficulty": "intermediate",
     "position": {
-      "x": 357,
-      "y": -97
+      "x": 388,
+      "y": -164
     }
   },
   {
@@ -457,8 +457,8 @@
     "description": "",
     "difficulty": "intermediate",
     "position": {
-      "x": 684,
-      "y": 992
+      "x": 685,
+      "y": 952
     }
   },
   {
@@ -487,8 +487,8 @@
     "description": "",
     "difficulty": "intermediate",
     "position": {
-      "x": 504,
-      "y": -192
+      "x": 482,
+      "y": 116
     }
   },
   {
@@ -595,6 +595,26 @@
     "position": {
       "x": -287,
       "y": 94
+    }
+  },
+  {
+    "id": "reverse-vishnus-couch-left",
+    "name": "Reverse Vishnus Couch (Left)",
+    "mirroredPoseId": "reverse-vishnus-couch-right",
+    "difficulty": "easy",
+    "position": {
+      "x": 1014,
+      "y": 1262
+    }
+  },
+  {
+    "id": "reverse-vishnus-couch-right",
+    "name": "Reverse Vishnus Couch (Right)",
+    "mirroredPoseId": "reverse-vishnus-couch-left",
+    "difficulty": "easy",
+    "position": {
+      "x": 1072,
+      "y": 1143
     }
   }
 ]
