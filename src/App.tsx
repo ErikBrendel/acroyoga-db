@@ -157,7 +157,7 @@ function App() {
         <div className="p-4 bg-white shadow-md md:rounded-br-lg">
           <div className="flex flex-wrap items-center gap-4">
             <div className="flex-shrink-0">
-              <h1 className="text-xl font-bold text-gray-900">Acroyoga Pose Graph</h1>
+              <h1 className="text-xl font-bold text-gray-900">Acroyoga DB</h1>
               <p className="text-sm text-gray-600">{poses.length} poses, {transitions.length} transitions</p>
             </div>
             <DifficultyGuide />

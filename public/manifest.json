@@ -1,5 +1,5 @@
 {
-  "name": "Acroyoga Pose Graph Explorer",
+  "name": "Acroyoga DB",
   "short_name": "Acroyoga DB",
   "description": "Interactive graph explorer for acroyoga poses and transitions",
   "start_url": "./",
