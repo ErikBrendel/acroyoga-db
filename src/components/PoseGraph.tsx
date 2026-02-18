@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useEffect, useState } from 'react';
+import { useCallback, useMemo, useEffect } from 'react';
 import {
   ReactFlow,
   Controls,
@@ -9,7 +9,6 @@ import {
   useEdgesState,
   Node,
   Edge,
-  useReactFlow,
   useViewport,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
@@ -149,19 +148,6 @@ export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, matchingPo
     return edges;
   }, [activeFlow]);
 
-  const connectedNodeIds = useMemo(() => {
-    if (!selectedPoseId) return new Set<string>();
-    const connected = new Set<string>();
-    localEdges.forEach((edge) => {
-      if (edge.source === selectedPoseId) {
-        connected.add(edge.target);
-      }
-      if (edge.target === selectedPoseId) {
-        connected.add(edge.source);
-      }
-    });
-    return connected;
-  }, [selectedPoseId, localEdges]);
 
   const connectedEdgeIds = useMemo(() => {
     if (!selectedPoseId) return new Set<string>();
