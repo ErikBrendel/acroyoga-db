@@ -4,11 +4,12 @@ import { NODE_RADIUS } from '../utils/nodeConstants';
 
 // Configuration constants
 const CONTROL_POINT_SPACING = 100; // Target distance between control points (adaptive density)
-const NUM_ITERATIONS = 10;
+const MIN_SUBDIVISION_LENGTH = 180; // Edges shorter than this get no intermediate control points
+const NUM_ITERATIONS = 20;
 const INFLUENCE_RADIUS = 200; // Distance at which nodes influence control points
 const FORCE_STRENGTH = 20; // Base strength of repulsive force
 const MAX_FORCE = 50; // Maximum force that can be applied to a control point
-const NEIGHBOR_STRENGTH = 0.3; // How strongly each point is pulled toward its neighbors' perp average
+const NEIGHBOR_STRENGTH = 0.4; // How strongly each point is pulled toward its neighbors' perp average
 const ALIGNMENT_OFFSET_Y = 2; // Vertical offset for edge alignment
 
 
@@ -134,7 +135,9 @@ export function SmartEdge({
     const paddedTargetY = targetY - unitDy * ENDPOINT_PADDING;
 
     // Calculate adaptive number of control points based on distance
-    const numControlPoints = Math.max(3, Math.ceil(lineLength / CONTROL_POINT_SPACING));
+    const numControlPoints = lineLength < MIN_SUBDIVISION_LENGTH
+      ? 2
+      : Math.max(3, Math.ceil(lineLength / CONTROL_POINT_SPACING));
 
     // Initialize control points evenly spaced along direct line (using padded endpoints)
     const controlPoints: Point[] = [];
