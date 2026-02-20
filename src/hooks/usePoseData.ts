@@ -106,7 +106,7 @@ function validateData(poses: Pose[], transitions: Transition[], flows: Flow[]): 
       if (!hasDirection(pose.name || '')) {
         errors.push(`Pose "${pose.id}": is mirrored but name does not contain "left" or "right"`);
       }
-      if (!hasDirection(pose.description || '')) {
+      if (pose.description && !hasDirection(pose.description)) {
         errors.push(`Pose "${pose.id}": is mirrored but description does not contain "left" or "right"`);
       }
     }

@@ -222,7 +222,7 @@ export function SmartEdge({
     <g transform={`translate(0, ${ALIGNMENT_OFFSET_Y})`}>
       <path
         id={id}
-        style={style}
+        style={{ ...style, transition: 'opacity 0.3s ease-in-out' }}
         className="react-flow__edge-path"
         d={edgeData.path}
         markerEnd={markerEnd}

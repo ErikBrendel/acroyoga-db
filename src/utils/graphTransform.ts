@@ -107,11 +107,11 @@ export function transformToGraph(poses: Pose[], transitions: Transition[]): Grap
         mirroredPoseId: pose.mirroredPoseId,
       },
       style: {
-        background: getPoseColor(pose.difficulty),
+        background: (pose.description?.length ?? 0) === 0 ? '#ef4444' : getPoseColor(pose.difficulty),
         color: 'white',
         border: '2px solid #1e40af',
         borderRadius: '50%',
-        padding: '20px',
+        padding: '10px',
         fontSize: '14px',
         fontWeight: '500',
         width: `${NODE_DIAMETER}px`,
