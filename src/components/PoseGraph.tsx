@@ -237,7 +237,12 @@ export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, matchingPo
       >
         <Background variant={BackgroundVariant.Dots} gap={16} size={1} />
         <Controls showInteractive={false} />
-        <MiniMap />
+        <MiniMap
+          nodeColor={(node) => (node.style?.background as string) ?? '#9ca3af'}
+          nodeComponent={({ x, y, width, height, color }) => (
+            <circle cx={x + width / 2} cy={y + height / 2} r={Math.min(width, height) / 2} fill={color} />
+          )}
+        />
         <SelectionRings selectedPoseId={selectedPoseId} nodes={localNodes} />
       </ReactFlow>
     </div>
