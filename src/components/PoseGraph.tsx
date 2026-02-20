@@ -189,10 +189,11 @@ export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, matchingPo
 
   const highlightedEdges = localEdges.map((edge) => {
     const isInFlow = flowEdges.has(edge.id);
+    const isMirrorEdge = edge.id.startsWith('mirror-');
     const baseStyle = edge.style || {};
 
     let opacity = 1;
-    if (selectedPoseId) {
+    if (selectedPoseId && !isMirrorEdge) {
       opacity = connectedEdgeIds.has(edge.id) ? 0.6 : 0.2;
     }
 
@@ -227,7 +228,7 @@ export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, matchingPo
         maxZoom={2}
       >
         <Background variant={BackgroundVariant.Dots} gap={16} size={1} />
-        <Controls />
+        <Controls showInteractive={false} />
         <MiniMap />
         <SelectionRings selectedPoseId={selectedPoseId} nodes={localNodes} />
       </ReactFlow>
