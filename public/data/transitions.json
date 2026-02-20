@@ -93,21 +93,21 @@
   },
   {
     "fromPoseId": "mono-reverse-shin-left",
-    "toPoseId": "supported-mono-kneepit-left",
-    "difficulty": "intermediate"
-  },
-  {
-    "fromPoseId": "mono-reverse-shin-right",
     "toPoseId": "supported-mono-kneepit-right",
     "difficulty": "intermediate"
   },
   {
-    "fromPoseId": "supported-mono-kneepit-left",
-    "toPoseId": "mono-backbird-left",
+    "fromPoseId": "mono-reverse-shin-right",
+    "toPoseId": "supported-mono-kneepit-left",
     "difficulty": "intermediate"
   },
   {
     "fromPoseId": "supported-mono-kneepit-right",
+    "toPoseId": "mono-backbird-left",
+    "difficulty": "intermediate"
+  },
+  {
+    "fromPoseId": "supported-mono-kneepit-left",
     "toPoseId": "mono-backbird-right",
     "difficulty": "intermediate"
   },

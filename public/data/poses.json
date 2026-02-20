@@ -2,7 +2,7 @@
   {
     "id": "bird",
     "name": "Bird",
-    "description": "Base lies on back with feet up, supporting flyer's hips. Flyer balances horizontally face-down. (AI generated)",
+    "description": "Base lies on back with feet up, supporting flyer's hips. Flyer balances horizontally face-down. Hands are free.",
     "difficulty": "easy",
     "position": {
       "x": 502,
@@ -12,7 +12,7 @@
   {
     "id": "throne",
     "name": "Straddle Throne",
-    "description": "Base sits with feet on flyer's hips. Flyer stands upright on base's feet. (AI generated)",
+    "description": "Base feet on Flyer thighs. Flyer sits with wide legs, Feet around Base shins. Facing each other.",
     "difficulty": "easy",
     "position": {
       "x": 45,
@@ -22,7 +22,7 @@
   {
     "id": "reverse-throne",
     "name": "Reverse Straddle Throne",
-    "description": "Base's feet on flyer's hips. Flyer stands upright facing away from base. (AI generated)",
+    "description": "Base feet on Flyer thighs. Flyer sits with wide legs, Feet around Base shins, facing away from Base head.",
     "difficulty": "easy",
     "position": {
       "x": -7,
@@ -32,7 +32,7 @@
   {
     "id": "front-plank",
     "name": "Front Plank",
-    "description": "Base lies on back with feet on flyer's shoulders/chest. Flyer holds plank position. (AI generated)",
+    "description": "Base lies on back with feet up, supporting flyer's hips. Flyer balances horizontally face-down. Hands connected for support.",
     "difficulty": "easy",
     "position": {
       "x": 472,
@@ -62,7 +62,7 @@
   {
     "id": "star",
     "name": "Star",
-    "description": "Base lies on back with one foot on flyer's hip, one on shoulder. Flyer spreads arms and legs like a star. (AI generated)",
+    "description": "Flyer does a shoulderstand on Base feet. Hands connected in \"stargrip\". Base straight arms, Flyer bent arms.",
     "difficulty": "easy",
     "position": {
       "x": 775,
@@ -72,7 +72,7 @@
   {
     "id": "folded-leaf",
     "name": "Folded Leaf",
-    "description": "Base's feet on flyer's hips. Flyer folds forward, hands near base's head. (AI generated)",
+    "description": "Base's feet on flyer's hips. Flyer folds forward, Flyer head on Base belly.",
     "difficulty": "easy",
     "position": {
       "x": 174,
@@ -82,7 +82,7 @@
   {
     "id": "chair",
     "name": "Chair",
-    "description": "Base's feet on flyer's sit bones. Flyer sits upright as if in a chair. (AI generated)",
+    "description": "Flyer sits with butt on Base feet like on a chair. Base holds Flyer feet.",
     "difficulty": "easy",
     "position": {
       "x": 46,
@@ -102,7 +102,7 @@
   {
     "id": "whale",
     "name": "Whale",
-    "description": "Single-leg base pose. Base's foot on flyer's shoulders, flyer arches back. (AI generated)",
+    "description": "Flyer lays on Base feet with their shoulderblades, arches slightly backwards, watches ceiling. Base holds Flyers lower legs in hands.",
     "difficulty": "easy",
     "position": {
       "x": -191,
@@ -112,7 +112,7 @@
   {
     "id": "vishnus-couch-left",
     "name": "Vishnu's Couch (Left)",
-    "description": "Base's left foot supports flyer lying on their left side in a relaxed position. (AI generated)",
+    "description": "Flyer lays sideways: Base left foot in Flyer right armpit, Base right foot between Flyer legs, on Flyer left thigh. Flyer can raise left arm upwards, and use right arm to hold on Base left leg for stability.",
     "mirroredPoseId": "vishnus-couch-right",
     "difficulty": "easy",
     "position": {
@@ -123,7 +123,7 @@
   {
     "id": "vishnus-couch-right",
     "name": "Vishnu's Couch (Right)",
-    "description": "Base's right foot supports flyer lying on their right side in a relaxed position. (AI generated)",
+    "description": "Flyer lays sideways: Base right foot in Flyer left armpit, Base left foot between Flyer legs, on Flyer right thigh. Flyer can raise right arm upwards, and use left arm to hold on Base right leg for stability.",
     "mirroredPoseId": "vishnus-couch-left",
     "difficulty": "easy",
     "position": {
@@ -134,7 +134,7 @@
   {
     "id": "straddlebat",
     "name": "Straddlebat",
-    "description": "Base's feet on flyer's inner thighs. Flyer hangs upside-down with legs straddled. (AI generated)",
+    "description": "Like star, but lower donw: Instead of Base feet on Flyer shoulders, they are on the outer thighs. Flyer head almost on Base belly.",
     "difficulty": "easy",
     "position": {
       "x": 630,
@@ -144,7 +144,7 @@
   {
     "id": "floating-paschi",
     "name": "Floating Paschi",
-    "description": "Base's feet on flyer's inner thighs. Flyer inverted with legs together in forward fold. (AI generated)",
+    "description": "Flyer in triangle form: grabbing their own ankles, and upside down. Base grabs the Fyler upper arms, balances whole weight with their arms.",
     "difficulty": "intermediate",
     "position": {
       "x": 394,
@@ -164,7 +164,7 @@
   {
     "id": "sidestar-left",
     "name": "Side Star (Left)",
-    "description": "Base's feet on flyer's left hip and left shoulder. Flyer opens sideways to the left. (AI generated)",
+    "description": "Bases left leg on Flyer left hip. Flyer leans inward, from base perspective to right. Both hands connected.",
     "mirroredPoseId": "sidestar-right",
     "difficulty": "intermediate",
     "position": {
@@ -175,7 +175,7 @@
   {
     "id": "sidestar-right",
     "name": "Side Star (Right)",
-    "description": "Base's feet on flyer's right hip and right shoulder. Flyer opens sideways to the right. (AI generated)",
+    "description": "Bases right leg on Flyer right hip. Flyer leans inward, from base perspective to left. Both hands connected.",
     "mirroredPoseId": "sidestar-left",
     "difficulty": "intermediate",
     "position": {
@@ -185,8 +185,8 @@
   },
   {
     "id": "mono-reverse-shin-left",
-    "name": "Mono Reverse Shin-to-Foot Connected Hands (Left)",
-    "description": "Single-leg base on left side. Flyer's shin to base's foot, hands connected, flyer faces away. (AI generated)",
+    "name": "Mono Reverse Shin-to-Foot +Hands (Left)",
+    "description": "From star, Flyer lower left knee, and Base removes their left Foot from Flyer should and places it onto the Flyer shin.",
     "mirroredPoseId": "mono-reverse-shin-right",
     "difficulty": "intermediate",
     "position": {
@@ -196,8 +196,8 @@
   },
   {
     "id": "mono-reverse-shin-right",
-    "name": "Mono Reverse Shin-to-Foot Connected Hands (Right)",
-    "description": "Single-leg base on right side. Flyer's shin to base's foot, hands connected, flyer faces away. (AI generated)",
+    "name": "Mono Reverse Shin-to-Foot +Hands (Right)",
+    "description": "From star, Flyer lower right knee, and Base removes their right Foot from Flyer should and places it onto the Flyer shin.",
     "mirroredPoseId": "mono-reverse-shin-left",
     "difficulty": "intermediate",
     "position": {
@@ -208,29 +208,29 @@
   {
     "id": "supported-mono-kneepit-left",
     "name": "Supported Mono Kneepit (Left)",
-    "description": "Single-leg base on left side. Base's foot in flyer's knee pit with hand support. (AI generated)",
+    "description": "Base left foot in Flyer left kneepit. The other Foot+Shin can stay together. Both straight arms connected and stacked.",
     "mirroredPoseId": "supported-mono-kneepit-right",
     "difficulty": "intermediate",
     "position": {
-      "x": 805,
-      "y": -711
+      "x": 810,
+      "y": -623
     }
   },
   {
     "id": "supported-mono-kneepit-right",
     "name": "Supported Mono Kneepit (Right)",
-    "description": "Single-leg base on right side. Base's foot in flyer's knee pit with hand support. (AI generated)",
+    "description": "Base right foot in Flyer right kneepit. The other Foot+Shin can stay together. Both straight arms connected and stacked.",
     "mirroredPoseId": "supported-mono-kneepit-left",
     "difficulty": "intermediate",
     "position": {
-      "x": 810,
-      "y": -583
+      "x": 811,
+      "y": -757
     }
   },
   {
     "id": "mono-backbird-left",
     "name": "Mono Backbird (Left)",
-    "description": "Single-leg base on left side. Flyer balances horizontally face-up on one foot. (AI generated)",
+    "description": "Base left foot on Flyer sacrum, toes pointing outwards (left). Hands still connected, can rotate outwards towards star grip.",
     "mirroredPoseId": "mono-backbird-right",
     "difficulty": "intermediate",
     "position": {
@@ -241,7 +241,7 @@
   {
     "id": "mono-backbird-right",
     "name": "Mono Backbird (Right)",
-    "description": "Single-leg base on right side. Flyer balances horizontally face-up on one foot. (AI generated)",
+    "description": "Base right foot on Flyer sacrum, toes pointing outwards (right). Hands still connected, can rotate outwards towards star grip.",
     "mirroredPoseId": "mono-backbird-left",
     "difficulty": "intermediate",
     "position": {
@@ -322,7 +322,7 @@
   {
     "id": "extended-f2h",
     "name": "Extended F2H",
-    "description": "",
+    "description": "Base straight arms, Flyer faces away, heels at Base fingers and toes at Base wrist. High-Heels!",
     "difficulty": "intermediate",
     "position": {
       "x": -243,
@@ -362,23 +362,23 @@
   {
     "id": "standing-flag-left",
     "name": "Standing Flag (Left)",
-    "description": "",
+    "description": "Base slightly squatting, Flyer standing with their left Foot on both Base knees, Flyer right foot behind Base neck. Base left arm can hold Flyer right leg.",
     "mirroredPoseId": "standing-flag-right",
     "difficulty": "intermediate",
     "position": {
-      "x": 1600,
-      "y": 163
+      "x": 1507,
+      "y": 45
     }
   },
   {
     "id": "standing-flag-right",
     "name": "Standing Flag (Right)",
-    "description": "",
+    "description": "Base slightly squatting, Flyer standing with their right Foot on both Base knees, Flyer left foot behind Base neck. Base right arm can hold Flyer left leg.",
     "mirroredPoseId": "standing-flag-left",
     "difficulty": "intermediate",
     "position": {
-      "x": 1509,
-      "y": 71
+      "x": 1600,
+      "y": 142
     }
   },
   {
@@ -454,7 +454,7 @@
   {
     "id": "bird-on-hands",
     "name": "Bird on Hands",
-    "description": "",
+    "description": "Base grabs Flyer hips: 2 fingers on belly, 2 on outside, hip bones in palm.",
     "difficulty": "intermediate",
     "position": {
       "x": 699,
@@ -484,7 +484,7 @@
   {
     "id": "reverse-star",
     "name": "Reverse Star",
-    "description": "",
+    "description": "Like star, but Flyer facing away. Base arms straight and pushing upwards, Flyer arms also almost straight.",
     "difficulty": "intermediate",
     "position": {
       "x": 501,
@@ -498,8 +498,8 @@
     "mirroredPoseId": "outside-sidestar-right",
     "difficulty": "intermediate",
     "position": {
-      "x": 1024,
-      "y": 393
+      "x": 928,
+      "y": 352
     }
   },
   {
@@ -509,30 +509,30 @@
     "mirroredPoseId": "outside-sidestar-left",
     "difficulty": "intermediate",
     "position": {
-      "x": 904,
-      "y": 342
+      "x": 1051,
+      "y": 423
     }
   },
   {
     "id": "front-plank-twisted-hands-left",
     "name": "Front plank twisted hands (left)",
-    "description": "Prepare to twist into a star",
+    "description": "Prepare to twist into a star, Base left hand up",
     "mirroredPoseId": "front-plank-twisted-hands-right",
     "difficulty": "easy",
     "position": {
-      "x": 949,
-      "y": 569
+      "x": 853,
+      "y": 506
     }
   },
   {
     "id": "front-plank-twisted-hands-right",
     "name": "Front plank twisted hands (right)",
-    "description": "Prepare to twist into a star",
+    "description": "Prepare to twist into a star, Base right hand up",
     "mirroredPoseId": "front-plank-twisted-hands-left",
     "difficulty": "easy",
     "position": {
-      "x": 825,
-      "y": 512
+      "x": 969,
+      "y": 572
     }
   },
   {
@@ -600,6 +600,7 @@
   {
     "id": "reverse-vishnus-couch-left",
     "name": "Reverse Vishnus Couch (Left)",
+    "description": "Flyer lays sideways, facing away from base head: Base left foot in Flyer left armpit, Base right foot between Flyer legs, on Flyer right thigh. Flyer can raise right arm upwards, and use left arm to hold on Base left leg for stability.",
     "mirroredPoseId": "reverse-vishnus-couch-right",
     "difficulty": "easy",
     "position": {
@@ -610,6 +611,7 @@
   {
     "id": "reverse-vishnus-couch-right",
     "name": "Reverse Vishnus Couch (Right)",
+    "description": "Flyer lays sideways, facing away from base head: Base right foot in Flyer right armpit, Base left foot between Flyer legs, on Flyer left thigh. Flyer can raise left arm upwards, and use right arm to hold on Base right leg for stability.",
     "mirroredPoseId": "reverse-vishnus-couch-left",
     "difficulty": "easy",
     "position": {
