@@ -71,6 +71,14 @@ export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, matchingPo
     setEdges(edges);
   }, [edges, setEdges]);
 
+  // Keep edge data.nodes in sync with current node positions (needed for SmartEdge path calculation)
+  useEffect(() => {
+    setEdges(edges => edges.map(edge => ({
+      ...edge,
+      data: { ...edge.data, nodes: localNodes },
+    })));
+  }, [localNodes, setEdges]);
+
   const nodeTypes = useMemo(() => ({ pose: PoseNode }), []);
   const edgeTypes = useMemo(() => ({ smart: SmartEdge }), []);
 
