@@ -265,8 +265,8 @@
     "description": "Base elbows close to chest, Flyer faces away, heels at Base fingers and toes at Base wrist. High-Heels!",
     "difficulty": "intermediate",
     "position": {
-      "x": 21,
-      "y": -333
+      "x": -51,
+      "y": -338
     }
   },
   {
@@ -285,8 +285,8 @@
     "description": "Like Chair, but facing away. Flyer feet dangling or put on Base calves.",
     "difficulty": "easy",
     "position": {
-      "x": -89,
-      "y": -110
+      "x": -146,
+      "y": -120
     }
   },
   {
@@ -645,8 +645,8 @@
     "description": "Both safely on the ground. Base lies on back. Flyer stands at base's head end, facing toward base's feet (straddling base's head).",
     "difficulty": "easy",
     "position": {
-      "x": 445,
-      "y": -512
+      "x": 379,
+      "y": -531
     }
   },
   {
@@ -719,6 +719,46 @@
     "position": {
       "x": 408,
       "y": -296
+    }
+  },
+  {
+    "id": "flyer-handstand-behind-base",
+    "name": "Flyer Handstand Behind Base",
+    "description": "Base standing upright. Flyer does a handstand directly behind base, back-to-back. Base reaches back and grabs flyer's ankles.",
+    "difficulty": "intermediate",
+    "position": {
+      "x": 2130,
+      "y": 48
+    }
+  },
+  {
+    "id": "standing-counterbalance-base-behind",
+    "name": "Standing Counterbalance (Base Behind)",
+    "description": "Both standing in the same direction, base directly behind flyer. Both reach arms forward/up, holding hands. They lean away from each other as counterbalance.",
+    "difficulty": "easy",
+    "position": {
+      "x": 2052,
+      "y": -155
+    }
+  },
+  {
+    "id": "low-h2h",
+    "name": "Low H2H",
+    "description": "L-Base, Base elbows close to chest. Hands are gripping opposed, Flyer doing handstand facing Base head.",
+    "difficulty": "intermediate",
+    "position": {
+      "x": 43,
+      "y": -169
+    }
+  },
+  {
+    "id": "low-reverse-h2h",
+    "name": "Low Reverse H2H",
+    "description": "L-Base, Base elbows close to chest. Hands gripping with aligned fingers. Flyer doing handstand facing Base feet.",
+    "difficulty": "intermediate",
+    "position": {
+      "x": 139,
+      "y": 431
     }
   }
 ]

@@ -613,5 +613,37 @@
     "toPoseId": "out-lbase-feet-end-facing-out",
     "nonReversible": true,
     "difficulty": "intermediate"
+  },
+  {
+    "fromPoseId": "out-standing-flyer-behind",
+    "toPoseId": "flyer-handstand-behind-base",
+    "difficulty": "intermediate"
+  },
+  {
+    "fromPoseId": "flyer-handstand-behind-base",
+    "toPoseId": "out-standing-base-behind",
+    "nonReversible": true,
+    "difficulty": "easy"
+  },
+  {
+    "fromPoseId": "back-bird",
+    "toPoseId": "low-h2h",
+    "difficulty": "intermediate"
+  },
+  {
+    "fromPoseId": "low-h2h",
+    "toPoseId": "out-lbase-head-end-facing-in",
+    "nonReversible": true,
+    "difficulty": "easy"
+  },
+  {
+    "fromPoseId": "low-h2h",
+    "toPoseId": "extended-h2h",
+    "difficulty": "hard"
+  },
+  {
+    "fromPoseId": "low-reverse-h2h",
+    "toPoseId": "extended-reverse-h2h",
+    "difficulty": "hard"
   }
 ]

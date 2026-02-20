@@ -112,5 +112,19 @@
       "low-foot-to-hand",
       "reverse-bird"
     ]
+  },
+  {
+    "name": "17.02.2026: In-And-Out Pops",
+    "poseIds": [
+      "out-standing-flyer-behind",
+      "flyer-handstand-behind-base",
+      "out-standing-base-behind",
+      "standing-behind-counterbalance",
+      "back-bird",
+      "low-h2h",
+      "out-lbase-head-end-facing-in",
+      "star",
+      "out-lbase-feet-end-facing-out"
+    ]
   }
 ]
