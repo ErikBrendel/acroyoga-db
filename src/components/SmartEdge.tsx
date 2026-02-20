@@ -8,6 +8,7 @@ const NUM_ITERATIONS = 10;
 const INFLUENCE_RADIUS = 200; // Distance at which nodes influence control points
 const FORCE_STRENGTH = 20; // Base strength of repulsive force
 const MAX_FORCE = 50; // Maximum force that can be applied to a control point
+const NEIGHBOR_STRENGTH = 0.3; // How strongly each point is pulled toward its neighbors' perp average
 const ALIGNMENT_OFFSET_Y = 2; // Vertical offset for edge alignment
 
 
@@ -189,6 +190,12 @@ export function SmartEdge({
             totalForce -= Math.sign(side) * force;
           }
         }
+
+        // Neighbor alignment: pull toward perpendicular average of adjacent control points
+        const prevPerp = controlPoints[i - 1].x * perpX + controlPoints[i - 1].y * perpY;
+        const nextPerp = controlPoints[i + 1].x * perpX + controlPoints[i + 1].y * perpY;
+        const cpPerp = cp.x * perpX + cp.y * perpY;
+        totalForce += ((prevPerp + nextPerp) / 2 - cpPerp) * NEIGHBOR_STRENGTH;
 
         // Clamp force to prevent extreme deviations
         const clampedForce = Math.max(-MAX_FORCE, Math.min(MAX_FORCE, totalForce));
