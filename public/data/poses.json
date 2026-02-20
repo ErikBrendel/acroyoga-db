@@ -137,8 +137,8 @@
     "description": "Base's feet on flyer's inner thighs. Flyer hangs upside-down with legs straddled. (AI generated)",
     "difficulty": "easy",
     "position": {
-      "x": 652,
-      "y": -34
+      "x": 630,
+      "y": -88
     }
   },
   {
@@ -168,8 +168,8 @@
     "mirroredPoseId": "sidestar-right",
     "difficulty": "intermediate",
     "position": {
-      "x": 352,
-      "y": -14
+      "x": 354,
+      "y": -45
     }
   },
   {
@@ -457,8 +457,8 @@
     "description": "",
     "difficulty": "intermediate",
     "position": {
-      "x": 685,
-      "y": 952
+      "x": 699,
+      "y": 973
     }
   },
   {
@@ -487,8 +487,8 @@
     "description": "",
     "difficulty": "intermediate",
     "position": {
-      "x": 482,
-      "y": 116
+      "x": 501,
+      "y": 126
     }
   },
   {
