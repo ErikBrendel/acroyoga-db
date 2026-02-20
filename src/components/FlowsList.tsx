@@ -10,9 +10,11 @@ interface FlowsListProps {
   transitions: Transition[];
   activeFlowName: string | null;
   onFlowClick: (flowName: string) => void;
+  isEditMode?: boolean;
+  onEditFlow?: (flow: Flow) => void;
 }
 
-export function FlowsList({ flows, poses, transitions, activeFlowName, onFlowClick }: FlowsListProps) {
+export function FlowsList({ flows, poses, transitions, activeFlowName, onFlowClick, isEditMode, onEditFlow }: FlowsListProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   if (flows.length === 0) {
@@ -53,6 +55,15 @@ export function FlowsList({ flows, poses, transitions, activeFlowName, onFlowCli
                       <StarDifficulty rating={difficulty} />
                     </div>
                   </button>
+                  {isEditMode && (
+                    <button
+                      onClick={() => onEditFlow?.(flow)}
+                      className="px-3 py-2 text-xs font-medium border-l border-gray-200 hover:bg-gray-50 transition-colors text-gray-500 hover:text-gray-800"
+                      title="Edit flow"
+                    >
+                      ✏️
+                    </button>
+                  )}
                   {hasMirror && (
                     <button
                       onClick={() => onFlowClick(getFlowVariantKey(flow.name, true))}

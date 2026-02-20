@@ -253,6 +253,35 @@ const apiRoutes: Record<string, ApiHandler> = {
     return { code: 200, data: { success: true, pose: poses[poseIndex] } }
   },
 
+  'PUT:/api/flows': (body) => {
+    if (!body.originalName || !body.name || !body.poseIds) {
+      return { code: 400, data: { error: 'originalName, name, and poseIds are required' } }
+    }
+
+    if (!Array.isArray(body.poseIds) || body.poseIds.length < 3) {
+      return { code: 400, data: { error: 'Flow must contain at least 3 poses' } }
+    }
+
+    const flows = JSON.parse(fs.readFileSync(flowsPath, 'utf-8'))
+    const flowIndex = flows.findIndex((f: any) => f.name === body.originalName)
+
+    if (flowIndex === -1) {
+      return { code: 404, data: { error: 'Flow not found' } }
+    }
+
+    if (body.name !== body.originalName && flows.some((f: any) => f.name === body.name)) {
+      return { code: 400, data: { error: 'Flow with this name already exists' } }
+    }
+
+    flows[flowIndex] = { name: body.name, poseIds: body.poseIds }
+
+    const tmpPath = flowsPath + '.tmp'
+    fs.writeFileSync(tmpPath, JSON.stringify(flows, null, 2) + '\n')
+    fs.renameSync(tmpPath, flowsPath)
+
+    return { code: 200, data: { success: true, flow: flows[flowIndex] } }
+  },
+
   'POST:/api/flows': (body) => {
     if (!body.name || !body.poseIds) {
       return { code: 400, data: { error: 'name and poseIds are required' } }

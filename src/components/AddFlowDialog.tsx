@@ -1,20 +1,32 @@
-import { useState } from 'react';
-import { Pose, Transition } from '../types/data';
-import { createFlow } from '../api/flows';
+import { useEffect, useState } from 'react';
+import { Flow, Pose, Transition } from '../types/data';
+import { createFlow, updateFlow } from '../api/flows';
+import { AddTransitionDialog } from './AddTransitionDialog';
 
 interface AddFlowDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
+  onDataChange?: () => void;
   poses: Pose[];
   transitions: Transition[];
+  initialFlow?: Flow;
 }
 
-export function AddFlowDialog({ isOpen, onClose, onSuccess, poses, transitions }: AddFlowDialogProps) {
+export function AddFlowDialog({ isOpen, onClose, onSuccess, onDataChange, poses, transitions, initialFlow }: AddFlowDialogProps) {
   const [name, setName] = useState('');
   const [poseIds, setPoseIds] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [addTransitionOpen, setAddTransitionOpen] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setName(initialFlow?.name ?? '');
+      setPoseIds(initialFlow?.poseIds ?? []);
+      setError(null);
+    }
+  }, [isOpen]);
 
   const sortedPoses = poses.slice().sort((a, b) => {
     const nameA = (a.name || a.id).toLowerCase();
@@ -53,7 +65,11 @@ export function AddFlowDialog({ isOpen, onClose, onSuccess, poses, transitions }
     setError(null);
 
     try {
-      await createFlow({ name, poseIds });
+      if (initialFlow) {
+        await updateFlow({ originalName: initialFlow.name, name, poseIds });
+      } else {
+        await createFlow({ name, poseIds });
+      }
       setName('');
       setPoseIds([]);
       onSuccess();
@@ -80,9 +96,10 @@ export function AddFlowDialog({ isOpen, onClose, onSuccess, poses, transitions }
     : sortedPoses;
 
   return (
+    <>
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Create New Flow</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-4">{initialFlow ? 'Edit Flow' : 'Create New Flow'}</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -157,6 +174,16 @@ export function AddFlowDialog({ isOpen, onClose, onSuccess, poses, transitions }
                     </option>
                   ))}
               </select>
+              {lastPoseId && (
+                <button
+                  type="button"
+                  onClick={() => setAddTransitionOpen(true)}
+                  className="px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-sm font-medium whitespace-nowrap"
+                  title="Add a new transition from the last pose"
+                >
+                  + Transition
+                </button>
+              )}
             </div>
 
             {poseIds.length > 0 && poseIds.length < 3 && (
@@ -178,7 +205,7 @@ export function AddFlowDialog({ isOpen, onClose, onSuccess, poses, transitions }
               disabled={isSubmitting || !name || poseIds.length < 3}
               className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
             >
-              {isSubmitting ? 'Creating...' : 'Create Flow'}
+              {isSubmitting ? (initialFlow ? 'Saving...' : 'Creating...') : (initialFlow ? 'Save Changes' : 'Create Flow')}
             </button>
             <button
               type="button"
@@ -191,5 +218,17 @@ export function AddFlowDialog({ isOpen, onClose, onSuccess, poses, transitions }
         </form>
       </div>
     </div>
+
+    {lastPoseId && (
+      <AddTransitionDialog
+        isOpen={addTransitionOpen}
+        onClose={() => setAddTransitionOpen(false)}
+        onSuccess={() => onDataChange?.()}
+        onDataChange={onDataChange}
+        fromPoseId={lastPoseId}
+        allPoses={poses}
+      />
+    )}
+    </>
   );
 }

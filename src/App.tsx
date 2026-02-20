@@ -12,6 +12,7 @@ import {transformToGraph, PosePosition} from './utils/graphTransform';
 import {isLocalEditMode} from './utils/editMode';
 import {updatePosePositions} from './api/layout';
 import {parseFlowVariantKey, getMirroredFlow} from './utils/flowMirror';
+import {Flow} from './types/data';
 
 function App() {
   const { poses, transitions, flows, loading, error, refetch } = usePoseData();
@@ -19,6 +20,7 @@ function App() {
   const [activeFlowName, setActiveFlowName] = useUrlState<string | null>('flow', null);
   const [isAddPoseDialogOpen, setIsAddPoseDialogOpen] = useState(false);
   const [isAddFlowDialogOpen, setIsAddFlowDialogOpen] = useState(false);
+  const [editingFlow, setEditingFlow] = useState<Flow | null>(null);
   const [is3DEditorOpen, setIs3DEditorOpen] = useState(false);
   const [pendingPositions, setPendingPositions] = useState<Record<string, PosePosition | null>>({});
   const [isSaving, setIsSaving] = useState(false);
@@ -193,6 +195,8 @@ function App() {
             transitions={transitions}
             activeFlowName={activeFlowName}
             onFlowClick={handleFlowClick}
+            isEditMode={isLocalEditMode()}
+            onEditFlow={(flow) => setEditingFlow(flow)}
           />
         </div>
       </div>
@@ -230,7 +234,7 @@ function App() {
 
       {/* Edit mode floating toolbar - bottom left */}
       {isLocalEditMode() && (
-        <div className="absolute top-1/2 -translate-y-1/2 left-4 z-20 bg-white shadow-lg rounded-lg border border-gray-200 p-3">
+        <div className="absolute bottom-[116px] left-4 z-20 bg-white shadow-lg rounded-lg border border-gray-200 p-3">
           <div className="flex flex-col gap-2">
             <div className="px-3 py-1 bg-green-100 border border-green-300 rounded text-center mb-2">
               <span className="text-xs font-semibold text-green-700">Edit Mode</span>
@@ -288,11 +292,13 @@ function App() {
         onSuccess={refetch}
       />
       <AddFlowDialog
-        isOpen={isAddFlowDialogOpen}
-        onClose={() => setIsAddFlowDialogOpen(false)}
+        isOpen={isAddFlowDialogOpen || editingFlow !== null}
+        onClose={() => { setIsAddFlowDialogOpen(false); setEditingFlow(null); }}
         onSuccess={refetch}
+        onDataChange={refetch}
         poses={poses}
         transitions={transitions}
+        initialFlow={editingFlow ?? undefined}
       />
       <PoseEditor3DDemo
         isOpen={is3DEditorOpen}

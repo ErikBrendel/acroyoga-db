@@ -10,6 +10,26 @@ export interface ApiResponse<T = any> {
   data?: T;
 }
 
+export interface FlowUpdateRequest {
+  originalName: string;
+  name: string;
+  poseIds: string[];
+}
+
+export async function updateFlow(request: FlowUpdateRequest): Promise<ApiResponse> {
+  const response = await fetch('/api/flows', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(request),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to update flow');
+  }
+  return data;
+}
+
 export async function createFlow(request: FlowCreateRequest): Promise<ApiResponse> {
   const response = await fetch('/api/flows', {
     method: 'POST',
