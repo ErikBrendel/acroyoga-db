@@ -1,5 +1,6 @@
 import {useMemo, useState} from 'react';
 import {usePoseData} from './hooks/usePoseData';
+import {useUrlState} from './hooks/useUrlState';
 import {PoseGraph} from './components/PoseGraph';
 import {PoseDetailSidebar} from './components/PoseDetailSidebar';
 import {FlowsList} from './components/FlowsList';
@@ -14,14 +15,14 @@ import {parseFlowVariantKey, getMirroredFlow} from './utils/flowMirror';
 
 function App() {
   const { poses, transitions, flows, loading, error, refetch } = usePoseData();
-  const [selectedPoseId, setSelectedPoseId] = useState<string | null>(null);
-  const [activeFlowName, setActiveFlowName] = useState<string | null>(null);
+  const [selectedPoseId, setSelectedPoseId] = useUrlState<string | null>('pose', null);
+  const [activeFlowName, setActiveFlowName] = useUrlState<string | null>('flow', null);
   const [isAddPoseDialogOpen, setIsAddPoseDialogOpen] = useState(false);
   const [isAddFlowDialogOpen, setIsAddFlowDialogOpen] = useState(false);
   const [is3DEditorOpen, setIs3DEditorOpen] = useState(false);
   const [pendingPositions, setPendingPositions] = useState<Record<string, PosePosition | null>>({});
   const [isSaving, setIsSaving] = useState(false);
-  const [searchInput, setSearchInput] = useState('');
+  const [searchInput, setSearchInput] = useUrlState<string>('search', '');
 
   const isDirty = Object.keys(pendingPositions).length > 0;
 
@@ -146,7 +147,7 @@ function App() {
   }
 
   const handleFlowClick = (flowVariantKey: string) => {
-    setActiveFlowName(prev => prev === flowVariantKey ? null : flowVariantKey);
+    setActiveFlowName(activeFlowName === flowVariantKey ? null : flowVariantKey);
   };
 
   return (
