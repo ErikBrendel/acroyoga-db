@@ -1,5 +1,6 @@
 import {defineConfig, PluginOption} from 'vite'
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 import fs from 'fs'
 import path from 'path'
 
@@ -382,7 +383,7 @@ const DataEditApiPlugin: PluginOption = {
 }
 
 export default defineConfig({
-  plugins: [react(), DataEditApiPlugin],
+  plugins: [tailwindcss(), react(), DataEditApiPlugin],
   base: '/acroyoga-db/',
   server: {
     port: 5173,
