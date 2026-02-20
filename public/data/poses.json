@@ -335,8 +335,8 @@
     "description": "Base standing, Flyer on shoulders, Base holding back of Flyer kneepits/calves donw",
     "difficulty": "intermediate",
     "position": {
-      "x": 1800,
-      "y": 228
+      "x": 1808,
+      "y": 158
     }
   },
   {
@@ -345,8 +345,8 @@
     "description": "Base standing slightly squatting, Flyer standing on Base knees looking away. Base holding Fyler hips, leaning back. Counterbalance",
     "difficulty": "intermediate",
     "position": {
-      "x": 1735,
-      "y": -82
+      "x": 1602,
+      "y": 71
     }
   },
   {
@@ -355,8 +355,8 @@
     "description": "Base slightly squatting, Flyer standing on knees, facing each other. Both holding wrists with long arms, leaning back",
     "difficulty": "easy",
     "position": {
-      "x": 1290,
-      "y": 22
+      "x": 1362,
+      "y": 251
     }
   },
   {
@@ -366,8 +366,8 @@
     "mirroredPoseId": "standing-flag-right",
     "difficulty": "intermediate",
     "position": {
-      "x": 1461,
-      "y": -81
+      "x": 1447,
+      "y": 93
     }
   },
   {
@@ -377,8 +377,8 @@
     "mirroredPoseId": "standing-flag-left",
     "difficulty": "intermediate",
     "position": {
-      "x": 1498,
-      "y": 55
+      "x": 1544,
+      "y": 213
     }
   },
   {
@@ -387,8 +387,8 @@
     "description": "Base in wide squat, Flyer behind, with feet close to Base hips on upper legs",
     "difficulty": "easy",
     "position": {
-      "x": 1763,
-      "y": 429
+      "x": 1945,
+      "y": -58
     }
   },
   {
@@ -397,8 +397,8 @@
     "description": "Base on ground, feet close to butt, knees up. Flyer standing on knees. Base can support Flyer shins with hands.",
     "difficulty": "easy",
     "position": {
-      "x": 1101,
-      "y": 120
+      "x": 1149,
+      "y": 224
     }
   },
   {
@@ -437,8 +437,8 @@
     "description": "Flyer on ground, tucked. Base standing. Flyer feet on Base knees. Base can grab Flyer knees.",
     "difficulty": "easy",
     "position": {
-      "x": 1371,
-      "y": 432
+      "x": 1344,
+      "y": 422
     }
   },
   {
@@ -447,8 +447,8 @@
     "description": "Like carrying your small child though the zoo :)",
     "difficulty": "easy",
     "position": {
-      "x": 1978,
-      "y": 314
+      "x": 1740,
+      "y": -114
     }
   },
   {
@@ -635,8 +635,8 @@
     "description": "Both safely on the ground. Base lies on back with legs up or relaxed. Flyer stands at base's feet end, facing away from base. Entry position for whale, reverse back bird, reverse chair.",
     "difficulty": "easy",
     "position": {
-      "x": -116,
-      "y": 74
+      "x": 258,
+      "y": 146
     }
   },
   {
@@ -665,8 +665,8 @@
     "description": "Both safely on the ground, standing and facing each other. Entry/exit for most standing poses like standing counterbalance, flyer on knees.",
     "difficulty": "easy",
     "position": {
-      "x": 1525,
-      "y": 358
+      "x": 1480,
+      "y": 382
     }
   },
   {
@@ -675,8 +675,8 @@
     "description": "Both safely on the ground, standing in the same direction with base behind the flyer. Entry/exit for standing-behind counterbalance, two-high, sitting on shoulders.",
     "difficulty": "easy",
     "position": {
-      "x": 1800,
-      "y": -284
+      "x": 1344,
+      "y": -109
     }
   },
   {
@@ -685,8 +685,8 @@
     "description": "Both safely on the ground, standing in the same direction with flyer behind the base. Entry/exit for galionsfigur, standing on hips.",
     "difficulty": "easy",
     "position": {
-      "x": 1659,
-      "y": 580
+      "x": 1916,
+      "y": -308
     }
   },
   {
@@ -727,18 +727,8 @@
     "description": "Base standing upright. Flyer does a handstand directly behind base, back-to-back. Base reaches back and grabs flyer's ankles.",
     "difficulty": "intermediate",
     "position": {
-      "x": 2130,
-      "y": 48
-    }
-  },
-  {
-    "id": "standing-counterbalance-base-behind",
-    "name": "Standing Counterbalance (Base Behind)",
-    "description": "Both standing in the same direction, base directly behind flyer. Both reach arms forward/up, holding hands. They lean away from each other as counterbalance.",
-    "difficulty": "easy",
-    "position": {
-      "x": 2052,
-      "y": -155
+      "x": 1528,
+      "y": -268
     }
   },
   {
