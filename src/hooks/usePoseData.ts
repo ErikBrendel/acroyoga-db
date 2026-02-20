@@ -96,6 +96,22 @@ function validateData(poses: Pose[], transitions: Transition[], flows: Flow[]): 
     poseMap.set(pose.id, pose);
   });
 
+  // Check mirrored poses contain directional indicator
+  poses.forEach((pose) => {
+    if (pose.mirroredPoseId) {
+      const hasDirection = (s: string) => s.toLowerCase().includes('left') || s.toLowerCase().includes('right');
+      if (!hasDirection(pose.id)) {
+        errors.push(`Pose "${pose.id}": is mirrored but id does not contain "left" or "right"`);
+      }
+      if (!hasDirection(pose.name || '')) {
+        errors.push(`Pose "${pose.id}": is mirrored but name does not contain "left" or "right"`);
+      }
+      if (!hasDirection(pose.description || '')) {
+        errors.push(`Pose "${pose.id}": is mirrored but description does not contain "left" or "right"`);
+      }
+    }
+  });
+
   // Check mirrored poses are bidirectional and have matching mirrored content
   poses.forEach((pose) => {
     if (pose.mirroredPoseId) {
