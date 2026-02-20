@@ -2,6 +2,7 @@
   {
     "name": "Beginner Flow",
     "poseIds": [
+      "out-lbase-feet-end-facing-in",
       "front-plank",
       "throne",
       "chair",
@@ -66,7 +67,7 @@
   {
     "name": "27.01.2026: Shin scratcher",
     "poseIds": [
-      "flyer-tucked-before-base",
+      "out-flyer-tucked-before-base",
       "standing-counterbalance",
       "flyer-stading-on-knees",
       "reverse-l-sit",
@@ -76,7 +77,7 @@
       "shoulder-stand",
       "flyer-stading-on-knees",
       "standing-counterbalance",
-      "flyer-tucked-before-base"
+      "out-flyer-tucked-before-base"
     ]
   },
   {
@@ -87,7 +88,7 @@
       "outside-sidestar-left",
       "star",
       "cross-legged-straddlebat-left",
-      "folded-leaf-tucket-through",
+      "folded-leaf-tucked-through",
       "folded-leaf",
       "front-plank"
     ]
@@ -98,7 +99,8 @@
       "standing-on-flyer-legs",
       "reverse-throne",
       "l-sit-with-outside-legs",
-      "star"
+      "star",
+      "out-lbase-feet-end-facing-out"
     ]
   },
   {

@@ -284,7 +284,7 @@
     "difficulty": "intermediate"
   },
   {
-    "fromPoseId": "flyer-tucked-before-base",
+    "fromPoseId": "out-flyer-tucked-before-base",
     "toPoseId": "standing-counterbalance",
     "difficulty": "easy"
   },
@@ -424,17 +424,17 @@
   },
   {
     "fromPoseId": "folded-leaf",
-    "toPoseId": "folded-leaf-tucket-through",
+    "toPoseId": "folded-leaf-tucked-through",
     "difficulty": "easy"
   },
   {
     "fromPoseId": "cross-legged-straddlebat-left",
-    "toPoseId": "folded-leaf-tucket-through",
+    "toPoseId": "folded-leaf-tucked-through",
     "difficulty": "intermediate"
   },
   {
     "fromPoseId": "cross-legged-straddlebat-right",
-    "toPoseId": "folded-leaf-tucket-through",
+    "toPoseId": "folded-leaf-tucked-through",
     "difficulty": "intermediate"
   },
   {
@@ -500,6 +500,118 @@
   {
     "fromPoseId": "bird-on-hands",
     "toPoseId": "reverse-star",
+    "difficulty": "intermediate"
+  },
+  {
+    "fromPoseId": "out-sidestar-entry-right",
+    "toPoseId": "sidestar-right",
+    "difficulty": "intermediate"
+  },
+  {
+    "fromPoseId": "out-sidestar-entry-left",
+    "toPoseId": "sidestar-left",
+    "difficulty": "intermediate"
+  },
+  {
+    "fromPoseId": "out-lbase-feet-end-facing-in",
+    "toPoseId": "bird",
+    "difficulty": "easy"
+  },
+  {
+    "fromPoseId": "out-lbase-feet-end-facing-in",
+    "toPoseId": "front-plank",
+    "difficulty": "easy"
+  },
+  {
+    "fromPoseId": "out-lbase-feet-end-facing-in",
+    "toPoseId": "foot-to-shin",
+    "difficulty": "easy"
+  },
+  {
+    "fromPoseId": "out-lbase-feet-end-facing-in",
+    "toPoseId": "throne",
+    "difficulty": "intermediate"
+  },
+  {
+    "fromPoseId": "out-lbase-feet-end-facing-out",
+    "toPoseId": "back-bird",
+    "difficulty": "easy"
+  },
+  {
+    "fromPoseId": "out-lbase-feet-end-facing-out",
+    "toPoseId": "reverse-throne",
+    "difficulty": "intermediate"
+  },
+  {
+    "fromPoseId": "out-lbase-head-end-facing-in",
+    "toPoseId": "star",
+    "difficulty": "easy"
+  },
+  {
+    "fromPoseId": "out-lbase-head-end-facing-in",
+    "toPoseId": "l-sit",
+    "difficulty": "easy"
+  },
+  {
+    "fromPoseId": "out-lbase-feet-end-facing-in",
+    "toPoseId": "shoulder-stand",
+    "difficulty": "easy"
+  },
+  {
+    "fromPoseId": "out-lbase-head-end-facing-in",
+    "toPoseId": "reverse-bird",
+    "difficulty": "easy"
+  },
+  {
+    "fromPoseId": "out-lbase-head-end-facing-out",
+    "toPoseId": "reverse-back-bird",
+    "difficulty": "easy"
+  },
+  {
+    "fromPoseId": "out-lbase-head-end-facing-out",
+    "toPoseId": "reverse-l-sit",
+    "difficulty": "easy"
+  },
+  {
+    "fromPoseId": "out-standing-facing",
+    "toPoseId": "standing-counterbalance",
+    "difficulty": "easy"
+  },
+  {
+    "fromPoseId": "out-standing-flyer-behind",
+    "toPoseId": "standing-on-hips",
+    "difficulty": "easy"
+  },
+  {
+    "fromPoseId": "standing-on-hips",
+    "toPoseId": "sitting-on-shoulders",
+    "difficulty": "easy"
+  },
+  {
+    "fromPoseId": "out-standing-base-behind",
+    "toPoseId": "sitting-on-shoulders",
+    "difficulty": "easy"
+  },
+  {
+    "fromPoseId": "out-standing-base-behind",
+    "toPoseId": "galionsfigur",
+    "difficulty": "easy"
+  },
+  {
+    "fromPoseId": "two-high",
+    "toPoseId": "galionsfigur",
+    "nonReversible": true,
+    "difficulty": "intermediate"
+  },
+  {
+    "fromPoseId": "out-standing-base-behind",
+    "toPoseId": "standing-behind-counterbalance",
+    "difficulty": "easy"
+  },
+  {
+    "fromPoseId": "star",
+    "toPoseId": "out-lbase-feet-end-facing-out",
+    "nonReversible": true,
     "difficulty": "intermediate"
   }
 ]

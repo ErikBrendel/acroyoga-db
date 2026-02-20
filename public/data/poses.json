@@ -35,8 +35,8 @@
     "description": "Base lies on back with feet up, supporting flyer's hips. Flyer balances horizontally face-down. Hands connected for support.",
     "difficulty": "easy",
     "position": {
-      "x": 472,
-      "y": 758
+      "x": 479,
+      "y": 791
     }
   },
   {
@@ -55,8 +55,8 @@
     "description": "Base lies on back supporting flyer's shoulders with hands, flyer is upside down facing towards base head. Base thumbs on flyer's back. Base sees flyer front.",
     "difficulty": "intermediate",
     "position": {
-      "x": 403,
-      "y": 382
+      "x": 419,
+      "y": 501
     }
   },
   {
@@ -65,8 +65,8 @@
     "description": "Flyer does a shoulderstand on Base feet. Hands connected in \"stargrip\". Base straight arms, Flyer bent arms.",
     "difficulty": "easy",
     "position": {
-      "x": 775,
-      "y": -216
+      "x": 771,
+      "y": -263
     }
   },
   {
@@ -147,8 +147,8 @@
     "description": "Flyer in triangle form: grabbing their own ankles, and upside down. Base grabs the Fyler upper arms, balances whole weight with their arms.",
     "difficulty": "intermediate",
     "position": {
-      "x": 394,
-      "y": 240
+      "x": 407,
+      "y": 353
     }
   },
   {
@@ -190,8 +190,8 @@
     "mirroredPoseId": "mono-reverse-shin-right",
     "difficulty": "intermediate",
     "position": {
-      "x": 1078,
-      "y": -444
+      "x": 1178,
+      "y": -330
     }
   },
   {
@@ -201,8 +201,8 @@
     "mirroredPoseId": "mono-reverse-shin-left",
     "difficulty": "intermediate",
     "position": {
-      "x": 952,
-      "y": -439
+      "x": 1049,
+      "y": -381
     }
   },
   {
@@ -212,8 +212,8 @@
     "mirroredPoseId": "supported-mono-kneepit-right",
     "difficulty": "intermediate",
     "position": {
-      "x": 810,
-      "y": -623
+      "x": 1028,
+      "y": -518
     }
   },
   {
@@ -223,8 +223,8 @@
     "mirroredPoseId": "supported-mono-kneepit-left",
     "difficulty": "intermediate",
     "position": {
-      "x": 811,
-      "y": -757
+      "x": 1134,
+      "y": -625
     }
   },
   {
@@ -234,8 +234,8 @@
     "mirroredPoseId": "mono-backbird-right",
     "difficulty": "intermediate",
     "position": {
-      "x": 538,
-      "y": -449
+      "x": 809,
+      "y": -576
     }
   },
   {
@@ -245,8 +245,8 @@
     "mirroredPoseId": "mono-backbird-left",
     "difficulty": "intermediate",
     "position": {
-      "x": 675,
-      "y": -457
+      "x": 871,
+      "y": -451
     }
   },
   {
@@ -335,8 +335,8 @@
     "description": "Base standing, Flyer on shoulders, Base holding back of Flyer kneepits/calves donw",
     "difficulty": "intermediate",
     "position": {
-      "x": 1625,
-      "y": 468
+      "x": 1800,
+      "y": 228
     }
   },
   {
@@ -355,8 +355,8 @@
     "description": "Base slightly squatting, Flyer standing on knees, facing each other. Both holding wrists with long arms, leaning back",
     "difficulty": "easy",
     "position": {
-      "x": 1419,
-      "y": 231
+      "x": 1290,
+      "y": 22
     }
   },
   {
@@ -366,8 +366,8 @@
     "mirroredPoseId": "standing-flag-right",
     "difficulty": "intermediate",
     "position": {
-      "x": 1507,
-      "y": 45
+      "x": 1461,
+      "y": -81
     }
   },
   {
@@ -377,8 +377,8 @@
     "mirroredPoseId": "standing-flag-left",
     "difficulty": "intermediate",
     "position": {
-      "x": 1600,
-      "y": 142
+      "x": 1498,
+      "y": 55
     }
   },
   {
@@ -387,8 +387,8 @@
     "description": "Base in wide squat, Flyer behind, with feet close to Base hips on upper legs",
     "difficulty": "easy",
     "position": {
-      "x": 1422,
-      "y": 454
+      "x": 1763,
+      "y": 429
     }
   },
   {
@@ -407,8 +407,8 @@
     "description": "Base on floor, arms straight up. Flyer pushes with arms down. Fingers opposed, Flyer looks towards Base feet.",
     "difficulty": "easy",
     "position": {
-      "x": 1051,
-      "y": -148
+      "x": 646,
+      "y": -472
     }
   },
   {
@@ -432,13 +432,13 @@
     }
   },
   {
-    "id": "flyer-tucked-before-base",
-    "name": "Flyer tucked before Base",
+    "id": "out-flyer-tucked-before-base",
+    "name": "Out: Flyer Tucked Before Base",
     "description": "Flyer on ground, tucked. Base standing. Flyer feet on Base knees. Base can grab Flyer knees.",
     "difficulty": "easy",
     "position": {
-      "x": 1258,
-      "y": 24
+      "x": 1371,
+      "y": 432
     }
   },
   {
@@ -447,8 +447,8 @@
     "description": "Like carrying your small child though the zoo :)",
     "difficulty": "easy",
     "position": {
-      "x": 1817,
-      "y": 428
+      "x": 1978,
+      "y": 314
     }
   },
   {
@@ -477,8 +477,8 @@
     "description": "Hands gripping with aligned fingers, Flyer faces Base feet.",
     "difficulty": "hard",
     "position": {
-      "x": 307,
-      "y": 573
+      "x": 270,
+      "y": 542
     }
   },
   {
@@ -487,8 +487,8 @@
     "description": "Like star, but Flyer facing away. Base arms straight and pushing upwards, Flyer arms also almost straight.",
     "difficulty": "intermediate",
     "position": {
-      "x": 501,
-      "y": 126
+      "x": 506,
+      "y": 68
     }
   },
   {
@@ -558,7 +558,7 @@
     }
   },
   {
-    "id": "folded-leaf-tucket-through",
+    "id": "folded-leaf-tucked-through",
     "name": "Folded Leaf tucked through",
     "description": "Like folded leaf, but the Flyer put their upper body through the Base legs and rests their back on the underside of the Base legs.",
     "difficulty": "easy",
@@ -583,8 +583,8 @@
     "description": "L-Sit, but Flyer straddles and has arms inside the legs",
     "difficulty": "intermediate",
     "position": {
-      "x": 457,
-      "y": 516
+      "x": 393,
+      "y": 219
     }
   },
   {
@@ -593,8 +593,8 @@
     "description": "Base stands behind Flyer, both hold hands, counterbalance leaning away from each other",
     "difficulty": "easy",
     "position": {
-      "x": -287,
-      "y": 94
+      "x": 756,
+      "y": 131
     }
   },
   {
@@ -617,6 +617,108 @@
     "position": {
       "x": 1072,
       "y": 1143
+    }
+  },
+  {
+    "id": "out-lbase-feet-end-facing-in",
+    "name": "Out: L-Base, Flyer at Feet (Facing In)",
+    "description": "Both safely on the ground. Base lies on back with legs up or relaxed. Flyer stands at base's feet end, facing toward base's head. Classic entry position for bird, front plank, throne.",
+    "difficulty": "easy",
+    "position": {
+      "x": 350,
+      "y": 679
+    }
+  },
+  {
+    "id": "out-lbase-feet-end-facing-out",
+    "name": "Out: L-Base, Flyer at Feet (Facing Out)",
+    "description": "Both safely on the ground. Base lies on back with legs up or relaxed. Flyer stands at base's feet end, facing away from base. Entry position for whale, reverse back bird, reverse chair.",
+    "difficulty": "easy",
+    "position": {
+      "x": -116,
+      "y": 74
+    }
+  },
+  {
+    "id": "out-lbase-head-end-facing-in",
+    "name": "Out: L-Base, Flyer at Head (Facing In)",
+    "description": "Both safely on the ground. Base lies on back. Flyer stands at base's head end, facing toward base's feet (straddling base's head).",
+    "difficulty": "easy",
+    "position": {
+      "x": 445,
+      "y": -512
+    }
+  },
+  {
+    "id": "out-lbase-head-end-facing-out",
+    "name": "Out: L-Base, Flyer at Head (Facing Out)",
+    "description": "Both safely on the ground. Base lies on back. Flyer stands at base's head end, facing away from base. Entry for reverse shoulder stand.",
+    "difficulty": "easy",
+    "position": {
+      "x": 1073,
+      "y": 728
+    }
+  },
+  {
+    "id": "out-standing-facing",
+    "name": "Out: Standing, Facing Each Other",
+    "description": "Both safely on the ground, standing and facing each other. Entry/exit for most standing poses like standing counterbalance, flyer on knees.",
+    "difficulty": "easy",
+    "position": {
+      "x": 1525,
+      "y": 358
+    }
+  },
+  {
+    "id": "out-standing-base-behind",
+    "name": "Out: Standing, Base Behind Flyer",
+    "description": "Both safely on the ground, standing in the same direction with base behind the flyer. Entry/exit for standing-behind counterbalance, two-high, sitting on shoulders.",
+    "difficulty": "easy",
+    "position": {
+      "x": 1800,
+      "y": -284
+    }
+  },
+  {
+    "id": "out-standing-flyer-behind",
+    "name": "Out: Standing, Flyer Behind Base",
+    "description": "Both safely on the ground, standing in the same direction with flyer behind the base. Entry/exit for galionsfigur, standing on hips.",
+    "difficulty": "easy",
+    "position": {
+      "x": 1659,
+      "y": 580
+    }
+  },
+  {
+    "id": "out-standing-away",
+    "name": "Out: Standing, Back-To-Back",
+    "description": "Both safely on the ground, standing back-to-back facing opposite directions.",
+    "difficulty": "easy",
+    "position": {
+      "x": 1379,
+      "y": 857
+    }
+  },
+  {
+    "id": "out-sidestar-entry-left",
+    "name": "Out: Sidestar Entry (Left)",
+    "description": "Both safely on the ground. Base lies on back, flyer stands to the base's left side at hip level. Entry position for left sidestar.",
+    "mirroredPoseId": "out-sidestar-entry-right",
+    "difficulty": "easy",
+    "position": {
+      "x": 287,
+      "y": -289
+    }
+  },
+  {
+    "id": "out-sidestar-entry-right",
+    "name": "Out: Sidestar Entry (Right)",
+    "description": "Both safely on the ground. Base lies on back, flyer stands to the base's right side at hip level. Entry position for right sidestar.",
+    "mirroredPoseId": "out-sidestar-entry-left",
+    "difficulty": "easy",
+    "position": {
+      "x": 408,
+      "y": -296
     }
   }
 ]

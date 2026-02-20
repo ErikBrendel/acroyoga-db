@@ -107,9 +107,9 @@ export function transformToGraph(poses: Pose[], transitions: Transition[]): Grap
         mirroredPoseId: pose.mirroredPoseId,
       },
       style: {
-        background: (pose.description?.length ?? 0) === 0 ? '#ef4444' : getPoseColor(pose.difficulty),
+        background: pose.id.startsWith('out-') ? '#9ca3af' : (pose.description?.length ?? 0) === 0 ? '#ef4444' : getPoseColor(pose.difficulty),
         color: 'white',
-        border: '2px solid #1e40af',
+        border: pose.id.startsWith('out-') ? '2px solid #6b7280' : '2px solid #1e40af',
         borderRadius: '50%',
         padding: '10px',
         fontSize: '14px',
@@ -166,7 +166,7 @@ export function transformToGraph(poses: Pose[], transitions: Transition[]): Grap
       animated: false,
       zIndex: 1,
       style: {
-        stroke: getPoseColor(pose.difficulty),
+        stroke: pose.id.startsWith('out-') ? '#9ca3af' : getPoseColor(pose.difficulty),
         strokeWidth: NODE_DIAMETER * 0.5,
         strokeLinecap: 'round',
       },
