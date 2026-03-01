@@ -71,6 +71,19 @@ const PRESETS: Preset[] = [
       { bone: 'rightFoot', angleName: 'flex', value: 130 },
     ],
   },
+  {
+    name: 'Relaxed Arms',
+    angles: [
+      { bone: 'leftUpperArm', angleName: 'raise', value: -40 },
+      { bone: 'leftUpperArm', angleName: 'forward', value: 25 },
+      { bone: 'leftLowerArm', angleName: 'bend', value: 35 },
+      { bone: 'leftHand', angleName: 'stretch', value: -20 },
+      { bone: 'rightUpperArm', angleName: 'raise', value: -40 },
+      { bone: 'rightUpperArm', angleName: 'forward', value: 25 },
+      { bone: 'rightLowerArm', angleName: 'bend', value: 35 },
+      { bone: 'rightHand', angleName: 'stretch', value: -20 },
+    ],
+  },
 ];
 
 export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
@@ -208,7 +221,7 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
       angles: [
         { name: 'forward', value: 0, min: -60, max: 170, axis: 'x' },
         { name: 'raise', value: 0, min: -90, max: 90, axis: '-z' },
-        { name: 'rotate', value: 0, min: -90, max: 90, axis: 'y' },
+        { name: 'rotate', value: 0, min: -90, max: 90, axis: '-y' },
       ],
     };
 
@@ -228,15 +241,26 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
       name: 'lower-arm',
       length: 0.28,
       angles: [
-        { name: 'bend', value: 0, min: 0, max: 150, axis: '-z' },
+        { name: 'bend', value: 0, min: 0, max: 150, axis: 'x' },
+        { name: 'rotate', value: 0, min: -90, max: 90, axis: 'y' },
       ],
     };
 
-    const handConfig: BoneConfig = {
+    const leftHandConfig: BoneConfig = {
       name: 'hand',
       length: 0.18,
       angles: [
-        { name: 'flex', value: 0, min: -70, max: 70, axis: 'x' },
+        { name: 'stretch', value: 0, min: -85, max: 100, axis: '-z' },
+        { name: 'tilt', value: 0, min: -20, max: 20, axis: 'x' },
+      ],
+    };
+
+    const rightHandConfig: BoneConfig = {
+      name: 'hand',
+      length: 0.18,
+      angles: [
+        { name: 'stretch', value: 0, min: -85, max: 100, axis: 'z' },
+        { name: 'tilt', value: 0, min: -20, max: 20, axis: 'x' },
       ],
     };
 
@@ -259,12 +283,12 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
     // Left arm
     const leftUpperArm = new Bone(leftUpperArmConfig, new THREE.Vector3(-shoulderWidth, shoulderHeight, 0));
     const leftLowerArm = new Bone(lowerArmConfig, new THREE.Vector3(0, leftUpperArmConfig.length, 0));
-    const leftHand = new Bone(handConfig, new THREE.Vector3(0, lowerArmConfig.length, 0));
+    const leftHand = new Bone(leftHandConfig, new THREE.Vector3(0, lowerArmConfig.length, 0));
 
     // Right arm
     const rightUpperArm = new Bone(rightUpperArmConfig, new THREE.Vector3(shoulderWidth, shoulderHeight, 0));
     const rightLowerArm = new Bone(lowerArmConfig, new THREE.Vector3(0, rightUpperArmConfig.length, 0));
-    const rightHand = new Bone(handConfig, new THREE.Vector3(0, lowerArmConfig.length, 0));
+    const rightHand = new Bone(rightHandConfig, new THREE.Vector3(0, lowerArmConfig.length, 0));
 
     // Build hierarchy
     hip.addChild(leftUpperLeg);
