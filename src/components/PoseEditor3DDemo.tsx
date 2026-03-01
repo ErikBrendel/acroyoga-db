@@ -7,7 +7,7 @@ import { Bone, BoneConfig } from '../3d/Bone';
 interface Preset {
   name: string;
   angles: {
-    bone: 'leftUpperLeg' | 'leftLowerLeg' | 'leftFoot' | 'rightUpperLeg' | 'rightLowerLeg' | 'rightFoot' | 'leftUpperArm' | 'leftLowerArm' | 'leftHand' | 'rightUpperArm' | 'rightLowerArm' | 'rightHand';
+    bone: 'rightUpperLeg' | 'rightLowerLeg' | 'rightFoot' | 'leftUpperLeg' | 'leftLowerLeg' | 'leftFoot' | 'rightUpperArm' | 'rightLowerArm' | 'rightHand' | 'leftUpperArm' | 'leftLowerArm' | 'leftHand';
     angleName: string;
     value: number;
   }[];
@@ -17,79 +17,79 @@ const PRESETS: Preset[] = [
   {
     name: 'Straight',
     angles: [
-      { bone: 'leftUpperLeg', angleName: 'pike', value: 0 },
-      { bone: 'leftUpperLeg', angleName: 'straddle', value: 0 },
-      { bone: 'leftLowerLeg', angleName: 'bend', value: 0 },
       { bone: 'rightUpperLeg', angleName: 'pike', value: 0 },
       { bone: 'rightUpperLeg', angleName: 'straddle', value: 0 },
       { bone: 'rightLowerLeg', angleName: 'bend', value: 0 },
+      { bone: 'leftUpperLeg', angleName: 'pike', value: 0 },
+      { bone: 'leftUpperLeg', angleName: 'straddle', value: 0 },
+      { bone: 'leftLowerLeg', angleName: 'bend', value: 0 },
     ],
   },
   {
     name: 'Straddle',
     angles: [
-      { bone: 'leftUpperLeg', angleName: 'straddle', value: 60 },
       { bone: 'rightUpperLeg', angleName: 'straddle', value: 60 },
+      { bone: 'leftUpperLeg', angleName: 'straddle', value: 60 },
     ],
   },
   {
     name: 'Pike',
     angles: [
-      { bone: 'leftUpperLeg', angleName: 'pike', value: 90 },
       { bone: 'rightUpperLeg', angleName: 'pike', value: 90 },
+      { bone: 'leftUpperLeg', angleName: 'pike', value: 90 },
     ],
   },
   {
     name: 'Straddle-Pike',
     angles: [
-      { bone: 'leftUpperLeg', angleName: 'pike', value: 80 },
-      { bone: 'leftUpperLeg', angleName: 'straddle', value: 50 },
       { bone: 'rightUpperLeg', angleName: 'pike', value: 80 },
       { bone: 'rightUpperLeg', angleName: 'straddle', value: 50 },
+      { bone: 'leftUpperLeg', angleName: 'pike', value: 80 },
+      { bone: 'leftUpperLeg', angleName: 'straddle', value: 50 },
     ],
   },
   {
     name: 'Tuck',
     angles: [
-      { bone: 'leftUpperLeg', angleName: 'pike', value: 100 },
-      { bone: 'leftLowerLeg', angleName: 'bend', value: 130 },
       { bone: 'rightUpperLeg', angleName: 'pike', value: 100 },
       { bone: 'rightLowerLeg', angleName: 'bend', value: 130 },
+      { bone: 'leftUpperLeg', angleName: 'pike', value: 100 },
+      { bone: 'leftLowerLeg', angleName: 'bend', value: 130 },
     ],
   },
   {
     name: 'Point',
     angles: [
-      { bone: 'leftFoot', angleName: 'flex', value: 10 },
       { bone: 'rightFoot', angleName: 'flex', value: 10 },
+      { bone: 'leftFoot', angleName: 'flex', value: 10 },
     ],
   },
   {
     name: 'Flex',
     angles: [
-      { bone: 'leftFoot', angleName: 'flex', value: 130 },
       { bone: 'rightFoot', angleName: 'flex', value: 130 },
+      { bone: 'leftFoot', angleName: 'flex', value: 130 },
     ],
   },
   {
     name: 'Relaxed Arms',
     angles: [
-      { bone: 'leftUpperArm', angleName: 'raise', value: -40 },
-      { bone: 'leftUpperArm', angleName: 'forward', value: 25 },
-      { bone: 'leftLowerArm', angleName: 'bend', value: 35 },
-      { bone: 'leftHand', angleName: 'stretch', value: -20 },
       { bone: 'rightUpperArm', angleName: 'raise', value: -40 },
       { bone: 'rightUpperArm', angleName: 'forward', value: 25 },
       { bone: 'rightLowerArm', angleName: 'bend', value: 35 },
       { bone: 'rightHand', angleName: 'stretch', value: -20 },
+      { bone: 'leftUpperArm', angleName: 'raise', value: -40 },
+      { bone: 'leftUpperArm', angleName: 'forward', value: 25 },
+      { bone: 'leftLowerArm', angleName: 'bend', value: 35 },
+      { bone: 'leftHand', angleName: 'stretch', value: -20 },
     ],
   },
 ];
 
-// Left hand:  +X local = world +Y = dorsal (up in T-pose), -X = palm
-// Right hand: +X local = world -Y = palm (down in T-pose), -X = dorsal
+// Right hand:  +X local = world +Y = dorsal (up in T-pose), -X = palm
+// Left hand: +X local = world -Y = palm (down in T-pose), -X = dorsal
 // Both hands: +Z local = world +Z = thumb side (toward viewer in T-pose)
-function buildHandMesh(bone: Bone, color: number, isLeft: boolean): void {
+function buildHandMesh(bone: Bone, color: number, isRight: boolean): void {
   const palmColor = new THREE.Color(color).lerp(new THREE.Color(0xffffff), 0.6);
   const dorsalMat = new THREE.MeshStandardMaterial({ color });
   const palmMat = new THREE.MeshStandardMaterial({ color: palmColor });
@@ -102,7 +102,7 @@ function buildHandMesh(bone: Bone, color: number, isLeft: boolean): void {
   wristSphere.castShadow = true;
   bone.mesh.add(wristSphere);
 
-  const faceMaterials = isLeft
+  const faceMaterials = isRight
     ? [dorsalMat, palmMat, edgeMat, edgeMat, edgeMat, edgeMat]
     : [palmMat, dorsalMat, edgeMat, edgeMat, edgeMat, edgeMat];
   const palm = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.15, 0.08), faceMaterials);
@@ -124,20 +124,20 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
   const containerRef = useRef<HTMLDivElement>(null);
   const [bones, setBones] = useState<{
     hip: Bone;
-    leftUpperLeg: Bone;
-    leftLowerLeg: Bone;
-    leftFoot: Bone;
     rightUpperLeg: Bone;
     rightLowerLeg: Bone;
     rightFoot: Bone;
-    leftUpperArm: Bone;
-    leftLowerArm: Bone;
-    leftHand: Bone;
+    leftUpperLeg: Bone;
+    leftLowerLeg: Bone;
+    leftFoot: Bone;
     rightUpperArm: Bone;
     rightLowerArm: Bone;
     rightHand: Bone;
+    leftUpperArm: Bone;
+    leftLowerArm: Bone;
+    leftHand: Bone;
   } | null>(null);
-  const [selectedBone, setSelectedBone] = useState<'hip' | 'leftUpperLeg' | 'leftLowerLeg' | 'leftFoot' | 'rightUpperLeg' | 'rightLowerLeg' | 'rightFoot' | 'leftUpperArm' | 'leftLowerArm' | 'leftHand' | 'rightUpperArm' | 'rightLowerArm' | 'rightHand' | null>(null);
+  const [selectedBone, setSelectedBone] = useState<'hip' | 'rightUpperLeg' | 'rightLowerLeg' | 'rightFoot' | 'leftUpperLeg' | 'leftLowerLeg' | 'leftFoot' | 'rightUpperArm' | 'rightLowerArm' | 'rightHand' | 'leftUpperArm' | 'leftLowerArm' | 'leftHand' | null>(null);
   const [hipMode, setHipMode] = useState<'translate' | 'rotate'>('translate');
   const [, setUpdateTrigger] = useState(0);
   const transformControlsRef = useRef<TransformControls | null>(null);
@@ -208,8 +208,8 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
       angles: [],
     };
 
-    const leftUpperLegConfig: BoneConfig = {
-      name: 'left-upper-leg',
+    const rightUpperLegConfig: BoneConfig = {
+      name: 'right-upper-leg',
       length: 0.43, // ~43cm upper leg
       baseRotation: new THREE.Euler(0, 0, Math.PI), // Rotate 180° around Z to point downward
       angles: [
@@ -219,13 +219,13 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
       ],
     };
 
-    const rightUpperLegConfig: BoneConfig = {
-      name: 'right-upper-leg',
+    const leftUpperLegConfig: BoneConfig = {
+      name: 'left-upper-leg',
       length: 0.43, // ~43cm upper leg
       baseRotation: new THREE.Euler(0, 0, Math.PI), // Rotate 180° around Z to point downward
       angles: [
         { name: 'pike', value: 0, min: -10, max: 130, axis: 'x' },
-        { name: 'straddle', value: 0, min: -30, max: 120, axis: 'z' }, // Inverted for right leg
+        { name: 'straddle', value: 0, min: -30, max: 120, axis: 'z' }, // Inverted for left leg
         { name: 'rotate', value: 0, min: -90, max: 90, axis: 'y' },
       ],
     };
@@ -247,11 +247,11 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
       ],
     };
 
-    // Left upper arm: base rotation points bone to the left (-X)
-    const leftUpperArmConfig: BoneConfig = {
-      name: 'left-upper-arm',
+    // Right upper arm: base rotation points bone to the right (-X)
+    const rightUpperArmConfig: BoneConfig = {
+      name: 'right-upper-arm',
       length: 0.33,
-      baseRotation: new THREE.Euler(0, 0, Math.PI / 2), // +Y → -X (left)
+      baseRotation: new THREE.Euler(0, 0, Math.PI / 2), // +Y → -X (right)
       angles: [
         { name: 'forward', value: 0, min: -60, max: 170, axis: 'x' },
         { name: 'raise', value: 0, min: -90, max: 90, axis: '-z' },
@@ -259,11 +259,11 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
       ],
     };
 
-    // Right upper arm: base rotation points bone to the right (+X)
-    const rightUpperArmConfig: BoneConfig = {
-      name: 'right-upper-arm',
+    // Left upper arm: base rotation points bone to the left (+X)
+    const leftUpperArmConfig: BoneConfig = {
+      name: 'left-upper-arm',
       length: 0.33,
-      baseRotation: new THREE.Euler(0, 0, -Math.PI / 2), // +Y → +X (right)
+      baseRotation: new THREE.Euler(0, 0, -Math.PI / 2), // +Y → +X (left)
       angles: [
         { name: 'forward', value: 0, min: -60, max: 170, axis: 'x' },
         { name: 'raise', value: 0, min: -90, max: 90, axis: 'z' },
@@ -280,7 +280,7 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
       ],
     };
 
-    const leftHandConfig: BoneConfig = {
+    const rightHandConfig: BoneConfig = {
       name: 'hand',
       length: 0.18,
       angles: [
@@ -289,7 +289,7 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
       ],
     };
 
-    const rightHandConfig: BoneConfig = {
+    const leftHandConfig: BoneConfig = {
       name: 'hand',
       length: 0.18,
       angles: [
@@ -304,63 +304,63 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
 
     const hip = new Bone(hipConfig, new THREE.Vector3(0, 1, 0));
 
-    // Left leg
-    const leftUpperLeg = new Bone(leftUpperLegConfig, new THREE.Vector3(-hipWidth, -0.1, 0));
-    const leftLowerLeg = new Bone(lowerLegConfig, new THREE.Vector3(0, leftUpperLegConfig.length, 0));
-    const leftFoot = new Bone(footConfig, new THREE.Vector3(0, lowerLegConfig.length, 0));
-
     // Right leg
-    const rightUpperLeg = new Bone(rightUpperLegConfig, new THREE.Vector3(hipWidth, -0.1, 0));
+    const rightUpperLeg = new Bone(rightUpperLegConfig, new THREE.Vector3(-hipWidth, -0.1, 0));
     const rightLowerLeg = new Bone(lowerLegConfig, new THREE.Vector3(0, rightUpperLegConfig.length, 0));
     const rightFoot = new Bone(footConfig, new THREE.Vector3(0, lowerLegConfig.length, 0));
 
-    // Left arm
-    const leftUpperArm = new Bone(leftUpperArmConfig, new THREE.Vector3(-shoulderWidth, shoulderHeight, 0));
-    const leftLowerArm = new Bone(lowerArmConfig, new THREE.Vector3(0, leftUpperArmConfig.length, 0));
-    const leftHand = new Bone(leftHandConfig, new THREE.Vector3(0, lowerArmConfig.length, 0));
+    // Left leg
+    const leftUpperLeg = new Bone(leftUpperLegConfig, new THREE.Vector3(hipWidth, -0.1, 0));
+    const leftLowerLeg = new Bone(lowerLegConfig, new THREE.Vector3(0, leftUpperLegConfig.length, 0));
+    const leftFoot = new Bone(footConfig, new THREE.Vector3(0, lowerLegConfig.length, 0));
 
     // Right arm
-    const rightUpperArm = new Bone(rightUpperArmConfig, new THREE.Vector3(shoulderWidth, shoulderHeight, 0));
+    const rightUpperArm = new Bone(rightUpperArmConfig, new THREE.Vector3(-shoulderWidth, shoulderHeight, 0));
     const rightLowerArm = new Bone(lowerArmConfig, new THREE.Vector3(0, rightUpperArmConfig.length, 0));
     const rightHand = new Bone(rightHandConfig, new THREE.Vector3(0, lowerArmConfig.length, 0));
 
-    // Build hierarchy
-    hip.addChild(leftUpperLeg);
-    leftUpperLeg.addChild(leftLowerLeg);
-    leftLowerLeg.addChild(leftFoot);
+    // Left arm
+    const leftUpperArm = new Bone(leftUpperArmConfig, new THREE.Vector3(shoulderWidth, shoulderHeight, 0));
+    const leftLowerArm = new Bone(lowerArmConfig, new THREE.Vector3(0, leftUpperArmConfig.length, 0));
+    const leftHand = new Bone(leftHandConfig, new THREE.Vector3(0, lowerArmConfig.length, 0));
 
+    // Build hierarchy
     hip.addChild(rightUpperLeg);
     rightUpperLeg.addChild(rightLowerLeg);
     rightLowerLeg.addChild(rightFoot);
 
-    hip.addChild(leftUpperArm);
-    leftUpperArm.addChild(leftLowerArm);
-    leftLowerArm.addChild(leftHand);
+    hip.addChild(leftUpperLeg);
+    leftUpperLeg.addChild(leftLowerLeg);
+    leftLowerLeg.addChild(leftFoot);
 
     hip.addChild(rightUpperArm);
     rightUpperArm.addChild(rightLowerArm);
     rightLowerArm.addChild(rightHand);
 
+    hip.addChild(leftUpperArm);
+    leftUpperArm.addChild(leftLowerArm);
+    leftLowerArm.addChild(leftHand);
+
     // Create visuals
     hip.createVisuals(0xff0000); // red - hip
-    leftUpperLeg.createVisuals(0x00ff00); // green - left upper leg
-    leftLowerLeg.createVisuals(0x0000ff); // blue - left lower leg
-    leftFoot.createVisuals(0xffff00); // yellow - left foot
-    rightUpperLeg.createVisuals(0x00ffff); // cyan - right upper leg
-    rightLowerLeg.createVisuals(0xff00ff); // magenta - right lower leg
-    rightFoot.createVisuals(0xffa500); // orange - right foot
-    leftUpperArm.createVisuals(0xff69b4); // pink - left upper arm
-    leftLowerArm.createVisuals(0xff1493); // deep pink - left lower arm
-    buildHandMesh(leftHand, 0xffb6c1, true);
-    rightUpperArm.createVisuals(0x00fa9a); // spring green - right upper arm
-    rightLowerArm.createVisuals(0x00ced1); // dark turquoise - right lower arm
-    buildHandMesh(rightHand, 0x1e90ff, false);
+    rightUpperLeg.createVisuals(0x00ff00); // green - right upper leg
+    rightLowerLeg.createVisuals(0x0000ff); // blue - right lower leg
+    rightFoot.createVisuals(0xffff00); // yellow - right foot
+    leftUpperLeg.createVisuals(0x00ffff); // cyan - left upper leg
+    leftLowerLeg.createVisuals(0xff00ff); // magenta - left lower leg
+    leftFoot.createVisuals(0xffa500); // orange - left foot
+    rightUpperArm.createVisuals(0xff69b4); // pink - right upper arm
+    rightLowerArm.createVisuals(0xff1493); // deep pink - right lower arm
+    buildHandMesh(rightHand, 0xffb6c1, true);
+    leftUpperArm.createVisuals(0x00fa9a); // spring green - left upper arm
+    leftLowerArm.createVisuals(0x00ced1); // dark turquoise - left lower arm
+    buildHandMesh(leftHand, 0x1e90ff, false);
 
     scene.add(hip.mesh);
 
     hip.updateTransform();
 
-    setBones({ hip, leftUpperLeg, leftLowerLeg, leftFoot, rightUpperLeg, rightLowerLeg, rightFoot, leftUpperArm, leftLowerArm, leftHand, rightUpperArm, rightLowerArm, rightHand });
+    setBones({ hip, rightUpperLeg, rightLowerLeg, rightFoot, leftUpperLeg, leftLowerLeg, leftFoot, rightUpperArm, rightLowerArm, rightHand, leftUpperArm, leftLowerArm, leftHand });
 
     // Create TransformControls for rotation
     const transformControls = new TransformControls(camera, renderer.domElement);
@@ -377,12 +377,12 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
 
     transformControlsRef.current = transformControls;
 
-    // Attach to left upper leg by default and configure axes
-    transformControls.attach(leftUpperLeg.mesh);
-    previousEulerRef.current.copy(leftUpperLeg.mesh.rotation);
-    const hasX = leftUpperLeg.angles.some(a => a.axis === 'x' || a.axis === '-x');
-    const hasY = leftUpperLeg.angles.some(a => a.axis === 'y' || a.axis === '-y');
-    const hasZ = leftUpperLeg.angles.some(a => a.axis === 'z' || a.axis === '-z');
+    // Attach to right upper leg by default and configure axes
+    transformControls.attach(rightUpperLeg.mesh);
+    previousEulerRef.current.copy(rightUpperLeg.mesh.rotation);
+    const hasX = rightUpperLeg.angles.some(a => a.axis === 'x' || a.axis === '-x');
+    const hasY = rightUpperLeg.angles.some(a => a.axis === 'y' || a.axis === '-y');
+    const hasZ = rightUpperLeg.angles.some(a => a.axis === 'z' || a.axis === '-z');
     transformControls.showX = hasX;
     transformControls.showY = hasY;
     transformControls.showZ = hasZ;
@@ -390,7 +390,7 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
     console.log('TransformControls created:', transformControls);
     console.log('Is Object3D:', transformControls instanceof THREE.Object3D);
     console.log('Has _root:', '_root' in transformControls);
-    console.log('Attached to bone:', leftUpperLeg.mesh.name);
+    console.log('Attached to bone:', rightUpperLeg.mesh.name);
 
     // Disable orbit controls when dragging gizmo
     transformControls.addEventListener('dragging-changed', (event) => {
@@ -409,18 +409,18 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
         bone = hip;
         isHip = true;
       }
-      else if (attachedBone === leftUpperLeg.mesh) bone = leftUpperLeg;
-      else if (attachedBone === leftLowerLeg.mesh) bone = leftLowerLeg;
-      else if (attachedBone === leftFoot.mesh) bone = leftFoot;
       else if (attachedBone === rightUpperLeg.mesh) bone = rightUpperLeg;
       else if (attachedBone === rightLowerLeg.mesh) bone = rightLowerLeg;
       else if (attachedBone === rightFoot.mesh) bone = rightFoot;
-      else if (attachedBone === leftUpperArm.mesh) bone = leftUpperArm;
-      else if (attachedBone === leftLowerArm.mesh) bone = leftLowerArm;
-      else if (attachedBone === leftHand.mesh) bone = leftHand;
+      else if (attachedBone === leftUpperLeg.mesh) bone = leftUpperLeg;
+      else if (attachedBone === leftLowerLeg.mesh) bone = leftLowerLeg;
+      else if (attachedBone === leftFoot.mesh) bone = leftFoot;
       else if (attachedBone === rightUpperArm.mesh) bone = rightUpperArm;
       else if (attachedBone === rightLowerArm.mesh) bone = rightLowerArm;
       else if (attachedBone === rightHand.mesh) bone = rightHand;
+      else if (attachedBone === leftUpperArm.mesh) bone = leftUpperArm;
+      else if (attachedBone === leftLowerArm.mesh) bone = leftLowerArm;
+      else if (attachedBone === leftHand.mesh) bone = leftHand;
 
       if (bone && isHip) {
         // Hip translation - just update the UI
@@ -542,7 +542,7 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
 
   if (!isOpen) return null;
 
-  const handleAngleChange = (boneName: 'hip' | 'leftUpperLeg' | 'leftLowerLeg' | 'leftFoot' | 'rightUpperLeg' | 'rightLowerLeg' | 'rightFoot' | 'leftUpperArm' | 'leftLowerArm' | 'leftHand' | 'rightUpperArm' | 'rightLowerArm' | 'rightHand', angleName: string, value: number) => {
+  const handleAngleChange = (boneName: 'hip' | 'rightUpperLeg' | 'rightLowerLeg' | 'rightFoot' | 'leftUpperLeg' | 'leftLowerLeg' | 'leftFoot' | 'rightUpperArm' | 'rightLowerArm' | 'rightHand' | 'leftUpperArm' | 'leftLowerArm' | 'leftHand', angleName: string, value: number) => {
     if (!bones || boneName === 'hip') return; // Hip has no angles
     bones[boneName].setAngle(angleName, value);
     // Update previous euler reference after manual slider change
@@ -609,32 +609,6 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
               🔴 Hip (Move/Rotate)
             </button>
 
-            <div className="text-xs text-gray-500 mt-2 mb-1">Left Leg</div>
-            <button
-              onClick={() => setSelectedBone('leftUpperLeg')}
-              className={`w-full px-3 py-2 rounded text-left text-sm ${
-                selectedBone === 'leftUpperLeg' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
-              }`}
-            >
-              🟢 Upper Leg
-            </button>
-            <button
-              onClick={() => setSelectedBone('leftLowerLeg')}
-              className={`w-full px-3 py-2 rounded text-left text-sm ${
-                selectedBone === 'leftLowerLeg' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
-              }`}
-            >
-              🔵 Lower Leg
-            </button>
-            <button
-              onClick={() => setSelectedBone('leftFoot')}
-              className={`w-full px-3 py-2 rounded text-left text-sm ${
-                selectedBone === 'leftFoot' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
-              }`}
-            >
-              🟡 Foot
-            </button>
-
             <div className="text-xs text-gray-500 mt-2 mb-1">Right Leg</div>
             <button
               onClick={() => setSelectedBone('rightUpperLeg')}
@@ -642,7 +616,7 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
                 selectedBone === 'rightUpperLeg' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
               }`}
             >
-              🔵 Upper Leg
+              🟢 Upper Leg
             </button>
             <button
               onClick={() => setSelectedBone('rightLowerLeg')}
@@ -650,7 +624,7 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
                 selectedBone === 'rightLowerLeg' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
               }`}
             >
-              🟣 Lower Leg
+              🔵 Lower Leg
             </button>
             <button
               onClick={() => setSelectedBone('rightFoot')}
@@ -658,33 +632,33 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
                 selectedBone === 'rightFoot' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
               }`}
             >
-              🟠 Foot
+              🟡 Foot
             </button>
 
-            <div className="text-xs text-gray-500 mt-2 mb-1">Left Arm</div>
+            <div className="text-xs text-gray-500 mt-2 mb-1">Left Leg</div>
             <button
-              onClick={() => setSelectedBone('leftUpperArm')}
+              onClick={() => setSelectedBone('leftUpperLeg')}
               className={`w-full px-3 py-2 rounded text-left text-sm ${
-                selectedBone === 'leftUpperArm' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
+                selectedBone === 'leftUpperLeg' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
               }`}
             >
-              🩷 Upper Arm
+              🔵 Upper Leg
             </button>
             <button
-              onClick={() => setSelectedBone('leftLowerArm')}
+              onClick={() => setSelectedBone('leftLowerLeg')}
               className={`w-full px-3 py-2 rounded text-left text-sm ${
-                selectedBone === 'leftLowerArm' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
+                selectedBone === 'leftLowerLeg' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
               }`}
             >
-              🩷 Lower Arm
+              🟣 Lower Leg
             </button>
             <button
-              onClick={() => setSelectedBone('leftHand')}
+              onClick={() => setSelectedBone('leftFoot')}
               className={`w-full px-3 py-2 rounded text-left text-sm ${
-                selectedBone === 'leftHand' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
+                selectedBone === 'leftFoot' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
               }`}
             >
-              🩷 Hand
+              🟠 Foot
             </button>
 
             <div className="text-xs text-gray-500 mt-2 mb-1">Right Arm</div>
@@ -694,7 +668,7 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
                 selectedBone === 'rightUpperArm' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
               }`}
             >
-              🟩 Upper Arm
+              🩷 Upper Arm
             </button>
             <button
               onClick={() => setSelectedBone('rightLowerArm')}
@@ -702,12 +676,38 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
                 selectedBone === 'rightLowerArm' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
               }`}
             >
-              🟩 Lower Arm
+              🩷 Lower Arm
             </button>
             <button
               onClick={() => setSelectedBone('rightHand')}
               className={`w-full px-3 py-2 rounded text-left text-sm ${
                 selectedBone === 'rightHand' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
+              }`}
+            >
+              🩷 Hand
+            </button>
+
+            <div className="text-xs text-gray-500 mt-2 mb-1">Left Arm</div>
+            <button
+              onClick={() => setSelectedBone('leftUpperArm')}
+              className={`w-full px-3 py-2 rounded text-left text-sm ${
+                selectedBone === 'leftUpperArm' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
+              }`}
+            >
+              🟩 Upper Arm
+            </button>
+            <button
+              onClick={() => setSelectedBone('leftLowerArm')}
+              className={`w-full px-3 py-2 rounded text-left text-sm ${
+                selectedBone === 'leftLowerArm' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
+              }`}
+            >
+              🟩 Lower Arm
+            </button>
+            <button
+              onClick={() => setSelectedBone('leftHand')}
+              className={`w-full px-3 py-2 rounded text-left text-sm ${
+                selectedBone === 'leftHand' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
               }`}
             >
               🟩 Hand
