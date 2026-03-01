@@ -161,6 +161,15 @@ function buildHeadMesh(bone: Bone): void {
   bone.mesh.add(smile);
 }
 
+const MIRROR_BONE_NAMES: Partial<Record<string, string>> = {
+  rightUpperLeg: 'leftUpperLeg', leftUpperLeg: 'rightUpperLeg',
+  rightLowerLeg: 'leftLowerLeg', leftLowerLeg: 'rightLowerLeg',
+  rightFoot:     'leftFoot',     leftFoot:     'rightFoot',
+  rightUpperArm: 'leftUpperArm', leftUpperArm: 'rightUpperArm',
+  rightLowerArm: 'leftLowerArm', leftLowerArm: 'rightLowerArm',
+  rightHand:     'leftHand',     leftHand:     'rightHand',
+};
+
 export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [bones, setBones] = useState<{
@@ -181,6 +190,8 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
   } | null>(null);
   const [selectedBone, setSelectedBone] = useState<'hip' | 'head' | 'rightUpperLeg' | 'rightLowerLeg' | 'rightFoot' | 'leftUpperLeg' | 'leftLowerLeg' | 'leftFoot' | 'rightUpperArm' | 'rightLowerArm' | 'rightHand' | 'leftUpperArm' | 'leftLowerArm' | 'leftHand' | null>(null);
   const [hipMode, setHipMode] = useState<'translate' | 'rotate'>('translate');
+  const [symmetricMode, setSymmetricModeState] = useState(false);
+  const symmetricModeRef = useRef(false);
   const [, setUpdateTrigger] = useState(0);
   const transformControlsRef = useRef<TransformControls | null>(null);
   const orbitControlsRef = useRef<OrbitControls | null>(null);
@@ -257,7 +268,7 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
       angles: [
         { name: 'pike', value: 0, min: -10, max: 130, axis: 'x' },
         { name: 'straddle', value: 0, min: -30, max: 120, axis: '-z' },
-        { name: 'rotate', value: 0, min: -90, max: 90, axis: 'y' },
+        { name: 'rotate', value: 0, min: -90, max: 90, axis: '-y' },
       ],
     };
 
@@ -280,12 +291,21 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
       ],
     };
 
-    const footConfig: BoneConfig = {
+    const rightFootConfig: BoneConfig = {
       name: 'foot',
-      length: 0.25, // ~25cm foot
+      length: 0.25,
+      angles: [
+        { name: 'flex', value: 90, min: 5, max: 140, axis: 'x'  },
+        { name: 'tilt', value: 0,  min: -20, max: 20, axis: '-z' },
+      ],
+    };
+
+    const leftFootConfig: BoneConfig = {
+      name: 'foot',
+      length: 0.25,
       angles: [
         { name: 'flex', value: 90, min: 5, max: 140, axis: 'x' },
-        { name: 'tilt', value: 0, min: -20, max: 20, axis: 'z' },
+        { name: 'tilt', value: 0,  min: -20, max: 20, axis: 'z' },
       ],
     };
 
@@ -313,12 +333,21 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
       ],
     };
 
-    const lowerArmConfig: BoneConfig = {
+    const rightLowerArmConfig: BoneConfig = {
       name: 'lower-arm',
       length: 0.28,
       angles: [
-        { name: 'bend', value: 0, min: 0, max: 150, axis: 'x' },
-        { name: 'rotate', value: 0, min: -90, max: 90, axis: 'y' },
+        { name: 'bend',   value: 0, min: 0,   max: 150, axis: 'x'  },
+        { name: 'rotate', value: 0, min: -90, max: 90,  axis: '-y' },
+      ],
+    };
+
+    const leftLowerArmConfig: BoneConfig = {
+      name: 'lower-arm',
+      length: 0.28,
+      angles: [
+        { name: 'bend',   value: 0, min: 0,   max: 150, axis: 'x' },
+        { name: 'rotate', value: 0, min: -90, max: 90,  axis: 'y' },
       ],
     };
 
@@ -349,22 +378,22 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
     // Right leg
     const rightUpperLeg = new Bone(rightUpperLegConfig, new THREE.Vector3(-hipWidth, -0.1, 0));
     const rightLowerLeg = new Bone(lowerLegConfig, new THREE.Vector3(0, rightUpperLegConfig.length, 0));
-    const rightFoot = new Bone(footConfig, new THREE.Vector3(0, lowerLegConfig.length, 0));
+    const rightFoot = new Bone(rightFootConfig, new THREE.Vector3(0, lowerLegConfig.length, 0));
 
     // Left leg
     const leftUpperLeg = new Bone(leftUpperLegConfig, new THREE.Vector3(hipWidth, -0.1, 0));
     const leftLowerLeg = new Bone(lowerLegConfig, new THREE.Vector3(0, leftUpperLegConfig.length, 0));
-    const leftFoot = new Bone(footConfig, new THREE.Vector3(0, lowerLegConfig.length, 0));
+    const leftFoot = new Bone(leftFootConfig, new THREE.Vector3(0, lowerLegConfig.length, 0));
 
     // Right arm
     const rightUpperArm = new Bone(rightUpperArmConfig, new THREE.Vector3(-shoulderWidth, shoulderHeight, 0));
-    const rightLowerArm = new Bone(lowerArmConfig, new THREE.Vector3(0, rightUpperArmConfig.length, 0));
-    const rightHand = new Bone(rightHandConfig, new THREE.Vector3(0, lowerArmConfig.length, 0));
+    const rightLowerArm = new Bone(rightLowerArmConfig, new THREE.Vector3(0, rightUpperArmConfig.length, 0));
+    const rightHand = new Bone(rightHandConfig, new THREE.Vector3(0, rightLowerArmConfig.length, 0));
 
     // Left arm
     const leftUpperArm = new Bone(leftUpperArmConfig, new THREE.Vector3(shoulderWidth, shoulderHeight, 0));
-    const leftLowerArm = new Bone(lowerArmConfig, new THREE.Vector3(0, leftUpperArmConfig.length, 0));
-    const leftHand = new Bone(leftHandConfig, new THREE.Vector3(0, lowerArmConfig.length, 0));
+    const leftLowerArm = new Bone(leftLowerArmConfig, new THREE.Vector3(0, leftUpperArmConfig.length, 0));
+    const leftHand = new Bone(leftHandConfig, new THREE.Vector3(0, leftLowerArmConfig.length, 0));
 
     // Build hierarchy
     hip.addChild(rightUpperLeg);
@@ -414,6 +443,15 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
     scene.add(hip.mesh);
 
     hip.updateTransform();
+
+    const mirrorMap = new Map<Bone, Bone>([
+      [rightUpperLeg, leftUpperLeg], [leftUpperLeg, rightUpperLeg],
+      [rightLowerLeg, leftLowerLeg], [leftLowerLeg, rightLowerLeg],
+      [rightFoot, leftFoot],         [leftFoot, rightFoot],
+      [rightUpperArm, leftUpperArm], [leftUpperArm, rightUpperArm],
+      [rightLowerArm, leftLowerArm], [leftLowerArm, rightLowerArm],
+      [rightHand, leftHand],         [leftHand, rightHand],
+    ]);
 
     setBones({ hip, head, rightUpperLeg, rightLowerLeg, rightFoot, leftUpperLeg, leftLowerLeg, leftFoot, rightUpperArm, rightLowerArm, rightHand, leftUpperArm, leftLowerArm, leftHand });
 
@@ -519,6 +557,14 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
           // Re-apply the clamped angles to the mesh
           bone.updateTransform();
 
+          // Mirror to opposite side if symmetric mode is on
+          if (symmetricModeRef.current) {
+            const mirror = mirrorMap.get(bone);
+            if (mirror) {
+              bone.angles.forEach(angle => mirror.setAngle(angle.name, angle.value));
+            }
+          }
+
           // Store current euler for next comparison
           previousEulerRef.current.copy(attachedBone.rotation);
 
@@ -601,6 +647,10 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
   const handleAngleChange = (boneName: 'hip' | 'head' | 'rightUpperLeg' | 'rightLowerLeg' | 'rightFoot' | 'leftUpperLeg' | 'leftLowerLeg' | 'leftFoot' | 'rightUpperArm' | 'rightLowerArm' | 'rightHand' | 'leftUpperArm' | 'leftLowerArm' | 'leftHand', angleName: string, value: number) => {
     if (!bones || boneName === 'hip') return; // Hip has no angles
     bones[boneName].setAngle(angleName, value);
+    if (symmetricMode) {
+      const mirrorName = MIRROR_BONE_NAMES[boneName];
+      if (mirrorName) bones[mirrorName as keyof typeof bones].setAngle(angleName, value);
+    }
     // Update previous euler reference after manual slider change
     if (selectedBone === boneName) {
       previousEulerRef.current.copy(bones[boneName].mesh.rotation);
@@ -635,12 +685,21 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
       <div className="w-110 bg-gray-900 text-white p-4 overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">3D Pose Editor (Demo)</h2>
-          <button
-            onClick={onClose}
-            className="px-3 py-1 bg-red-600 rounded hover:bg-red-700"
-          >
-            Close
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => { const v = !symmetricMode; symmetricModeRef.current = v; setSymmetricModeState(v); }}
+              className={`px-3 py-1 rounded text-sm ${symmetricMode ? 'bg-yellow-500 text-black' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
+              title="Mirror edits to opposite side"
+            >
+              ⟷ Sym
+            </button>
+            <button
+              onClick={onClose}
+              className="px-3 py-1 bg-red-600 rounded hover:bg-red-700"
+            >
+              Close
+            </button>
+          </div>
         </div>
 
         <div className="mb-4">
