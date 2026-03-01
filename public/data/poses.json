@@ -65,8 +65,8 @@
     "description": "Flyer does a shoulderstand on Base feet. Hands connected in \"stargrip\". Base straight arms, Flyer bent arms.",
     "difficulty": "easy",
     "position": {
-      "x": 771,
-      "y": -263
+      "x": 649,
+      "y": -285
     }
   },
   {
@@ -190,8 +190,8 @@
     "mirroredPoseId": "mono-reverse-shin-right",
     "difficulty": "intermediate",
     "position": {
-      "x": 1178,
-      "y": -330
+      "x": 1213,
+      "y": -331
     }
   },
   {
@@ -201,7 +201,7 @@
     "mirroredPoseId": "mono-reverse-shin-left",
     "difficulty": "intermediate",
     "position": {
-      "x": 1049,
+      "x": 1084,
       "y": -381
     }
   },
@@ -212,8 +212,8 @@
     "mirroredPoseId": "supported-mono-kneepit-right",
     "difficulty": "intermediate",
     "position": {
-      "x": 1028,
-      "y": -518
+      "x": 1060,
+      "y": -517
     }
   },
   {
@@ -234,8 +234,8 @@
     "mirroredPoseId": "mono-backbird-right",
     "difficulty": "intermediate",
     "position": {
-      "x": 809,
-      "y": -576
+      "x": 890,
+      "y": -603
     }
   },
   {
@@ -245,8 +245,8 @@
     "mirroredPoseId": "mono-backbird-left",
     "difficulty": "intermediate",
     "position": {
-      "x": 871,
-      "y": -451
+      "x": 893,
+      "y": -478
     }
   },
   {
