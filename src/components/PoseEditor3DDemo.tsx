@@ -120,10 +120,52 @@ function buildHandMesh(bone: Bone, color: number, isRight: boolean): void {
   bone.mesh.add(thumb);
 }
 
+function buildHeadMesh(bone: Bone): void {
+  const skin = new THREE.MeshStandardMaterial({ color: 0xf5cba7 });
+  const dark = new THREE.MeshStandardMaterial({ color: 0x2a1f1a });
+
+  // Neck joint
+  const neck = new THREE.Mesh(new THREE.SphereGeometry(0.04, 12, 12), skin);
+  neck.castShadow = true;
+  bone.mesh.add(neck);
+
+  // Skull
+  const skull = new THREE.Mesh(new THREE.BoxGeometry(0.19, 0.22, 0.17), skin);
+  skull.position.y = 0.13;
+  skull.castShadow = true;
+  bone.mesh.add(skull);
+
+  // Eyes
+  const eyeGeo = new THREE.SphereGeometry(0.026, 12, 12);
+  for (const x of [-0.055, 0.055]) {
+    const eye = new THREE.Mesh(eyeGeo, dark);
+    eye.position.set(x, 0.16, 0.086);
+    bone.mesh.add(eye);
+  }
+
+  // Nose: 3-segment cone (triangle) pointing forward
+  const nose = new THREE.Mesh(new THREE.ConeGeometry(0.02, 0.03, 3), skin);
+  nose.position.set(0, 0.115, 0.09);
+  nose.rotation.x = Math.PI / 2;
+  bone.mesh.add(nose);
+
+  // Smile: tube along a downward arc
+  const smileCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-0.042, 0.068, 0.087),
+    new THREE.Vector3(-0.02,  0.052, 0.091),
+    new THREE.Vector3(0,      0.047, 0.092),
+    new THREE.Vector3(0.02,   0.052, 0.091),
+    new THREE.Vector3(0.042,  0.068, 0.087),
+  ]);
+  const smile = new THREE.Mesh(new THREE.TubeGeometry(smileCurve, 12, 0.006, 6, false), dark);
+  bone.mesh.add(smile);
+}
+
 export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [bones, setBones] = useState<{
     hip: Bone;
+    head: Bone;
     rightUpperLeg: Bone;
     rightLowerLeg: Bone;
     rightFoot: Bone;
@@ -137,7 +179,7 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
     leftLowerArm: Bone;
     leftHand: Bone;
   } | null>(null);
-  const [selectedBone, setSelectedBone] = useState<'hip' | 'rightUpperLeg' | 'rightLowerLeg' | 'rightFoot' | 'leftUpperLeg' | 'leftLowerLeg' | 'leftFoot' | 'rightUpperArm' | 'rightLowerArm' | 'rightHand' | 'leftUpperArm' | 'leftLowerArm' | 'leftHand' | null>(null);
+  const [selectedBone, setSelectedBone] = useState<'hip' | 'head' | 'rightUpperLeg' | 'rightLowerLeg' | 'rightFoot' | 'leftUpperLeg' | 'leftLowerLeg' | 'leftFoot' | 'rightUpperArm' | 'rightLowerArm' | 'rightHand' | 'leftUpperArm' | 'leftLowerArm' | 'leftHand' | null>(null);
   const [hipMode, setHipMode] = useState<'translate' | 'rotate'>('translate');
   const [, setUpdateTrigger] = useState(0);
   const transformControlsRef = useRef<TransformControls | null>(null);
@@ -341,6 +383,18 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
     leftUpperArm.addChild(leftLowerArm);
     leftLowerArm.addChild(leftHand);
 
+    const headConfig: BoneConfig = {
+      name: 'head',
+      length: 0.25,
+      angles: [
+        { name: 'side', value: 0, min: -70, max: 70, axis: 'y'  },
+        { name: 'up',   value: 0, min: -60, max: 60, axis: '-x' },
+        { name: 'tilt', value: 0, min: -30, max: 30, axis: 'z'  },
+      ],
+    };
+    const head = new Bone(headConfig, new THREE.Vector3(0, shoulderHeight + 0.12, 0));
+    hip.addChild(head);
+
     // Create visuals
     hip.createVisuals(0xff0000); // red - hip
     rightUpperLeg.createVisuals(0x00ff00); // green - right upper leg
@@ -355,12 +409,13 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
     leftUpperArm.createVisuals(0x00fa9a); // spring green - left upper arm
     leftLowerArm.createVisuals(0x00ced1); // dark turquoise - left lower arm
     buildHandMesh(leftHand, 0x1e90ff, false);
+    buildHeadMesh(head);
 
     scene.add(hip.mesh);
 
     hip.updateTransform();
 
-    setBones({ hip, rightUpperLeg, rightLowerLeg, rightFoot, leftUpperLeg, leftLowerLeg, leftFoot, rightUpperArm, rightLowerArm, rightHand, leftUpperArm, leftLowerArm, leftHand });
+    setBones({ hip, head, rightUpperLeg, rightLowerLeg, rightFoot, leftUpperLeg, leftLowerLeg, leftFoot, rightUpperArm, rightLowerArm, rightHand, leftUpperArm, leftLowerArm, leftHand });
 
     // Create TransformControls for rotation
     const transformControls = new TransformControls(camera, renderer.domElement);
@@ -421,6 +476,7 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
       else if (attachedBone === leftUpperArm.mesh) bone = leftUpperArm;
       else if (attachedBone === leftLowerArm.mesh) bone = leftLowerArm;
       else if (attachedBone === leftHand.mesh) bone = leftHand;
+      else if (attachedBone === head.mesh) bone = head;
 
       if (bone && isHip) {
         // Hip translation - just update the UI
@@ -542,7 +598,7 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
 
   if (!isOpen) return null;
 
-  const handleAngleChange = (boneName: 'hip' | 'rightUpperLeg' | 'rightLowerLeg' | 'rightFoot' | 'leftUpperLeg' | 'leftLowerLeg' | 'leftFoot' | 'rightUpperArm' | 'rightLowerArm' | 'rightHand' | 'leftUpperArm' | 'leftLowerArm' | 'leftHand', angleName: string, value: number) => {
+  const handleAngleChange = (boneName: 'hip' | 'head' | 'rightUpperLeg' | 'rightLowerLeg' | 'rightFoot' | 'leftUpperLeg' | 'leftLowerLeg' | 'leftFoot' | 'rightUpperArm' | 'rightLowerArm' | 'rightHand' | 'leftUpperArm' | 'leftLowerArm' | 'leftHand', angleName: string, value: number) => {
     if (!bones || boneName === 'hip') return; // Hip has no angles
     bones[boneName].setAngle(angleName, value);
     // Update previous euler reference after manual slider change
@@ -576,7 +632,7 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
       <div ref={containerRef} className="flex-1" />
 
       {/* Controls Sidebar */}
-      <div className="w-80 bg-gray-900 text-white p-4 overflow-y-auto">
+      <div className="w-110 bg-gray-900 text-white p-4 overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">3D Pose Editor (Demo)</h2>
           <button
@@ -589,129 +645,79 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
 
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2">Select Bone</label>
-          <div className="space-y-1">
+
+          {/* Head centered */}
+          <div className="flex justify-center mb-2">
+            <button
+              onClick={() => setSelectedBone('head')}
+              className={`px-6 py-2 rounded text-sm ${selectedBone === 'head' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'}`}
+            >
+              🟤 Head
+            </button>
+          </div>
+
+          {/* Arms row */}
+          <div className="grid grid-cols-2 gap-2 mb-1">
+            <div className="text-xs text-gray-500 text-center">Right Arm</div>
+            <div className="text-xs text-gray-500 text-center">Left Arm</div>
+            {(['rightUpperArm', 'leftUpperArm'] as const).map((b) => (
+              <button key={b} onClick={() => setSelectedBone(b)}
+                className={`px-3 py-2 rounded text-left text-sm ${selectedBone === b ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'}`}>
+                {b.startsWith('right') ? '🩷' : '🟩'} Upper Arm
+              </button>
+            ))}
+            {(['rightLowerArm', 'leftLowerArm'] as const).map((b) => (
+              <button key={b} onClick={() => setSelectedBone(b)}
+                className={`px-3 py-2 rounded text-left text-sm ${selectedBone === b ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'}`}>
+                {b.startsWith('right') ? '🩷' : '🟩'} Lower Arm
+              </button>
+            ))}
+            {(['rightHand', 'leftHand'] as const).map((b) => (
+              <button key={b} onClick={() => setSelectedBone(b)}
+                className={`px-3 py-2 rounded text-left text-sm ${selectedBone === b ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'}`}>
+                {b.startsWith('right') ? '🩷' : '🟩'} Hand
+              </button>
+            ))}
+          </div>
+
+          {/* Hip centered */}
+          <div className="flex gap-2 my-2">
             <button
               onClick={() => setSelectedBone(null)}
-              className={`w-full px-3 py-2 rounded text-left text-sm ${
-                selectedBone === null ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
-              }`}
+              className={`flex-1 px-3 py-2 rounded text-left text-sm ${selectedBone === null ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'}`}
             >
-              None
+              ✕ None
             </button>
-
-            <div className="text-xs text-gray-500 mt-2 mb-1">Root</div>
             <button
               onClick={() => setSelectedBone('hip')}
-              className={`w-full px-3 py-2 rounded text-left text-sm ${
-                selectedBone === 'hip' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
-              }`}
+              className={`flex-1 px-3 py-2 rounded text-left text-sm ${selectedBone === 'hip' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'}`}
             >
-              🔴 Hip (Move/Rotate)
+              🔴 Hip
             </button>
+          </div>
 
-            <div className="text-xs text-gray-500 mt-2 mb-1">Right Leg</div>
-            <button
-              onClick={() => setSelectedBone('rightUpperLeg')}
-              className={`w-full px-3 py-2 rounded text-left text-sm ${
-                selectedBone === 'rightUpperLeg' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
-              }`}
-            >
-              🟢 Upper Leg
-            </button>
-            <button
-              onClick={() => setSelectedBone('rightLowerLeg')}
-              className={`w-full px-3 py-2 rounded text-left text-sm ${
-                selectedBone === 'rightLowerLeg' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
-              }`}
-            >
-              🔵 Lower Leg
-            </button>
-            <button
-              onClick={() => setSelectedBone('rightFoot')}
-              className={`w-full px-3 py-2 rounded text-left text-sm ${
-                selectedBone === 'rightFoot' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
-              }`}
-            >
-              🟡 Foot
-            </button>
-
-            <div className="text-xs text-gray-500 mt-2 mb-1">Left Leg</div>
-            <button
-              onClick={() => setSelectedBone('leftUpperLeg')}
-              className={`w-full px-3 py-2 rounded text-left text-sm ${
-                selectedBone === 'leftUpperLeg' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
-              }`}
-            >
-              🔵 Upper Leg
-            </button>
-            <button
-              onClick={() => setSelectedBone('leftLowerLeg')}
-              className={`w-full px-3 py-2 rounded text-left text-sm ${
-                selectedBone === 'leftLowerLeg' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
-              }`}
-            >
-              🟣 Lower Leg
-            </button>
-            <button
-              onClick={() => setSelectedBone('leftFoot')}
-              className={`w-full px-3 py-2 rounded text-left text-sm ${
-                selectedBone === 'leftFoot' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
-              }`}
-            >
-              🟠 Foot
-            </button>
-
-            <div className="text-xs text-gray-500 mt-2 mb-1">Right Arm</div>
-            <button
-              onClick={() => setSelectedBone('rightUpperArm')}
-              className={`w-full px-3 py-2 rounded text-left text-sm ${
-                selectedBone === 'rightUpperArm' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
-              }`}
-            >
-              🩷 Upper Arm
-            </button>
-            <button
-              onClick={() => setSelectedBone('rightLowerArm')}
-              className={`w-full px-3 py-2 rounded text-left text-sm ${
-                selectedBone === 'rightLowerArm' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
-              }`}
-            >
-              🩷 Lower Arm
-            </button>
-            <button
-              onClick={() => setSelectedBone('rightHand')}
-              className={`w-full px-3 py-2 rounded text-left text-sm ${
-                selectedBone === 'rightHand' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
-              }`}
-            >
-              🩷 Hand
-            </button>
-
-            <div className="text-xs text-gray-500 mt-2 mb-1">Left Arm</div>
-            <button
-              onClick={() => setSelectedBone('leftUpperArm')}
-              className={`w-full px-3 py-2 rounded text-left text-sm ${
-                selectedBone === 'leftUpperArm' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
-              }`}
-            >
-              🟩 Upper Arm
-            </button>
-            <button
-              onClick={() => setSelectedBone('leftLowerArm')}
-              className={`w-full px-3 py-2 rounded text-left text-sm ${
-                selectedBone === 'leftLowerArm' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
-              }`}
-            >
-              🟩 Lower Arm
-            </button>
-            <button
-              onClick={() => setSelectedBone('leftHand')}
-              className={`w-full px-3 py-2 rounded text-left text-sm ${
-                selectedBone === 'leftHand' ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
-              }`}
-            >
-              🟩 Hand
-            </button>
+          {/* Legs row */}
+          <div className="grid grid-cols-2 gap-2 mt-1">
+            <div className="text-xs text-gray-500 text-center">Right Leg</div>
+            <div className="text-xs text-gray-500 text-center">Left Leg</div>
+            {(['rightUpperLeg', 'leftUpperLeg'] as const).map((b) => (
+              <button key={b} onClick={() => setSelectedBone(b)}
+                className={`px-3 py-2 rounded text-left text-sm ${selectedBone === b ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'}`}>
+                {b.startsWith('right') ? '🟢' : '🔵'} Upper Leg
+              </button>
+            ))}
+            {(['rightLowerLeg', 'leftLowerLeg'] as const).map((b) => (
+              <button key={b} onClick={() => setSelectedBone(b)}
+                className={`px-3 py-2 rounded text-left text-sm ${selectedBone === b ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'}`}>
+                {b.startsWith('right') ? '🔵' : '🟣'} Lower Leg
+              </button>
+            ))}
+            {(['rightFoot', 'leftFoot'] as const).map((b) => (
+              <button key={b} onClick={() => setSelectedBone(b)}
+                className={`px-3 py-2 rounded text-left text-sm ${selectedBone === b ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'}`}>
+                {b.startsWith('right') ? '🟡' : '🟠'} Foot
+              </button>
+            ))}
           </div>
         </div>
 
