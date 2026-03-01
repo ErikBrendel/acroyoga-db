@@ -218,8 +218,8 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
       length: 0.33,
       baseRotation: new THREE.Euler(0, 0, -Math.PI / 2), // +Y → +X (right)
       angles: [
+        { name: 'forward', value: 0, min: -60, max: 170, axis: 'x' },
         { name: 'raise', value: 0, min: -90, max: 90, axis: 'z' },
-        { name: 'forward', value: 0, min: -60, max: 170, axis: '-x' },
         { name: 'rotate', value: 0, min: -90, max: 90, axis: 'y' },
       ],
     };
