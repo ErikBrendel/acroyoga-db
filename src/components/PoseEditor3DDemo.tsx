@@ -86,6 +86,40 @@ const PRESETS: Preset[] = [
   },
 ];
 
+// Left hand:  +X local = world +Y = dorsal (up in T-pose), -X = palm
+// Right hand: +X local = world -Y = palm (down in T-pose), -X = dorsal
+// Both hands: +Z local = world +Z = thumb side (toward viewer in T-pose)
+function buildHandMesh(bone: Bone, color: number, isLeft: boolean): void {
+  const palmColor = new THREE.Color(color).lerp(new THREE.Color(0xffffff), 0.6);
+  const dorsalMat = new THREE.MeshStandardMaterial({ color });
+  const palmMat = new THREE.MeshStandardMaterial({ color: palmColor });
+  const edgeMat = new THREE.MeshStandardMaterial({ color });
+
+  const wristSphere = new THREE.Mesh(
+    new THREE.SphereGeometry(0.03, 12, 12),
+    new THREE.MeshStandardMaterial({ color }),
+  );
+  wristSphere.castShadow = true;
+  bone.mesh.add(wristSphere);
+
+  const faceMaterials = isLeft
+    ? [dorsalMat, palmMat, edgeMat, edgeMat, edgeMat, edgeMat]
+    : [palmMat, dorsalMat, edgeMat, edgeMat, edgeMat, edgeMat];
+  const palm = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.15, 0.08), faceMaterials);
+  palm.position.y = 0.075;
+  palm.castShadow = true;
+  bone.mesh.add(palm);
+
+  const thumb = new THREE.Mesh(
+    new THREE.CapsuleGeometry(0.015, 0.05, 4, 8),
+    new THREE.MeshStandardMaterial({ color }),
+  );
+  thumb.position.set(0, 0.03, 0.052);
+  thumb.rotation.x = Math.PI / 5;
+  thumb.castShadow = true;
+  bone.mesh.add(thumb);
+}
+
 export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [bones, setBones] = useState<{
@@ -317,10 +351,10 @@ export function PoseEditor3DDemo({ isOpen, onClose }: { isOpen: boolean; onClose
     rightFoot.createVisuals(0xffa500); // orange - right foot
     leftUpperArm.createVisuals(0xff69b4); // pink - left upper arm
     leftLowerArm.createVisuals(0xff1493); // deep pink - left lower arm
-    leftHand.createVisuals(0xffb6c1); // light pink - left hand
+    buildHandMesh(leftHand, 0xffb6c1, true);
     rightUpperArm.createVisuals(0x00fa9a); // spring green - right upper arm
     rightLowerArm.createVisuals(0x00ced1); // dark turquoise - right lower arm
-    rightHand.createVisuals(0x1e90ff); // dodger blue - right hand
+    buildHandMesh(rightHand, 0x1e90ff, false);
 
     scene.add(hip.mesh);
 
