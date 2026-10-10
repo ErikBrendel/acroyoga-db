@@ -4,11 +4,11 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { z } from 'zod';
 import { Human } from '../3d/Human';
-import { Effector, IkTarget, Pins, PinsSchema, isEffector, mirrorTarget, readTarget, solveIk, withPins } from '../3d/ik';
+import { Effector, IkTarget, Pins, PinsSchema, chainOf, floorTarget, isEffector, mirrorTarget, readTarget, solveIk, withPins } from '../3d/ik';
 import {
   HumanPose, StoredHumanPose, StoredJoints, mirrorHumanPose, neutralPose, parseHumanPose, serializeHumanPose, withAngle, withJoints,
 } from '../3d/humanPose';
-import { AngleDef, BONES, BoneKey, JOINTS, JointId, Side, boneKey, boneLabel, oppositeBone } from '../3d/skeleton';
+import { AngleDef, BONES, BoneKey, JOINT_IDS, JOINTS, JointId, Side, boneKey, boneLabel, oppositeBone } from '../3d/skeleton';
 import { useHistory } from '../hooks/useHistory';
 
 const DRAFT_STORAGE_KEY = 'acroyoga-db:pose-editor-draft';
@@ -24,12 +24,86 @@ interface PresetGroup {
   name: string;
   // Body presets change the orientation, so the root is moved to stand/lie on the floor afterwards
   grounded: boolean;
-  presets: { name: string; joints: StoredJoints }[];
+  // Hands / feet planted flat on the floor via IK, after the rest of the body was grounded
+  presets: { name: string; joints: StoredJoints; planted?: Effector[] }[];
+}
+
+const HANDS: Effector[] = ['left-wrist', 'right-wrist'];
+
+// Every angle not given is reset to 0
+function wholeBody(joints: StoredJoints): StoredJoints {
+  return Object.fromEntries(JOINT_IDS.map(joint => [
+    joint,
+    { ...Object.fromEntries(JOINTS[joint].angles.map(a => [a.name, 0])), ...joints[joint] },
+  ]));
 }
 
 const PRESET_GROUPS: PresetGroup[] = [
   {
-    name: 'Body',
+    name: 'Whole',
+    grounded: true,
+    presets: [
+      { name: 'Neutral', joints: wholeBody({}) },
+      {
+        name: 'L-base',
+        joints: wholeBody({
+          root: { pitch: -90 }, hip: { pike: 90 }, ankle: { point: -15 },
+          shoulder: { forward: 90 }, elbow: { rotate: -27.2 }, wrist: { flex: -54.8 },
+        }),
+      },
+      {
+        name: '2-high prep',
+        joints: wholeBody({
+          hip: { pike: 60, straddle: 20, rotate: 20 }, knee: { bend: 95 }, ankle: { point: -35 },
+          waist: { bend: 15 }, shoulder: { forward: 150, raise: 15 }, elbow: { bend: 10 },
+        }),
+      },
+      {
+        name: 'Deep squat',
+        joints: wholeBody({
+          hip: { pike: 115, straddle: 20, rotate: 25 }, knee: { bend: 150 }, ankle: { point: -40 },
+          waist: { bend: 25 }, shoulder: { forward: 80 }, elbow: { bend: 20 },
+        }),
+      },
+      {
+        name: 'Cat',
+        joints: wholeBody({
+          root: { pitch: 52 }, hip: { pike: 52 }, knee: { bend: 90 }, ankle: { point: 85 },
+          waist: { bend: 20 }, chest: { bend: 20 }, neck: { nod: 40 },
+          shoulder: { forward: 92 }, elbow: { rotate: -90 }, wrist: { flex: -80 },
+        }),
+        planted: HANDS,
+      },
+      {
+        name: 'Cow',
+        joints: wholeBody({
+          root: { pitch: 100 }, hip: { pike: 100 }, knee: { bend: 90 }, ankle: { point: 85 },
+          waist: { bend: -15 }, chest: { bend: -15 }, neck: { nod: -40 },
+          shoulder: { forward: 70 }, elbow: { rotate: -90 }, wrist: { flex: -80 },
+        }),
+        planted: HANDS,
+      },
+      {
+        name: 'Cobra',
+        joints: wholeBody({
+          root: { pitch: 90 }, ankle: { point: 85 },
+          waist: { bend: -40 }, chest: { bend: -40 }, neck: { nod: -20 },
+          shoulder: { forward: 30 }, elbow: { rotate: -90 }, wrist: { flex: -80 },
+        }),
+        planted: HANDS,
+      },
+      {
+        name: 'Down dog',
+        joints: wholeBody({
+          root: { pitch: 130 }, hip: { pike: 92 }, ankle: { point: -40 },
+          shoulder: { forward: 175 }, elbow: { rotate: -90 }, wrist: { flex: -45 },
+        }),
+        planted: HANDS,
+      },
+    ],
+  },
+  {
+    name: 'Orient',
     grounded: true,
     presets: [
       { name: 'Upright', joints: { root: { turn: 0, pitch: 0, roll: 0 } } },
@@ -402,14 +476,17 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
     orbitRef.current?.target.copy(CAMERA_TARGET);
   };
 
-  const grounded = (p: HumanPose): HumanPose => {
+  const grounded = (p: HumanPose, ignored: BoneKey[] = []): HumanPose => {
     const human = humanRef.current;
-    return human ? { ...p, position: [p.position[0], human.groundedRootHeight(p), p.position[2]] } : p;
+    return human ? { ...p, position: [p.position[0], human.groundedRootHeight(p, ignored), p.position[2]] } : p;
   };
 
-  const applyPreset = (group: PresetGroup, joints: StoredJoints) => history.commit(updatingPose(p => {
-    const next = withJoints(p, joints);
-    return group.grounded ? grounded(next) : next;
+  const applyPreset = (group: PresetGroup, preset: PresetGroup['presets'][number]) => history.commit(updatingPose(p => {
+    let next = withJoints(p, preset.joints);
+    if (!group.grounded) return next;
+    const planted = preset.planted ?? [];
+    next = grounded(next, planted.flatMap(chainOf));
+    return planted.reduce((pose, effector) => solveIk(pose, effector, floorTarget(pose, effector)), next);
   }));
 
   const resetBone = (key: BoneKey) => history.commit(updatingPose(p =>
@@ -521,7 +598,7 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
               {group.presets.map(preset => (
                 <button
                   key={preset.name}
-                  onClick={() => applyPreset(group, preset.joints)}
+                  onClick={() => applyPreset(group, preset)}
                   className="px-2 py-1 bg-purple-700 hover:bg-purple-600 rounded text-xs"
                 >
                   {preset.name}
@@ -600,10 +677,10 @@ function BodyMap({ selected, pins, onSelect }: { selected: BoneKey | null; pins:
   return (
     <div className="grid grid-cols-2 gap-1">
       {center('neck')}
-      {center('chest')}
       <div className="text-[10px] text-gray-500 text-center">Right</div>
       <div className="text-[10px] text-gray-500 text-center">Left</div>
       {pairs(['shoulder', 'elbow', 'wrist'])}
+      {center('chest')}
       {center('waist')}
       {center('root')}
       {pairs(['hip', 'knee', 'ankle'])}

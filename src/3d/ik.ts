@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { z } from 'zod';
 import { createBones } from './Bone';
 import { HumanPose } from './humanPose';
-import { BONES, BoneKey, CONTACT_POINTS, JOINTS, boneKey } from './skeleton';
+import { BONES, BoneKey, CONTACT_NORMALS, CONTACT_POINTS, JOINTS, boneKey } from './skeleton';
 
 export const EFFECTORS = ['left-wrist', 'right-wrist', 'left-ankle', 'right-ankle'] as const satisfies readonly BoneKey[];
 export type Effector = (typeof EFFECTORS)[number];
@@ -76,6 +76,17 @@ function contactOffset(effector: Effector): THREE.Matrix4 {
 
 export function readTarget(pose: HumanPose, effector: Effector): IkTarget {
   return toTarget(worldMatrix(pose, effector).multiply(contactOffset(effector)));
+}
+
+// The hand / foot moved straight onto the floor (y = 0), turned as little as possible to lie flat on it
+export function floorTarget(pose: HumanPose, effector: Effector): IkTarget {
+  const { position, quaternion } = readTarget(pose, effector);
+  const { joint, side } = BONES[effector];
+  const [x, y, z] = CONTACT_NORMALS[joint as keyof typeof CONTACT_NORMALS];
+  const current = new THREE.Quaternion(...quaternion);
+  const normal = new THREE.Vector3(side === 'right' ? -x : x, y, z).applyQuaternion(current);
+  const flat = new THREE.Quaternion().setFromUnitVectors(normal, new THREE.Vector3(0, -1, 0)).multiply(current);
+  return { position: [position[0], 0, position[2]], quaternion: flat.toArray() as IkTarget['quaternion'] };
 }
 
 // The target the opposite effector needs for a pose that is mirror-symmetric relative to the body
