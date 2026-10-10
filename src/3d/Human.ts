@@ -14,6 +14,12 @@ export class Human {
   private readonly faceBones: BoneKey[];
   private readonly baseColors: Float32Array;
   private readonly rigidParts: THREE.Mesh[] = [];
+  // Twist each shin by the foot's turn, see buildSkinnedBody
+  private readonly shinTwists = (['left', 'right'] as const).map(side => ({
+    twist: new THREE.Bone(),
+    knee: boneKey('knee', side),
+    ankle: boneKey('ankle', side),
+  }));
 
   constructor() {
     this.bones = createBones();
@@ -22,10 +28,12 @@ export class Human {
       if (parent) this.bones[boneKey(parent, JOINTS[parent].paired ? bone.side : null)].node.add(bone.node);
     }
     this.object.add(this.bones.root.node);
+    for (const { twist, knee } of this.shinTwists) this.bones[knee].node.add(twist);
 
     this.apply(neutralPose());
     this.object.updateMatrixWorld(true);
-    const { mesh, faceBones, baseColors } = buildSkinnedBody(this.bones);
+    const twists = Object.fromEntries(this.shinTwists.map(({ twist, knee }) => [knee, twist]));
+    const { mesh, faceBones, baseColors } = buildSkinnedBody(this.bones, twists);
     this.body = mesh;
     this.faceBones = faceBones;
     this.baseColors = baseColors;
@@ -42,6 +50,9 @@ export class Human {
     this.bones.root.node.position.set(...pose.position);
     for (const bone of Object.values(this.bones)) {
       bone.applyAngles(pose.angles[bone.key]);
+    }
+    for (const { twist, ankle } of this.shinTwists) {
+      twist.quaternion.copy(this.bones[ankle].firstAngleRotation(pose.angles[ankle].turn));
     }
   }
 

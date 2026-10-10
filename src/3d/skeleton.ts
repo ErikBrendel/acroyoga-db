@@ -104,6 +104,9 @@ export const JOINTS: Record<JointId, JointDef> = {
     length: 0.2,
     baseRotation: [Math.PI / 2, 0, 0],
     angles: [
+      // Turning the toes outward about the shin axis. Anatomically mostly a twist of the shin at the knee;
+      // the body mesh twists the shin along with it.
+      { name: 'turn', axis: 'z', min: -20, max: 30 },
       { name: 'point', axis: '-x', min: -40, max: 90 },
       { name: 'tilt', axis: '-y', min: -30, max: 40 },
     ],

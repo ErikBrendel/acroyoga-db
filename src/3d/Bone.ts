@@ -67,6 +67,13 @@ export class Bone {
     return new THREE.Matrix4().compose(offset, this.quaternionFor(values), new THREE.Vector3(1, 1, 1));
   }
 
+  // Rotation by the first of the angles alone, in the parent's frame
+  firstAngleRotation(value: number): THREE.Quaternion {
+    const [angle] = this.angles;
+    const rotation = new THREE.Quaternion().setFromAxisAngle(UNIT_AXES[angle.unitAxis], angle.sign * THREE.MathUtils.degToRad(value));
+    return this.baseQuaternion.clone().multiply(rotation).multiply(this.baseQuaternion.clone().invert());
+  }
+
   applyAngles(values: Record<string, number>): void {
     this.node.quaternion.copy(this.quaternionFor(values));
   }

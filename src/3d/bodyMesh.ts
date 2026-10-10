@@ -91,12 +91,15 @@ export interface SkinnedBody {
 }
 
 // `bones` must be in the rest pose (neutral standing) with their world matrices updated
-export function buildSkinnedBody(bones: Record<BoneKey, Bone>): SkinnedBody {
+// `twists` are extra bones at the start of a limb bone that rotate only about its axis: the limb's vertices
+// follow them increasingly towards its far end, so that it twists gradually instead of at one joint.
+export function buildSkinnedBody(bones: Record<BoneKey, Bone>, twists: Partial<Record<BoneKey, THREE.Bone>>): SkinnedBody {
   const boneList = Object.values(bones);
+  const skeletonBones = [...boneList.map(b => b.node), ...Object.values(twists)];
   const indexOf = new Map(boneList.map((b, i) => [b.key, i]));
   const positions: number[] = [];
   const skinIndices: number[] = [];
-  const skinWeights: number[] = [];
+  const skinWeightValues: number[] = [];
   const colors: number[] = [];
   const faceBones: BoneKey[] = [];
 
@@ -117,6 +120,14 @@ export function buildSkinnedBody(bones: Record<BoneKey, Bone>): SkinnedBody {
     };
 
     const limb = JOINTS[bone.joint].paired;
+    const twist = twists[bone.key];
+    const twistIndex = twist ? skeletonBones.indexOf(twist) : -1;
+    const skinWeights = (y: number): [number, number][] => influences(y).flatMap(([key, weight]): [number, number][] => {
+      if (key !== bone.key || !twist) return [[indexOf.get(key)!, weight]];
+      const twisted = THREE.MathUtils.clamp(y / bone.length, 0, 1);
+      return [[indexOf.get(key)!, weight * (1 - twisted)], [twistIndex, weight * twisted]];
+    });
+
     const ringPoints = tube.rings.map(([t, rawRx, rawRz, cz = 0, inward = 0]) => {
       const y = t * bone.length;
       const [rx, rz] = limb ? [rawRx * LIMB_SCALE, rawRz * LIMB_SCALE] : [rawRx, rawRz];
@@ -138,9 +149,9 @@ export function buildSkinnedBody(bones: Record<BoneKey, Bone>): SkinnedBody {
       const color = tube.color(bone.side, middleY);
       for (const corner of ordered) {
         positions.push(...corner.world.toArray());
-        const weights = influences(corner.y);
-        skinIndices.push(...weights.map(([key]) => indexOf.get(key)!), ...Array(4 - weights.length).fill(0));
-        skinWeights.push(...weights.map(([, w]) => w), ...Array(4 - weights.length).fill(0));
+        const weights = skinWeights(corner.y);
+        skinIndices.push(...weights.map(([index]) => index), ...Array(4 - weights.length).fill(0));
+        skinWeightValues.push(...weights.map(([, w]) => w), ...Array(4 - weights.length).fill(0));
         colors.push(color.r, color.g, color.b);
       }
     };
@@ -166,7 +177,7 @@ export function buildSkinnedBody(bones: Record<BoneKey, Bone>): SkinnedBody {
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
   geometry.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(skinIndices, 4));
-  geometry.setAttribute('skinWeight', new THREE.Float32BufferAttribute(skinWeights, 4));
+  geometry.setAttribute('skinWeight', new THREE.Float32BufferAttribute(skinWeightValues, 4));
   geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
   geometry.computeVertexNormals();
 
@@ -174,7 +185,7 @@ export function buildSkinnedBody(bones: Record<BoneKey, Bone>): SkinnedBody {
   mesh.castShadow = true;
   // The rest-pose bounds are useless once the body lies down or flips over
   mesh.frustumCulled = false;
-  mesh.bind(new THREE.Skeleton(boneList.map(b => b.node)));
+  mesh.bind(new THREE.Skeleton(skeletonBones));
   return { mesh, faceBones, baseColors: new Float32Array(colors) };
 }
 
