@@ -18,7 +18,7 @@ export class Bone {
   // Joint position relative to the parent bone's origin
   readonly offset: THREE.Vector3;
   // Transform node: origin at the joint, bone extends along local +Y
-  readonly node = new THREE.Group();
+  readonly node = new THREE.Bone();
   private readonly baseQuaternion: THREE.Quaternion;
   private readonly eulerOrder: THREE.EulerOrder;
 

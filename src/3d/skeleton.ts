@@ -21,7 +21,6 @@ interface JointDef {
   // Defaults to the end of the parent bone
   offset?: [number, number, number];
   length: number;
-  radius: number;
   baseRotation?: [number, number, number];
   // Applied in this order as intrinsic rotations, so every joint needs distinct axes
   angles: AngleDef[];
@@ -38,7 +37,6 @@ export const JOINTS: Record<JointId, JointDef> = {
     parent: null,
     paired: false,
     length: 0,
-    radius: 0.07,
     angles: [
       { name: 'turn', axis: 'y', min: -180, max: 180 },
       { name: 'pitch', axis: 'x', min: -180, max: 180 },
@@ -51,7 +49,6 @@ export const JOINTS: Record<JointId, JointDef> = {
     paired: false,
     offset: [0, 0, 0],
     length: 0.22,
-    radius: 0.065,
     angles: [
       { name: 'bend', axis: 'x', min: -40, max: 90 },
       { name: 'side', axis: '-z', min: -40, max: 40 },
@@ -63,7 +60,6 @@ export const JOINTS: Record<JointId, JointDef> = {
     parent: 'waist',
     paired: false,
     length: 0.26,
-    radius: 0.075,
     angles: [
       { name: 'bend', axis: 'x', min: -40, max: 60 },
       { name: 'side', axis: '-z', min: -30, max: 30 },
@@ -75,7 +71,6 @@ export const JOINTS: Record<JointId, JointDef> = {
     parent: 'chest',
     paired: false,
     length: 0.25,
-    radius: 0.04,
     angles: [
       { name: 'turn', axis: 'y', min: -80, max: 80 },
       { name: 'nod', axis: 'x', min: -60, max: 70 },
@@ -88,7 +83,6 @@ export const JOINTS: Record<JointId, JointDef> = {
     paired: true,
     offset: [0.1, -0.06, 0],
     length: 0.43,
-    radius: 0.055,
     baseRotation: LIMB_POINTING_DOWN,
     angles: [
       { name: 'pike', axis: 'x', min: -30, max: 140 },
@@ -101,7 +95,6 @@ export const JOINTS: Record<JointId, JointDef> = {
     parent: 'hip',
     paired: true,
     length: 0.43,
-    radius: 0.045,
     angles: [{ name: 'bend', axis: '-x', min: 0, max: 160 }],
   },
   ankle: {
@@ -109,10 +102,9 @@ export const JOINTS: Record<JointId, JointDef> = {
     parent: 'knee',
     paired: true,
     length: 0.2,
-    radius: 0.035,
     baseRotation: [Math.PI / 2, 0, 0],
     angles: [
-      { name: 'point', axis: '-x', min: -30, max: 90 },
+      { name: 'point', axis: '-x', min: -40, max: 90 },
       { name: 'tilt', axis: '-y', min: -30, max: 40 },
     ],
   },
@@ -122,7 +114,6 @@ export const JOINTS: Record<JointId, JointDef> = {
     paired: true,
     offset: [0.19, 0.22, 0],
     length: 0.3,
-    radius: 0.04,
     baseRotation: LIMB_POINTING_DOWN,
     angles: [
       { name: 'forward', axis: 'x', min: -60, max: 180 },
@@ -135,7 +126,6 @@ export const JOINTS: Record<JointId, JointDef> = {
     parent: 'shoulder',
     paired: true,
     length: 0.26,
-    radius: 0.035,
     angles: [
       { name: 'bend', axis: 'x', min: 0, max: 150 },
       { name: 'rotate', axis: '-y', min: -90, max: 90 },
@@ -146,7 +136,6 @@ export const JOINTS: Record<JointId, JointDef> = {
     parent: 'elbow',
     paired: true,
     length: 0.18,
-    radius: 0.03,
     angles: [
       { name: 'flex', axis: '-z', min: -80, max: 80 },
       { name: 'tilt', axis: 'x', min: -20, max: 30 },
@@ -154,12 +143,21 @@ export const JOINTS: Record<JointId, JointDef> = {
   },
 };
 
+// Height of the ankle joint above the sole, so feet stand on the floor in the neutral pose
+export const SOLE_DEPTH = 0.05;
+
 // Where a hand / foot touches what it is pinned to, in its (left side) bone frame:
 // the centre of the palm surface and the centre of the sole. The hand mesh in Human.ts is built around it.
 export const CONTACT_POINTS = {
   wrist: [0.0125, 0.075, 0],
-  ankle: [0, JOINTS.ankle.length / 2, -JOINTS.ankle.radius],
+  ankle: [0, JOINTS.ankle.length / 2, -SOLE_DEPTH],
 } satisfies Partial<Record<JointId, [number, number, number]>>;
+
+// Outward normal of the palm / sole at the contact point, in the same frame
+export const CONTACT_NORMALS = {
+  wrist: [1, 0, 0],
+  ankle: [0, 0, -1],
+} satisfies Record<keyof typeof CONTACT_POINTS, [number, number, number]>;
 
 export const DEFAULT_ROOT_POSITION: [number, number, number] = [0, 0.97, 0];
 

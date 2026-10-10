@@ -26,7 +26,7 @@ describe('readTarget', () => {
     const sole = new THREE.Vector3(...readTarget(pose, 'right-ankle').position);
     // Standing: the left palm faces the body (-X) and points down, the sole faces the floor
     expect(palm.sub(jointPosition(pose, 'left-wrist')).toArray().map(v => +v.toFixed(4))).toEqual([-0.0125, -0.075, 0]);
-    expect(sole.sub(jointPosition(pose, 'right-ankle')).toArray().map(v => +v.toFixed(4))).toEqual([0, -0.035, 0.1]);
+    expect(sole.sub(jointPosition(pose, 'right-ankle')).toArray().map(v => +v.toFixed(4))).toEqual([0, -0.05, 0.1]);
   });
 });
 
