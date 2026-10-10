@@ -142,6 +142,8 @@ const PRESET_GROUPS: PresetGroup[] = [
       { name: 'T', joints: { shoulder: { forward: 0, raise: 90, rotate: 0 }, elbow: { bend: 0, rotate: 0 } } },
       { name: 'Forward', joints: { shoulder: { forward: 90, raise: 0, rotate: 0 }, elbow: { bend: 0, rotate: 0 } } },
       { name: 'Overhead', joints: { shoulder: { forward: 180, raise: 0, rotate: 0 }, elbow: { bend: 0, rotate: 0 } } },
+      // Solved with IK: palms together in front of the chest, fingers up and slightly forward
+      { name: 'Namaste', joints: { shoulder: { forward: 12, raise: 15.4, rotate: -79.6 }, elbow: { bend: 104.6, rotate: -9.5 }, wrist: { flex: -80, tilt: 30 } } },
       { name: 'Hands on hips', joints: { shoulder: { forward: -9.8, raise: 42.3, rotate: -74.5 }, elbow: { bend: 87.1, rotate: -20.2 }, wrist: { flex: -34.3, tilt: 0.4 } } },
     ],
   },
