@@ -44,6 +44,24 @@ Ranges live in `skeleton.ts`; the stored data never contains limits, axes or bon
 - Mirroring a pose = swap left/right values, negate the Y/Z-axis angles of unpaired joints
   (`side`, `twist`, `turn`, `tilt`, `roll`) and negate `position[0]`.
 
+## IK pins (editor only, `src/3d/ik.ts`)
+- A hand or foot can be pinned at its contact point (centre of the palm surface / of the sole): that
+  point's world position and orientation become the pin. Pins never move by themselves.
+- Dragging a pin with the gizmo solves that limb for position only; the hand / foot turns with the limb
+  and its new orientation is pinned on release. A pin dragged out of reach stays where it was dragged.
+- Every other edit (pelvis, spine, joint sliders and gizmos, presets, mirror, import; not undo) is applied
+  first, then pinned limbs are solved back onto their pins:
+  - the angles the edit changed within a pinned limb are kept if the rest of the limb can still reach
+    the pin, e.g. rotating the upper arm of a pinned hand swivels the elbow;
+  - otherwise the whole limb is solved, as close to the edited pose as the pin allows, e.g. a "T arms"
+    preset moves the unpinned arm into T and leaves the pinned one at its pin.
+- Solver: damped least squares over the chain's semantic angles, clamped to the joint limits, with a
+  null-space term that keeps redundant freedom (e.g. elbow swivel) close to the starting angles.
+  It is local, so it keeps the current knee / elbow direction rather than picking the anatomically
+  most natural one.
+- Pins are stored in the editor draft, not in the pose data.
+- Tests: `pnpm test` (vitest), next to the sources in `src/3d/*.test.ts`.
+
 ## Interpolation (not built yet)
 Interpolating each angle linearly gives anatomically plausible in-between poses, since every
 joint stays within its limits. Only `root` should be converted to a quaternion and slerped,

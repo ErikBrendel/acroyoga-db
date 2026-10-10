@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { AngleDef, BoneKey, JOINTS, JointId, Side, boneKey, mirrorSign } from './skeleton';
+import { ALL_BONES, AngleDef, BoneKey, JOINTS, JointId, Side, boneKey, mirrorSign } from './skeleton';
 
 const UNIT_AXES = { x: new THREE.Vector3(1, 0, 0), y: new THREE.Vector3(0, 1, 0), z: new THREE.Vector3(0, 0, 1) };
 type UnitAxis = keyof typeof UNIT_AXES;
@@ -15,6 +15,8 @@ export class Bone {
   readonly side: Side | null;
   readonly length: number;
   readonly angles: ResolvedAngle[];
+  // Joint position relative to the parent bone's origin
+  readonly offset: THREE.Vector3;
   // Transform node: origin at the joint, bone extends along local +Y
   readonly node = new THREE.Group();
   private readonly baseQuaternion: THREE.Quaternion;
@@ -37,7 +39,8 @@ export class Bone {
 
     const parentLength = def.parent ? JOINTS[def.parent].length : 0;
     const [x, y, z] = def.offset ?? [0, parentLength, 0];
-    this.node.position.set(isRight ? -x : x, y, z);
+    this.offset = new THREE.Vector3(isRight ? -x : x, y, z);
+    this.node.position.copy(this.offset);
 
     this.baseQuaternion = new THREE.Quaternion().setFromEuler(new THREE.Euler(...(def.baseRotation ?? [0, 0, 0])));
     if (isRight) {
@@ -50,14 +53,22 @@ export class Bone {
     this.eulerOrder = [...usedAxes, ...unusedAxes].join('').toUpperCase() as THREE.EulerOrder;
   }
 
-  applyAngles(values: Record<string, number>): void {
+  quaternionFor(values: Record<string, number>): THREE.Quaternion {
     const q = this.baseQuaternion.clone();
     const step = new THREE.Quaternion();
     for (const angle of this.angles) {
       step.setFromAxisAngle(UNIT_AXES[angle.unitAxis], angle.sign * THREE.MathUtils.degToRad(values[angle.name]));
       q.multiply(step);
     }
-    this.node.quaternion.copy(q);
+    return q;
+  }
+
+  localMatrix(values: Record<string, number>, offset: THREE.Vector3 = this.offset): THREE.Matrix4 {
+    return new THREE.Matrix4().compose(offset, this.quaternionFor(values), new THREE.Vector3(1, 1, 1));
+  }
+
+  applyAngles(values: Record<string, number>): void {
+    this.node.quaternion.copy(this.quaternionFor(values));
   }
 
   // Inverse of applyAngles, e.g. for a rotation set by a gizmo. Of the two Euler solutions,
@@ -87,6 +98,10 @@ export class Bone {
   hasAxis(axis: UnitAxis): boolean {
     return this.angles.some(a => a.unitAxis === axis);
   }
+}
+
+export function createBones(): Record<BoneKey, Bone> {
+  return Object.fromEntries(ALL_BONES.map(({ key, joint, side }) => [key, new Bone(joint, side)])) as Record<BoneKey, Bone>;
 }
 
 function nearestEquivalentDegrees(degrees: number, reference: number): number {

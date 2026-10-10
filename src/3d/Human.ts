@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { Bone } from './Bone';
+import { Bone, createBones } from './Bone';
 import { HumanPose } from './humanPose';
-import { ALL_BONES, BoneKey, JOINTS, JointId, Side, boneKey } from './skeleton';
+import { BoneKey, CONTACT_POINTS, JOINTS, JointId, Side, boneKey } from './skeleton';
 
 const SIDE_COLORS: Record<Side | 'center', number> = { left: 0x4f8ef7, right: 0xf59e42, center: 0xb0bec5 };
 const SKIN = 0xf5cba7;
@@ -14,7 +14,7 @@ export class Human {
   private readonly materials = new Map<BoneKey, THREE.MeshStandardMaterial[]>();
 
   constructor() {
-    this.bones = Object.fromEntries(ALL_BONES.map(({ key, joint, side }) => [key, new Bone(joint, side)])) as Record<BoneKey, Bone>;
+    this.bones = createBones();
 
     for (const bone of Object.values(this.bones)) {
       const parent = JOINTS[bone.joint].parent;
@@ -105,9 +105,10 @@ function addHand(visual: THREE.Group, _bone: Bone, color: number, material: Mate
   const back = material(color);
   const palm = material(new THREE.Color(color).lerp(new THREE.Color(0xffffff), 0.6).getHex());
   visual.add(new THREE.Mesh(new THREE.SphereGeometry(0.03, 12, 12), back));
+  const [palmSurface, palmCentre] = CONTACT_POINTS.wrist;
   // BoxGeometry material order: +x, -x, +y, -y, +z, -z
-  const hand = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.15, 0.08), [palm, back, back, back, back, back]);
-  hand.position.y = 0.075;
+  const hand = new THREE.Mesh(new THREE.BoxGeometry(2 * palmSurface, 2 * palmCentre, 0.08), [palm, back, back, back, back, back]);
+  hand.position.y = palmCentre;
   visual.add(hand);
   const thumb = new THREE.Mesh(new THREE.CapsuleGeometry(0.015, 0.05, 4, 8), back);
   thumb.position.set(0.01, 0.03, 0.052);

@@ -154,6 +154,13 @@ export const JOINTS: Record<JointId, JointDef> = {
   },
 };
 
+// Where a hand / foot touches what it is pinned to, in its (left side) bone frame:
+// the centre of the palm surface and the centre of the sole. The hand mesh in Human.ts is built around it.
+export const CONTACT_POINTS = {
+  wrist: [0.0125, 0.075, 0],
+  ankle: [0, JOINTS.ankle.length / 2, -JOINTS.ankle.radius],
+} satisfies Partial<Record<JointId, [number, number, number]>>;
+
 export const DEFAULT_ROOT_POSITION: [number, number, number] = [0, 0.97, 0];
 
 // A concrete bone instance: unpaired joints exist once, paired joints once per side

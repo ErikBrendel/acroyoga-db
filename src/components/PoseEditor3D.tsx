@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
+import { z } from 'zod';
 import { Human } from '../3d/Human';
+import { Effector, IkTarget, Pins, PinsSchema, isEffector, mirrorTarget, readTarget, solveIk, withPins } from '../3d/ik';
 import {
   HumanPose, StoredHumanPose, StoredJoints, mirrorHumanPose, neutralPose, parseHumanPose, serializeHumanPose, withAngle, withJoints,
 } from '../3d/humanPose';
@@ -71,19 +73,31 @@ const PRESET_GROUPS: PresetGroup[] = [
   },
 ];
 
-function loadDraft(): HumanPose {
+type GizmoMode = 'translate' | 'rotate';
+
+interface EditorState {
+  pose: HumanPose;
+  pins: Pins;
+}
+
+const DraftSchema = z.object({ pose: z.unknown(), pins: PinsSchema });
+
+function loadDraft(): EditorState {
   try {
     const raw = localStorage.getItem(DRAFT_STORAGE_KEY);
-    if (raw) return parseHumanPose(JSON.parse(raw));
+    if (raw) {
+      const draft = DraftSchema.parse(JSON.parse(raw));
+      return { pose: parseHumanPose(draft.pose), pins: draft.pins };
+    }
   } catch {
     // Storage unavailable or draft from an outdated format: start fresh
   }
-  return neutralPose();
+  return { pose: neutralPose(), pins: {} };
 }
 
-function saveDraft(pose: HumanPose): void {
+function saveDraft({ pose, pins }: EditorState): void {
   try {
-    localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(serializeHumanPose(pose)));
+    localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify({ pose: serializeHumanPose(pose), pins }));
   } catch {
     // Storage unavailable: the draft just won't survive a reload
   }
@@ -96,6 +110,36 @@ function withBoneAngles(pose: HumanPose, key: BoneKey, values: Record<string, nu
     (result, k) => Object.entries(values).reduce((r, [name, value]) => withAngle(r, k, name, value), result),
     pose,
   );
+}
+
+const updatingPose = (update: (pose: HumanPose) => HumanPose) => (state: EditorState): EditorState =>
+  ({ ...state, pose: withPins(state.pose, update(state.pose), state.pins) });
+
+const effectorsFor = (effector: Effector, symmetric: boolean): Effector[] =>
+  symmetric ? [effector, oppositeBone(effector) as Effector] : [effector];
+
+// While dragged, the hand / foot turns with the limb; its orientation is re-pinned on release.
+// In symmetric mode the opposite effector follows as mirror image, if it is pinned as well.
+function withMovedTarget(state: EditorState, effector: Effector, position: IkTarget['position'], symmetric: boolean): EditorState {
+  const target: IkTarget = { position, quaternion: state.pins[effector]!.quaternion };
+  const pins: Pins = { ...state.pins, [effector]: target };
+  let pose = solveIk(state.pose, effector, target, { positionOnly: true });
+  const opposite = oppositeBone(effector) as Effector;
+  if (symmetric && pins[opposite]) {
+    const mirrored = mirrorTarget(pose, target);
+    pins[opposite] = mirrored;
+    pose = solveIk(pose, opposite, mirrored, { positionOnly: true });
+  }
+  return { pose, pins };
+}
+
+function withReachedOrientations(state: EditorState, effectors: Effector[]): EditorState {
+  const pins = { ...state.pins };
+  effectors.forEach(e => {
+    const pin = pins[e];
+    if (pin) pins[e] = { ...pin, quaternion: readTarget(state.pose, e).quaternion };
+  });
+  return { ...state, pins };
 }
 
 // One joint per line keeps the JSON short and diff-friendly
@@ -111,19 +155,31 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
   const gizmoRef = useRef<TransformControls | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const orbitRef = useRef<OrbitControls | null>(null);
+  const proxyRef = useRef<THREE.Object3D | null>(null);
+  const pinMarkersRef = useRef<THREE.Group | null>(null);
 
   const history = useHistory(loadDraft);
-  const pose = history.state;
+  const { pose, pins } = history.state;
   const [selected, setSelected] = useState<BoneKey | null>(null);
-  const [rootMode, setRootMode] = useState<'translate' | 'rotate'>('rotate');
+  const [gizmoMode, setGizmoMode] = useState<GizmoMode>('rotate');
   const [symmetric, setSymmetric] = useState(false);
   const [importText, setImportText] = useState<string | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
+  const togglePin = (effector: Effector) => history.commit(state => {
+    const pinsNext = { ...state.pins };
+    const unpin = state.pins[effector] !== undefined;
+    effectorsFor(effector, symmetric).forEach(e => {
+      if (unpin) delete pinsNext[e];
+      else pinsNext[e] = readTarget(state.pose, e);
+    });
+    return { ...state, pins: pinsNext };
+  });
+
   // Three.js event handlers are registered once, so they read the current values from here
-  const latest = useRef({ pose, symmetric, history });
-  latest.current = { pose, symmetric, history };
+  const latest = useRef({ state: history.state, symmetric, history, selected, togglePin });
+  latest.current = { state: history.state, symmetric, history, selected, togglePin };
 
   useEffect(() => {
     const container = containerRef.current;
@@ -165,7 +221,7 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
     scene.add(grid);
 
     const human = new Human();
-    human.apply(latest.current.pose);
+    human.apply(latest.current.state.pose);
     scene.add(human.object);
     humanRef.current = human;
 
@@ -177,20 +233,41 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
     gizmo.addEventListener('dragging-changed', event => {
       orbit.enabled = !event.value;
     });
+    // Dragged by the gizmo to move a pinned hand / foot; the limb follows via IK
+    const proxy = new THREE.Object3D();
+    scene.add(proxy);
+    proxyRef.current = proxy;
+
+    const pinMarkers = new THREE.Group();
+    scene.add(pinMarkers);
+    pinMarkersRef.current = pinMarkers;
+
+    const commitLive = (next: EditorState) => {
+      // Snap the bones onto the clamped / solved angles right away, before React re-renders
+      human.apply(next.pose);
+      latest.current.state = next;
+      latest.current.history.replace(next);
+    };
+
     gizmo.addEventListener('mouseDown', () => latest.current.history.checkpoint());
+    gizmo.addEventListener('mouseUp', () => {
+      const { state, selected: key, symmetric: isSymmetric } = latest.current;
+      if (gizmo.object !== proxy || !key || !isEffector(key)) return;
+      commitLive(withReachedOrientations(state, effectorsFor(key, isSymmetric)));
+    });
     gizmo.addEventListener('objectChange', () => {
+      const { state, symmetric: isSymmetric, selected: key } = latest.current;
+      if (gizmo.object === proxy) {
+        if (key && isEffector(key)) commitLive(withMovedTarget(state, key, proxy.position.toArray(), isSymmetric));
+        return;
+      }
       const node = gizmo.object;
       const bone = Object.values(human.bones).find(b => b.node === node);
       if (!bone) return;
-      const { pose: current, symmetric: isSymmetric, history: h } = latest.current;
-
       const next = gizmo.mode === 'translate'
-        ? { ...current, position: node.position.toArray() as [number, number, number] }
-        : withBoneAngles(current, bone.key, bone.anglesFromQuaternion(node.quaternion, current.angles[bone.key]), isSymmetric);
-      // Snap the bone back onto the clamped angles right away, before React re-renders
-      human.apply(next);
-      latest.current.pose = next;
-      h.replace(next);
+        ? { ...state.pose, position: node.position.toArray() as [number, number, number] }
+        : withBoneAngles(state.pose, bone.key, bone.anglesFromQuaternion(node.quaternion, state.pose.angles[bone.key]), isSymmetric);
+      commitLive({ ...state, pose: withPins(state.pose, next, state.pins) });
     });
 
     // Click selects a bone, but not at the end of a camera orbit or gizmo drag
@@ -230,6 +307,7 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
       renderer.domElement.removeEventListener('pointerup', handlePointerUp);
       gizmo.detach();
       gizmo.dispose();
+      disposeChildren(pinMarkers);
       orbit.dispose();
       human.dispose();
       floor.geometry.dispose();
@@ -239,13 +317,32 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
       container.removeChild(renderer.domElement);
       humanRef.current = null;
       gizmoRef.current = null;
+      proxyRef.current = null;
+      pinMarkersRef.current = null;
     };
   }, [isOpen]);
 
   useEffect(() => {
-    humanRef.current?.apply(pose);
-    saveDraft(pose);
-  }, [pose]);
+    humanRef.current?.apply(history.state.pose);
+    saveDraft(history.state);
+  }, [history.state]);
+
+  useEffect(() => {
+    const markers = pinMarkersRef.current;
+    if (!markers) return;
+    disposeChildren(markers);
+    for (const target of Object.values(pins)) {
+      const marker = new THREE.Mesh(
+        new THREE.SphereGeometry(0.05, 12, 8),
+        new THREE.MeshBasicMaterial({ color: 0xffd400, wireframe: true, depthTest: false }),
+      );
+      marker.renderOrder = 1;
+      marker.position.set(...target.position);
+      markers.add(marker);
+    }
+  }, [pins, isOpen]);
+
+  const selectedPin = selected && isEffector(selected) ? pins[selected] : undefined;
 
   useEffect(() => {
     const human = humanRef.current;
@@ -260,14 +357,16 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
       return;
     }
     const bone = human.bones[selected];
-    const translate = selected === 'root' && rootMode === 'translate';
-    gizmo.attach(bone.node);
+    const translate = gizmoMode === 'translate' && (selected === 'root' || selectedPin !== undefined);
+    const proxy = proxyRef.current!;
+    if (translate && selectedPin && !gizmo.dragging) proxy.position.set(...selectedPin.position);
+    gizmo.attach(translate && selectedPin ? proxy : bone.node);
     gizmo.setMode(translate ? 'translate' : 'rotate');
     gizmo.setSpace(translate ? 'world' : 'local');
     gizmo.showX = translate || bone.hasAxis('x');
     gizmo.showY = translate || bone.hasAxis('y');
     gizmo.showZ = translate || bone.hasAxis('z');
-  }, [selected, rootMode, symmetric, isOpen]);
+  }, [selected, gizmoMode, symmetric, isOpen, selectedPin]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -283,6 +382,13 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
         latest.current.history.redo();
       } else if (e.key === 'Escape') {
         setSelected(null);
+      } else if (e.key === 'w') {
+        setGizmoMode('translate');
+      } else if (e.key === 'e') {
+        setGizmoMode('rotate');
+      } else if (e.key === 'p') {
+        const key = latest.current.selected;
+        if (key && isEffector(key)) latest.current.togglePin(key);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -301,14 +407,14 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
     return human ? { ...p, position: [p.position[0], human.groundedRootHeight(p), p.position[2]] } : p;
   };
 
-  const applyPreset = (group: PresetGroup, joints: StoredJoints) => history.commit(p => {
+  const applyPreset = (group: PresetGroup, joints: StoredJoints) => history.commit(updatingPose(p => {
     const next = withJoints(p, joints);
     return group.grounded ? grounded(next) : next;
-  });
+  }));
 
-  const resetBone = (key: BoneKey) => history.commit(p =>
+  const resetBone = (key: BoneKey) => history.commit(updatingPose(p =>
     withBoneAngles(p, key, Object.fromEntries(Object.keys(p.angles[key]).map(name => [name, 0])), symmetric),
-  );
+  ));
 
   const storedPose = serializeHumanPose(pose);
   const json = formatStoredPose(storedPose);
@@ -321,7 +427,8 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
 
   const applyImport = () => {
     try {
-      history.commit(parseHumanPose(JSON.parse(importText ?? '')));
+      const imported = parseHumanPose(JSON.parse(importText ?? ''));
+      history.commit(updatingPose(() => imported));
       setImportText(null);
       setImportError(null);
     } catch (e) {
@@ -340,7 +447,7 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
           ))}
         </div>
         <div className="absolute bottom-3 left-3 text-xs text-gray-400 pointer-events-none">
-          Click a body part to select · drag rings to rotate · Esc deselects · ⌘Z / ⇧⌘Z undo/redo
+          Click a body part to select · E rotate / W move · P pin hand or foot · Esc deselects · ⌘Z / ⇧⌘Z undo/redo
         </div>
       </div>
 
@@ -365,23 +472,33 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
               ⟷ Symmetric
             </ToolbarButton>
           </div>
-          <BodyMap selected={selected} onSelect={setSelected} />
+          <BodyMap selected={selected} pins={pins} onSelect={setSelected} />
         </section>
 
         {selected && (
           <section className="space-y-3">
             <div className="flex justify-between items-center">
               <h3 className="font-semibold">{boneLabel(BONES[selected].joint, BONES[selected].side)}{symmetric && oppositeBone(selected) ? ' (both sides)' : ''}</h3>
-              <ToolbarButton onClick={() => resetBone(selected)}>Reset</ToolbarButton>
+              <div className="flex gap-1">
+                {isEffector(selected) && (
+                  <ToolbarButton
+                    onClick={() => togglePin(selected)}
+                    className={selectedPin ? 'bg-yellow-500 text-black hover:bg-yellow-400' : undefined}
+                    title="Pin in place (P): moving it or the rest of the body then solves this limb with IK"
+                  >
+                    📌 {selectedPin ? 'Pinned' : 'Pin'}
+                  </ToolbarButton>
+                )}
+                <ToolbarButton onClick={() => resetBone(selected)}>Reset</ToolbarButton>
+              </div>
             </div>
+            {(selected === 'root' || selectedPin) && <GizmoModeToggle mode={gizmoMode} onChange={setGizmoMode} />}
             {selected === 'root' && (
               <RootControls
                 pose={pose}
-                mode={rootMode}
-                onModeChange={setRootMode}
                 onBeginEdit={history.checkpoint}
-                onChange={history.replace}
-                onGround={() => history.commit(grounded)}
+                onChange={update => history.replace(updatingPose(update))}
+                onGround={() => history.commit(updatingPose(grounded))}
               />
             )}
             {JOINTS[BONES[selected].joint].angles.map(angle => (
@@ -390,7 +507,7 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
                 angle={angle}
                 value={pose.angles[selected][angle.name]}
                 onBeginEdit={history.checkpoint}
-                onChange={value => history.replace(p => withBoneAngles(p, selected, { [angle.name]: value }, symmetric))}
+                onChange={value => history.replace(updatingPose(p => withBoneAngles(p, selected, { [angle.name]: value }, symmetric)))}
               />
             ))}
           </section>
@@ -415,9 +532,9 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
         </section>
 
         <section className="flex flex-wrap gap-2">
-          <ToolbarButton onClick={() => history.commit(mirrorHumanPose)} title="Swap left and right">⟷ Mirror pose</ToolbarButton>
-          <ToolbarButton onClick={() => history.commit(grounded)} title="Move vertically so the lowest point touches the floor">⤓ Drop to floor</ToolbarButton>
-          <ToolbarButton onClick={() => history.commit(neutralPose())}>Reset all</ToolbarButton>
+          <ToolbarButton onClick={() => history.commit(updatingPose(mirrorHumanPose))} title="Swap left and right">⟷ Mirror pose</ToolbarButton>
+          <ToolbarButton onClick={() => history.commit(updatingPose(grounded))} title="Move vertically so the lowest point touches the floor">⤓ Drop to floor</ToolbarButton>
+          <ToolbarButton onClick={() => history.commit({ pose: neutralPose(), pins: {} })}>Reset all</ToolbarButton>
         </section>
 
         <section className="space-y-2">
@@ -462,7 +579,7 @@ function ToolbarButton({ className, ...props }: React.ButtonHTMLAttributes<HTMLB
 const SIDE_DOT: Record<Side | 'center', string> = { left: 'bg-[#4f8ef7]', right: 'bg-[#f59e42]', center: 'bg-[#b0bec5]' };
 
 // Laid out as seen from the front: the person's right side is on the left
-function BodyMap({ selected, onSelect }: { selected: BoneKey | null; onSelect: (key: BoneKey) => void }) {
+function BodyMap({ selected, pins, onSelect }: { selected: BoneKey | null; pins: Pins; onSelect: (key: BoneKey) => void }) {
   const cell = (joint: JointId, side: Side | null) => {
     const key = boneKey(joint, side);
     return (
@@ -473,6 +590,7 @@ function BodyMap({ selected, onSelect }: { selected: BoneKey | null; onSelect: (
       >
         <span className={`w-2 h-2 rounded-full shrink-0 ${SIDE_DOT[side ?? 'center']}`} />
         {JOINTS[joint].label}
+        {isEffector(key) && pins[key] && <span className="ml-auto">📌</span>}
       </button>
     );
   };
@@ -542,16 +660,35 @@ function AngleRow({ angle, value, onBeginEdit, onChange }: AngleRowProps) {
   );
 }
 
+function disposeChildren(group: THREE.Group): void {
+  group.children.forEach(child => {
+    const mesh = child as THREE.Mesh;
+    mesh.geometry.dispose();
+    (mesh.material as THREE.Material).dispose();
+  });
+  group.clear();
+}
+
+function GizmoModeToggle({ mode, onChange }: { mode: GizmoMode; onChange: (mode: GizmoMode) => void }) {
+  return (
+    <div className="flex gap-1">
+      {(['rotate', 'translate'] as const).map(m => (
+        <ToolbarButton key={m} onClick={() => onChange(m)} className={mode === m ? 'bg-green-600 hover:bg-green-500 flex-1' : 'bg-gray-700 hover:bg-gray-600 flex-1'}>
+          {m === 'rotate' ? 'Rotate gizmo (E)' : 'Move gizmo (W)'}
+        </ToolbarButton>
+      ))}
+    </div>
+  );
+}
+
 interface RootControlsProps {
   pose: HumanPose;
-  mode: 'translate' | 'rotate';
-  onModeChange: (mode: 'translate' | 'rotate') => void;
   onBeginEdit: () => void;
   onChange: (update: (pose: HumanPose) => HumanPose) => void;
   onGround: () => void;
 }
 
-function RootControls({ pose, mode, onModeChange, onBeginEdit, onChange, onGround }: RootControlsProps) {
+function RootControls({ pose, onBeginEdit, onChange, onGround }: RootControlsProps) {
   const setCoordinate = (index: number, raw: string) => {
     const parsed = parseFloat(raw);
     if (Number.isNaN(parsed)) return;
@@ -563,13 +700,6 @@ function RootControls({ pose, mode, onModeChange, onBeginEdit, onChange, onGroun
   };
   return (
     <div className="space-y-2">
-      <div className="flex gap-1">
-        {(['rotate', 'translate'] as const).map(m => (
-          <ToolbarButton key={m} onClick={() => onModeChange(m)} className={mode === m ? 'bg-green-600 hover:bg-green-500 flex-1' : 'bg-gray-700 hover:bg-gray-600 flex-1'}>
-            {m === 'rotate' ? 'Rotate gizmo' : 'Move gizmo'}
-          </ToolbarButton>
-        ))}
-      </div>
       <div className="flex gap-2 items-center text-sm">
         {(['x', 'y', 'z'] as const).map((axis, i) => (
           <label key={axis} className="flex items-center gap-1">
