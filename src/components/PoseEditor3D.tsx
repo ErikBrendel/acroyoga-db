@@ -68,7 +68,7 @@ const PRESET_GROUPS: PresetGroup[] = [
       { name: 'T', joints: { shoulder: { forward: 0, raise: 90, rotate: 0 }, elbow: { bend: 0, rotate: 0 } } },
       { name: 'Forward', joints: { shoulder: { forward: 90, raise: 0, rotate: 0 }, elbow: { bend: 0, rotate: 0 } } },
       { name: 'Overhead', joints: { shoulder: { forward: 180, raise: 0, rotate: 0 }, elbow: { bend: 0, rotate: 0 } } },
-      { name: 'Hands on hips', joints: { shoulder: { forward: 0, raise: 30, rotate: -60 }, elbow: { bend: 110, rotate: -60 }, wrist: { flex: 0 } } },
+      { name: 'Hands on hips', joints: { shoulder: { forward: -9.8, raise: 42.3, rotate: -74.5 }, elbow: { bend: 87.1, rotate: -20.2 }, wrist: { flex: -34.3, tilt: 0.4 } } },
     ],
   },
 ];
