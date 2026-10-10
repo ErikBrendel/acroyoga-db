@@ -12,6 +12,21 @@ interface PoseData {
   refetch: () => void;
 }
 
+async function fetchDataFile(name: string): Promise<unknown> {
+  const url = `${import.meta.env.BASE_URL}data/${name}.json`;
+  // In dev the files are rewritten by the edit API, so never answer from the HTTP cache
+  const response = await fetch(url, { cache: import.meta.env.DEV ? 'no-store' : 'default' });
+  const text = await response.text();
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ${url}: HTTP ${response.status} ${response.statusText}`);
+  }
+  try {
+    return JSON.parse(text);
+  } catch (err) {
+    throw new Error(`Invalid JSON in ${url} (HTTP ${response.status}, ${text.length} chars): ${err instanceof Error ? err.message : err}`);
+  }
+}
+
 export function usePoseData(): PoseData {
   const [data, setData] = useState<Omit<PoseData, 'refetch'>>({
     poses: [],
@@ -23,26 +38,9 @@ export function usePoseData(): PoseData {
 
   const loadData = async () => {
       try {
-        const baseUrl = import.meta.env.BASE_URL;
-        const [posesResponse, transitionsResponse, flowsResponse] = await Promise.all([
-          fetch(`${baseUrl}data/poses.json`),
-          fetch(`${baseUrl}data/transitions.json`),
-          fetch(`${baseUrl}data/flows.json`),
-        ]);
-
-        if (!posesResponse.ok) {
-          throw new Error(`Failed to fetch poses: ${posesResponse.statusText}`);
-        }
-        if (!transitionsResponse.ok) {
-          throw new Error(`Failed to fetch transitions: ${transitionsResponse.statusText}`);
-        }
-        if (!flowsResponse.ok) {
-          throw new Error(`Failed to fetch flows: ${flowsResponse.statusText}`);
-        }
-
-        const posesJson = await posesResponse.json();
-        const transitionsJson = await transitionsResponse.json();
-        const flowsJson = await flowsResponse.json();
+        const [posesJson, transitionsJson, flowsJson] = await Promise.all(
+          ['poses', 'transitions', 'flows'].map(fetchDataFile),
+        );
 
         const poses = z.array(PoseSchema).parse(posesJson);
         const transitions = z.array(TransitionSchema).parse(transitionsJson);
