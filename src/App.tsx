@@ -6,7 +6,7 @@ import {PoseDetailSidebar} from './components/PoseDetailSidebar';
 import {FlowsList} from './components/FlowsList';
 import {AddPoseDialog} from './components/AddPoseDialog';
 import {AddFlowDialog} from './components/AddFlowDialog';
-import {PoseEditor3DDemo} from './components/PoseEditor3DDemo';
+import {PoseEditor3D} from './components/PoseEditor3D';
 import {DifficultyGuide} from './components/DifficultyGuide';
 import {transformToGraph, PosePosition} from './utils/graphTransform';
 import {isLocalEditMode} from './utils/editMode';
@@ -300,7 +300,7 @@ function App() {
         transitions={transitions}
         initialFlow={editingFlow ?? undefined}
       />
-      <PoseEditor3DDemo
+      <PoseEditor3D
         isOpen={is3DEditorOpen}
         onClose={() => setIs3DEditorOpen(false)}
       />
