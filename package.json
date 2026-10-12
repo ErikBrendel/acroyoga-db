@@ -8,7 +8,10 @@
     "build": "tsc -b && vite build",
     "build:ci": "vite build",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "pose:solve": "tsx scripts/ai-pose/solve.ts",
+    "pose:render": "tsx scripts/ai-pose/render.ts",
+    "pose:orient": "tsx scripts/ai-pose/orient.ts"
   },
   "dependencies": {
     "@types/d3-force": "^3.0.10",
@@ -30,6 +33,7 @@
     "autoprefixer": "^10.4.24",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.2.0",
+    "tsx": "^4.23.15",
     "typescript": "~5.9.3",
     "vite": "^7.3.1",
     "vitest": "^5.0.3"

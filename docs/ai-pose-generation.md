@@ -1,0 +1,112 @@
+# Generating poses with AI
+
+AI agents write drafts of a pose's 3D data to `data-drafts/poses3d/<poseId>.json`. Drafts are never deployed:
+the pose panel shows them with an "AI draft" label (dev mode only), and a human approves one by opening it
+in the 3D editor ("🎭 Open in 3D editor") and saving. Agents only write drafts, never `public/data/`.
+
+## Before you start
+- Read `docs/3d-model.md`: conventions, joints, sites, contacts.
+- The pose's name and description in `public/data/poses.json` are the ground truth, written by a human.
+  Neighbouring poses in `public/data/flows.json` tell how the pose is entered and left.
+- Approved poses in `public/data/poses3d/` are the best examples (`front-plank.json`).
+- The dev server must run (`pnpm dev`) for rendering only.
+
+## Tools
+| Command | Does |
+|---|---|
+| `pnpm pose:orient '<joints JSON>' [presets…]` | Which way head, front, own left, soles and palms point. Use it before guessing root angles. |
+| `pnpm pose:solve <params.json> [--out <file>]` | Builds and solves the pose, writes the draft (or `--out` for trying variants), prints a report (below). Takes about 2 s. |
+| `pnpm pose:solve <params.json> --vary <path>=<v1>,<v2> [--vary …]` | Solves every combination and prints one summary line each (contacts ok, worst error, limits, overlaps); writes nothing. `<path>` is a dot path into the params, e.g. `flyer.joints.hip.pike` or `contacts.0.a.flyer.around`. Use it instead of hand-written loops. |
+| `pnpm pose:render <poseId> [--view Side] [--saved]` | Renders the draft in the 3D editor to `data-drafts/renders/<poseId>.png` (Front, Side / Angled, Top) or one larger view. |
+
+`pose:render` needs the dev server (`POSE_APP_URL`, default `http://localhost:5173/acroyoga-db/`) and starts a
+headless Chrome with remote debugging on port 9333 (`POSE_CHROME_PORT`) if none runs. Each call uses its own
+tab, so several agents can render at the same time. Look at the PNG: the solver does not judge whether the pose
+looks like the description. Editor colours: left side cool (blue / teal), right side warm (orange / pink);
+base legs blue / orange, flyer legs teal / pink.
+
+## params.json
+```json
+{
+  "poseId": "chair",
+  "base": { "presets": ["L-base"], "joints": { "knee": { "bend": 5 } } },
+  "flyer": { "joints": { "root": { "turn": 180 }, "hip": { "pike": 90 }, "knee": { "bend": 90 } } },
+  "contacts": [
+    { "solve": "fit", "a": { "flyer": "right-sit-bone" }, "b": { "base": "left-sole" }, "twist": "free", "symmetric": true },
+    { "a": { "base": "left-palm" }, "b": { "flyer": "right-sole" }, "twist": "free", "symmetric": true },
+    { "a": { "flyer": "left-palm" }, "b": { "flyer": "left-hamstring" }, "twist": "free" }
+  ],
+  "locks": { "base": ["hip.pike"], "flyer": ["spine"] }
+}
+```
+- People: `presets` (applied in order, names as in the editor: `L-base`, `Namaste`, `Hands on hips`, …, see
+  `src/3d/presets.ts`), then `joints` (stored format). `position` sets the pelvis; `grounded` (default: base
+  true, flyer false) drops the person onto the floor.
+- Contacts are in the stored format plus `solve`:
+  - `reach` (default when `a` is on an arm or leg): `a`'s limb moves by IK;
+  - `fit` (default otherwise): `a`'s person moves as a whole, then `b`'s limb reaches back if `b` is on a limb.
+    All `fit` contacts of one person are fitted together. `"fitRotate": true` also turns the person so that
+    the contact normals match on average; it helps when the base's angled legs tilt the soles (whale), but can
+    turn the person over completely when several contacts pull in different directions.
+  - A fit has no preferred height: a flyer fitted onto the base's soles ends up where the base's legs are fully
+    stretched. For a flyer lying on the base's feet it is often better to give the flyer a `position` (and root
+    angles) and let the base's soles `reach` (`a` = base sole). Vary the position with `--out` variants.
+  - A contact within one person (hand on own thigh) is held by whichever of its sites is on a limb.
+- `twist`: start with `"free"` unless the pose prescribes how the parts are turned against each other (e.g.
+  toes pointing to the base's head). The report shows the twist the solver found; fix it afterwards if needed.
+- `locks` keep angles out of the solver: `legs`, `arms`, `spine`, a joint (`knee`), a joint angle (`hip.pike`),
+  each optionally for one side (`left-knee.bend`, `right-arm`, `left-leg`). Lock what the pose prescribes and the solver should not trade
+  away, typically the base's legs in an L-base (`hip.pike`, `knee`) and the flyer's arms in a fixed arm shape.
+  Without locks, IK takes the nearest solution, e.g. bending the base's knees instead of straddling the legs.
+- `rounds` (default 6): fits and reaches alternate this often.
+
+## The report
+- **Contacts**: error per contact (`ok` within 10 mm / 5°, the editor's tolerance), where it is, and the normals
+  and directions of both sites (direction = towards fingers, toes, a limb's far end or the head), so the twist
+  can be read off: e.g. toes `-Z` on a thigh pointing `+X` is a 90° crossing. Position errors mean out of reach; orientation errors usually mean a joint at its limit.
+- **Angles at their limits**: the usual reason for a contact that does not hold, or for an odd look.
+- **Key points**: root angles, pelvis centre (about 10 cm inside the body), head, chest, upper back, sacrum,
+  palms, knees, soles of both people in cm, and the lowest point above the floor (the base should be 0, a
+  flyer below 0 is in the floor). Use them for checks like "feet above the base's face" without a render.
+- A contact that does not hold names straight knees / elbows of its limbs: the target is then out of reach.
+- **Overlaps**: body parts sinking into each other by 3 cm or more (rough capsules, parts in contact excepted;
+  touching forearms or hands of one person can show up and are fine).
+- The solver is local: starting angles matter, especially of ankles and wrists that a reach barely turns, and a
+  site on a limb that another contact also moves rolls with that limb's rotation (e.g. a thigh's `around` shifts
+  with `hip.rotate`). Sweep such values with `--vary`.
+
+## Orientation recipes
+Checked with `pose:orient`. World: +X is the left of a person standing at turn 0, +Y up, +Z their front.
+
+| Person | Root | Head | Front |
+|---|---|---|---|
+| Base on the back (L-base) | `pitch -90` | -Z | up; own left +X |
+| Flyer upright facing the base (throne, chair) | `turn 180` | up | -Z, towards the base's head |
+| Flyer face down, head over the base's head (front plank, bird) | `turn 180, pitch 75…90` | -Z | down |
+| Flyer face up, head away from the base's head (whale) | `turn 180, pitch -70…-90` | +Z | up |
+| Flyer on the right side, head to the base's left (Vishnu's couch left) | `turn 180, roll -90` | +X | -Z |
+| Flyer on the left side, head to the base's right | `turn 180, roll 90` | -X | -Z |
+
+More facts:
+- L-base: legs vertical, soles face up, toes point to the base's head (-Z), arms straight up.
+- `elbow.rotate -90` turns the palm down with the arm pointing forward.
+- A flyer arching back while lying face up drops the chest; compensate with the root pitch.
+- Base lying with the feet flat on the floor (knees up): `hip.pike` about 45, `knee.bend` about 110,
+  `ankle.point` about 25 (sole flat when 90 + pike − knee − point ≈ 0). There are no floor contacts yet:
+  grounding drops a person by their lowest point, so check that the soles are that point.
+- Knee bend moves the foot behind the line of the thigh (towards the person's back), elbow bend moves the
+  hand to the front.
+- Crossed ankles: two straight legs cannot cross at the ankles without the knees running into each other; bend
+  the lower leg's knee a little and hold the crossing with a contact within the person (shin on shin).
+- Base arms resting on the floor (lying): about `shoulder.forward -18, raise 45, rotate -80`, elbows straight;
+  more `forward` pushes the hands into the floor and lifts the base.
+- Grips: a palm on the `achilles` pulls an ankle towards the gripping person, on `ankle` (front) it pushes.
+- Twist is measured between the sites' directions (palm / sole: towards fingers / toes; limbs: towards their far
+  end; torso: towards the head): 0 parallel, 180 opposite, ±90 crossed.
+
+## Loop
+1. Write params from the description: contacts first (named sites where possible), rough angles, locks.
+2. `pose:solve`, read the report, fix what it shows (limits, overlaps, contacts off).
+3. `pose:render`, compare with the description, adjust; `--view Side` for details.
+4. Stop when it matches the description and the contacts are ok, or after about 12 rounds. Report what you
+   decided where the description was open, and what still looks wrong, so the human knows what to check.
