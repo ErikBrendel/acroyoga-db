@@ -27,6 +27,13 @@ describe('stored contacts', () => {
     expect(serializeAcroPose({ ...initialAcroPose(), contacts }).contacts.every(c => !('symmetric' in c))).toBe(true);
   });
 
+  it('stores a free twist, also in the mirror image', () => {
+    const free = { a: { base: 'left-palm' }, b: { flyer: { segment: 'right-shin', along: 0.9, around: 0 } }, twist: 'free', symmetric: true };
+    const pose = parseAcroPose({ ...serializeAcroPose(initialAcroPose()), contacts: [free] });
+    expect(pose.contacts.map(c => c.twist)).toEqual(['free', 'free']);
+    expect(serializeAcroPose(pose).contacts).toEqual([free]);
+  });
+
   it('rejects unknown sites', () => {
     expect(() => parseAcroPose({ ...serializeAcroPose(initialAcroPose()), contacts: [{ ...stored, a: { base: 'left-ear' } }] }))
       .toThrow('Unknown site "left-ear"');
@@ -64,6 +71,19 @@ describe('connect', () => {
       expect(error.degrees).toBeLessThan(1);
     }
     expect(connected.base.position).toEqual(start.position);
+  });
+
+  it('reaches a contact with a free twist without turning the hand about its normal', () => {
+    const contact: Contact = { a: { role: 'base', site: 'left-palm' }, b: { role: 'flyer', site: 'right-palm' }, twist: 'free' };
+    const flyer = connect({ ...initial, base: goal }, { ...contact, a: contact.b, b: contact.a, twist: 37 }, true);
+    const pose = { ...initial, base: start, flyer };
+
+    const connected = { ...pose, base: connect(pose, contact, false) };
+
+    const error = contactError(connected, contact);
+    expect(error.millimetres).toBeLessThan(1);
+    expect(error.degrees).toBeLessThan(1);
+    expect(contactError(connected, { ...contact, twist: 37 }).degrees).toBeGreaterThan(5);
   });
 
   it('moves the whole person for a site on the torso', () => {
@@ -121,6 +141,19 @@ describe('followContacts', () => {
 
     expectHeld(moved);
     expect(moved.flyer.position).toEqual(holding.flyer.position);
+  });
+
+  it('keeps a hand on its own knee when the leg moves', () => {
+    const contact: Contact = { a: { role: 'flyer', site: 'left-palm' }, b: { role: 'flyer', site: { segment: 'left-thigh', along: 0.9, around: 0 } }, twist: 'free' };
+    const sitting = withJoints(initial.flyer, { hip: { pike: 90 }, knee: { bend: 90 }, shoulder: { forward: 45 }, elbow: { bend: 30 } });
+    const start = { ...initial, flyer: sitting, contacts: [contact] };
+    const placed = followContacts(start, start, 'base', { base: {}, flyer: {} }, NO_LOCKS);
+    expectHeld(placed);
+
+    const moved = followContacts(placed, { ...placed, flyer: withJoints(placed.flyer, { hip: { pike: 70, straddle: 20 } }) }, 'flyer', { base: {}, flyer: {} }, NO_LOCKS);
+
+    expectHeld(moved);
+    expect(moved.flyer.angles['left-hip'].straddle).toBe(20);
   });
 
   it('leaves locked angles to the user', () => {

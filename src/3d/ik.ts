@@ -163,6 +163,8 @@ function rotationVector(q: THREE.Quaternion): THREE.Vector3 {
 interface IkOptions {
   positionOnly?: boolean;
   orientationOnly?: boolean;
+  // The turn about the target's Z axis (a contact's normal) is free
+  freeTwist?: boolean;
   fixed?: FixedAngle[];
 }
 
@@ -198,7 +200,7 @@ export function solveChain(
   chain: BoneKey[],
   offset: THREE.Matrix4,
   target: IkTarget,
-  { positionOnly = false, orientationOnly = false, fixed = [] }: IkOptions = {},
+  { positionOnly = false, orientationOnly = false, freeTwist = false, fixed = [] }: IkOptions = {},
 ): HumanPose {
   const base = worldMatrix(pose, parentOf(chain[0])!);
   const params = chain.flatMap(key => bones[key].angles
@@ -211,6 +213,7 @@ export function solveChain(
     })));
   const targetPosition = new THREE.Vector3(...target.position);
   const targetQuaternion = new THREE.Quaternion(...target.quaternion);
+  const twistAxis = new THREE.Vector3(0, 0, 1).applyQuaternion(targetQuaternion);
 
   const anglesOf = (values: number[]) => {
     const angles = Object.fromEntries(chain.map(key => [key, { ...pose.angles[key] }])) as Record<BoneKey, Record<string, number>>;
@@ -228,6 +231,7 @@ export function solveChain(
   };
   const frameDelta = (from: ReturnType<typeof effectorFrame>, to: { position: THREE.Vector3; quaternion: THREE.Quaternion }) => {
     const rotation = rotationVector(to.quaternion.clone().multiply(from.quaternion.clone().invert()));
+    if (freeTwist) rotation.addScaledVector(twistAxis, -rotation.dot(twistAxis));
     const positionDelta = to.position.clone().sub(from.position).toArray();
     if (orientationOnly) return rotation.toArray();
     return positionOnly ? positionDelta : [...positionDelta, ...rotation.multiplyScalar(ORIENTATION_WEIGHT).toArray()];

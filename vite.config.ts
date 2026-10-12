@@ -8,6 +8,16 @@ const dataDir = path.join(process.cwd(), 'public/data')
 const transitionsPath = path.join(dataDir, 'transitions.json')
 const posesPath = path.join(dataDir, 'poses.json')
 const flowsPath = path.join(dataDir, 'flows.json')
+// 3D data per pose, one file each: approved in the deployed data, AI drafts outside of it until approved
+const poses3dDir = path.join(dataDir, 'poses3d')
+const drafts3dDir = path.join(process.cwd(), 'data-drafts/poses3d')
+
+const readPoseFiles = (dir: string) => Object.fromEntries(
+  (fs.existsSync(dir) ? fs.readdirSync(dir) : [])
+    .filter(file => file.endsWith('.json'))
+    .map(file => [file.slice(0, -'.json'.length), JSON.parse(fs.readFileSync(path.join(dir, file), 'utf-8'))]),
+)
+const isPoseId = (id: unknown): id is string => typeof id === 'string' && /^[a-z0-9-]+$/.test(id)
 
 type ApiHandler = (body: any) => { code: number; data: any }
 
@@ -308,6 +318,30 @@ const apiRoutes: Record<string, ApiHandler> = {
     fs.renameSync(tmpPath, flowsPath)
 
     return { code: 201, data: { success: true, flow: body } }
+  },
+
+  'GET:/api/poses3d': () => ({ code: 200, data: { saved: readPoseFiles(poses3dDir), drafts: readPoseFiles(drafts3dDir) } }),
+
+  // Saving a pose settles it, so its draft goes
+  'PUT:/api/poses3d': (body) => {
+    if (!isPoseId(body.poseId) || typeof body.json !== 'string') {
+      return { code: 400, data: { error: 'poseId and json are required' } }
+    }
+    JSON.parse(body.json)
+    fs.mkdirSync(poses3dDir, { recursive: true })
+    const filePath = path.join(poses3dDir, `${body.poseId}.json`)
+    fs.writeFileSync(filePath + '.tmp', body.json + '\n')
+    fs.renameSync(filePath + '.tmp', filePath)
+    fs.rmSync(path.join(drafts3dDir, `${body.poseId}.json`), { force: true })
+    return { code: 200, data: { success: true } }
+  },
+
+  'DELETE:/api/poses3d/draft': (body) => {
+    if (!isPoseId(body.poseId)) {
+      return { code: 400, data: { error: 'poseId is required' } }
+    }
+    fs.rmSync(path.join(drafts3dDir, `${body.poseId}.json`), { force: true })
+    return { code: 200, data: { success: true } }
   },
 
   'POST:/api/layout/positions': (body) => {

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, lazy, Suspense } from 'react';
 import { Pose, Transition, Flow, PoseDifficulty, TransitionDifficulty } from '../types/data';
 import { PoseButton } from './PoseButton';
 import { AddTransitionForm } from './AddTransitionForm';
@@ -10,6 +10,9 @@ import { mirrorText } from '../utils/mirrorText';
 import { getFlowVariants, getFlowVariantKey } from '../utils/flowMirror';
 import { getPoseColor } from '../utils/difficultyColors';
 
+// three.js is only loaded once a pose is opened
+const PosePreview3D = lazy(() => import('./PosePreview3D').then(m => ({ default: m.PosePreview3D })));
+
 interface PoseDetailSidebarProps {
   selectedPoseId: string | null;
   poses: Pose[];
@@ -20,6 +23,7 @@ interface PoseDetailSidebarProps {
   onFlowClick: (flowName: string) => void;
   onDataChange?: () => void;
   onUnpinNode?: (nodeId: string) => void;
+  onOpenIn3DEditor?: (poseId: string) => void;
   pendingPositions?: Record<string, PosePosition | null>;
 }
 
@@ -33,6 +37,7 @@ export function PoseDetailSidebar({
   onFlowClick,
   onDataChange,
   onUnpinNode,
+  onOpenIn3DEditor,
   pendingPositions,
 }: PoseDetailSidebarProps) {
   const [isDeleting, setIsDeleting] = useState(false);
@@ -361,6 +366,19 @@ export function PoseDetailSidebar({
               </button>
             </div>
           </div>
+        )}
+
+        <Suspense fallback={null}>
+          <PosePreview3D pose={pose} />
+        </Suspense>
+
+        {onOpenIn3DEditor && (
+          <button
+            onClick={() => onOpenIn3DEditor(pose.id)}
+            className="mb-4 w-full px-3 py-2 bg-cyan-600 text-white rounded hover:bg-cyan-700 transition-colors text-sm font-semibold"
+          >
+            🎭 Open in 3D editor
+          </button>
         )}
 
         {pose.mirroredPoseId && (

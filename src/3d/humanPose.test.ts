@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { mirrorHumanPose, neutralPose, parseHumanPose, serializeHumanPose, symmetrized, withJoints } from './humanPose';
+import { lerpHumanPose, mirrorHumanPose, neutralPose, parseHumanPose, serializeHumanPose, symmetrized, withJoints } from './humanPose';
 import { ALL_BONES, oppositeBone } from './skeleton';
 import { boneEnd, randomPose, seededRandom } from './testHelpers';
 
@@ -46,5 +46,16 @@ describe('symmetrized', () => {
     expect(serializeHumanPose(symmetrized(pose, 'right')).joints).toEqual({
       root: { turn: 30, roll: 10 }, chest: { bend: 20 }, hip: { pike: 10 }, shoulder: { raise: 70 },
     });
+  });
+});
+
+describe('lerpHumanPose', () => {
+  it('moves angles and position in a straight line, unbounded angles the shorter way round', () => {
+    const from = { ...withJoints(neutralPose(), { root: { turn: 170 }, knee: { bend: 20 } }), position: [0, 1, 0] as [number, number, number] };
+    const to = { ...withJoints(neutralPose(), { root: { turn: -170 }, knee: { bend: 60 } }), position: [1, 1, 0] as [number, number, number] };
+    const middle = lerpHumanPose(from, to, 0.5);
+    expect(middle.angles.root.turn).toBeCloseTo(180);
+    expect(middle.angles['left-knee'].bend).toBeCloseTo(40);
+    expect(middle.position).toEqual([0.5, 1, 0]);
   });
 });

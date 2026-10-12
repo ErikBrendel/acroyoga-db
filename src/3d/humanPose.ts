@@ -124,3 +124,14 @@ export function editedSide(previous: HumanPose, next: HumanPose): Side {
     && Object.keys(next.angles[b.key]).some(name => next.angles[b.key][name] !== previous.angles[b.key][name]));
   return changed('right') && !changed('left') ? 'right' : 'left';
 }
+
+// Straight from one pose to the other at `t` (0 to 1); angles without limits (-180 to 180) take the shorter way round
+export function lerpHumanPose(from: HumanPose, to: HumanPose, t: number): HumanPose {
+  const angles = Object.fromEntries(ALL_BONES.map(({ key, joint }) => [key, Object.fromEntries(JOINTS[joint].angles.map(({ name, min, max }) => {
+    const delta = to.angles[key][name] - from.angles[key][name];
+    const way = max - min >= 360 ? THREE.MathUtils.euclideanModulo(delta + 180, 360) - 180 : delta;
+    return [name, from.angles[key][name] + way * t];
+  }))])) as HumanPose['angles'];
+  const position = from.position.map((value, i) => value + (to.position[i] - value) * t) as HumanPose['position'];
+  return { position, angles };
+}

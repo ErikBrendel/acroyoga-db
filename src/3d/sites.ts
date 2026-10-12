@@ -56,6 +56,17 @@ const PAIRED_SITES: Record<string, SiteDef> = {
   hip: { segment: 'pelvis', along: 0.8, around: 35 },
   // Top of the shoulder, between neck and arm
   shoulder: { joint: 'clavicle', point: [-0.015, 0.11, -0.01], normal: [-1, 0, 0], direction: [0, 0, 1] },
+  // Where one sits: the back of the thigh just below the buttock
+  'sit-bone': { segment: 'thigh', along: 0.08, around: 180 },
+  hamstring: { segment: 'thigh', along: 0.5, around: 180 },
+  'inner-thigh': { segment: 'thigh', along: 0.3, around: -90 },
+  'knee-pit': { segment: 'thigh', along: 0.95, around: 180 },
+  calf: { segment: 'shin', along: 0.5, around: 180 },
+  // Front and back of the lower shin, just above the foot
+  ankle: { segment: 'shin', along: 0.92, around: 0 },
+  achilles: { segment: 'shin', along: 0.92, around: 180 },
+  'shoulder-blade': { segment: 'upper-back', along: 0.6, around: 150 },
+  armpit: { segment: 'upper-back', along: 0.85, around: 95 },
 };
 
 const CENTER_SITES: Record<string, SiteDef> = {

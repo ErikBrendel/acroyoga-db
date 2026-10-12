@@ -56,8 +56,11 @@ Ranges live in `skeleton.ts`; the stored data never contains limits, axes or bon
 ## Contact sites (`src/3d/sites.ts`)
 - A site is a point on the body surface with a frame: the normal points out of the surface, the
   direction along it (palm / sole: towards fingers / toes; limbs: towards their far end; torso: towards the head).
-- Named sites: `palm`, `hand-back`, `sole`, `instep`, `knee`, `shin`, `thigh`, `hip` (front of the hip bone),
-  `shoulder` (top, between neck and arm), each with `left-` / `right-`; `belly`, `sacrum`, `chest`, `upper-back`, `crown`.
+- Named sites, each with `left-` / `right-`: `palm`, `hand-back`, `sole`, `instep`, `knee` (kneecap), `shin`,
+  `calf`, `ankle` / `achilles` (front / back of the lower shin), `thigh` (front), `hamstring` (back),
+  `inner-thigh`, `knee-pit`, `sit-bone` (back of the thigh below the buttock), `hip` (front of the hip bone),
+  `shoulder` (top, between neck and arm), `shoulder-blade`, `armpit`. Centre: `belly`, `sacrum`, `chest`,
+  `upper-back`, `crown`. In the connect mode of the editor they are shown as dots.
 - Any other point: `{"segment": "left-shin", "along": 0.7, "around": -60}` with `along` 0 at the joint
   (crotch for the pelvis) to 1 at the far end, `around` in degrees from the front, positive towards the
   outside of a limb or the left of the torso. Segments: `pelvis`, `lower-back`, `upper-back`, and per side
@@ -67,6 +70,10 @@ Ranges live in `skeleton.ts`; the stored data never contains limits, axes or bon
 - `a` touches `b`: same point, normals facing each other, and `a`'s direction turned by `twist` degrees
   (default 0) about its normal relative to `b`'s: 0 = parallel, 180 = opposite, 90 = crossed.
   The twist is the same seen from either side. `a` is the side that was moved when the contact was made.
+- `"twist": "free"`: any turn about the normal will do; the solver keeps whatever fits (only position and
+  normals count, also for the error shown).
+- Both sites may be on the same person (a hand on their own thigh): the site on a limb moves by IK. In the
+  connect tool, click a part and then another part of the same person.
 - `"symmetric": true` stands for the contact plus its mirror image (sides swapped, twist negated). The
   serializer produces it for every mirror-image pair; contacts between centre sites (belly on sacrum)
   are their own mirror image and stay single.
@@ -80,7 +87,8 @@ Ranges live in `skeleton.ts`; the stored data never contains limits, axes or bon
   1. the other person as a whole, for contacts on their torso — shifted if the edited person's
      contact limbs can turn to match, otherwise turned too,
   2. the other person's contact limbs,
-  3. the edited person's contact limbs, keeping the edited angles.
+  3. the edited person's contact limbs, keeping the edited angles,
+  4. contacts within one person, by their limb.
   Pins win over contacts. A contact that cannot be held is shown red with how far off it is.
 
 ## IK pins (editor only, `src/3d/ik.ts`)

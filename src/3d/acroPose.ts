@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { z } from 'zod';
-import { HumanPose, StoredHumanPoseSchema, mirrorHumanPose, neutralPose, parseHumanPose, serializeHumanPose, withAngle } from './humanPose';
+import { HumanPose, StoredHumanPose, StoredHumanPoseSchema, mirrorHumanPose, neutralPose, parseHumanPose, serializeHumanPose, withAngle } from './humanPose';
 import { FixedAngle, Pins, changedAngles, limbChain, limbEffector, movedRigidly, solveChain, toTarget, withPins } from './ik';
 import { Site, SiteSchema, localSiteFrame, mirrorSite, normalizeDegrees, siteMatrix } from './sites';
 import { BONES, BoneKey, DEFAULT_ROOT_POSITION, JOINTS } from './skeleton';
@@ -16,12 +16,15 @@ export interface SiteRef {
 }
 
 // Site `a` touches site `b`: same point, normals facing each other, and `a`'s direction turned by `twist`
-// degrees about its normal relative to `b`'s (0 = parallel, 180 = opposite). The angle is the same seen
-// from either side. `a` is the side that was moved onto `b` when the contact was made.
+// degrees about its normal relative to `b`'s (0 = parallel, 180 = opposite), or any turn with 'free'. The
+// angle is the same seen from either side. `a` is the side that was moved onto `b` when the contact was made.
+// Both sites may be on the same person, e.g. a hand on their own knee.
+export type Twist = number | 'free';
+
 export interface Contact {
   a: SiteRef;
   b: SiteRef;
-  twist: number;
+  twist: Twist;
 }
 
 export interface AcroPose {
@@ -31,13 +34,13 @@ export interface AcroPose {
 }
 
 // Stored format: {"a": {"base": "left-sole"}, "b": {"flyer": "left-hip"}, "twist": 90}, with `twist`
-// omitted when 0. `"symmetric": true` stands for the contact plus its mirror image (sides swapped,
+// omitted when 0 and "free" when any turn will do. `"symmetric": true` stands for the contact plus its mirror image (sides swapped,
 // twist negated); the serializer produces it automatically for mirror-image pairs.
 const StoredSiteRefSchema = z.union([z.strictObject({ base: SiteSchema }), z.strictObject({ flyer: SiteSchema })]);
 const StoredContactSchema = z.strictObject({
   a: StoredSiteRefSchema,
   b: StoredSiteRefSchema,
-  twist: z.number().optional(),
+  twist: z.union([z.number(), z.literal('free')]).optional(),
   symmetric: z.literal(true).optional(),
 });
 
@@ -62,18 +65,20 @@ const parseSiteRef = (stored: StoredSiteRef): SiteRef => {
   return ref;
 };
 
+export const normalizeTwist = (twist: Twist): Twist => (twist === 'free' ? twist : normalizeDegrees(twist));
+
 export function mirrorContact({ a, b, twist }: Contact): Contact {
   return {
     a: { ...a, site: mirrorSite(a.site) },
     b: { ...b, site: mirrorSite(b.site) },
-    twist: normalizeDegrees(-twist),
+    twist: twist === 'free' ? twist : normalizeDegrees(-twist),
   };
 }
 
 export function parseAcroPose(json: unknown): AcroPose {
   const stored = StoredAcroPoseSchema.parse(json);
   const contacts = stored.contacts.flatMap(({ a, b, twist = 0, symmetric }) => {
-    const contact = { a: parseSiteRef(a), b: parseSiteRef(b), twist: normalizeDegrees(twist) };
+    const contact = { a: parseSiteRef(a), b: parseSiteRef(b), twist: normalizeTwist(twist) };
     return symmetric ? [contact, mirrorContact(contact)] : [contact];
   });
   return { base: parseHumanPose(stored.base), flyer: parseHumanPose(stored.flyer), contacts };
@@ -82,7 +87,7 @@ export function parseAcroPose(json: unknown): AcroPose {
 const storedSiteRef = ({ role, site }: SiteRef) => ({ [role]: site }) as StoredSiteRef;
 
 function storedContact({ a, b, twist }: Contact): StoredContact {
-  const rounded = normalizeDegrees(twist);
+  const rounded = normalizeTwist(twist);
   return { a: storedSiteRef(a), b: storedSiteRef(b), ...(rounded !== 0 && { twist: rounded }) };
 }
 
@@ -128,9 +133,9 @@ export function currentTwist(pose: AcroPose, a: SiteRef, b: SiteRef): number {
   return normalizeDegrees(THREE.MathUtils.radToDeg(Math.atan2(x1, x0)));
 }
 
-export function contactError(pose: AcroPose, { a, b, twist }: Contact): { millimetres: number; degrees: number } {
-  const actual = toTarget(siteMatrix(pose[a.role], a.site));
-  const wanted = toTarget(targetOf(pose, { a, b, twist }));
+export function contactError(pose: AcroPose, contact: Contact): { millimetres: number; degrees: number } {
+  const actual = toTarget(siteMatrix(pose[contact.a.role], contact.a.site));
+  const wanted = toTarget(targetOf(pose, contact));
   return {
     millimetres: new THREE.Vector3(...actual.position).distanceTo(new THREE.Vector3(...wanted.position)) * 1000,
     degrees: THREE.MathUtils.radToDeg(new THREE.Quaternion(...actual.quaternion).angleTo(new THREE.Quaternion(...wanted.quaternion))),
@@ -140,7 +145,9 @@ export function contactError(pose: AcroPose, { a, b, twist }: Contact): { millim
 // Sites on torso and head can only be moved by moving the whole person
 export const movesLimb = (site: Site) => limbChain(localSiteFrame(site).bone).length > 0;
 
-const targetOf = (pose: AcroPose, { b, twist }: Contact) => contactTarget(siteMatrix(pose[b.role], b.site), twist);
+// A free twist is whatever the sites have now, so only position and normals count
+const targetOf = (pose: AcroPose, { a, b, twist }: Contact) =>
+  contactTarget(siteMatrix(pose[b.role], b.site), twist === 'free' ? currentTwist(pose, a, b) : twist);
 
 // The same contact, seen from `b`
 export const reversed = ({ a, b, twist }: Contact): Contact => ({ a: b, b: a, twist });
@@ -161,9 +168,10 @@ export function connect(pose: AcroPose, contact: Contact, rigid: boolean, fixed:
   const mover = pose[a.role];
   const { bone, matrix } = localSiteFrame(a.site);
   const chain = limbChain(bone);
+  const freeTwist = contact.twist === 'free';
   const errorWith = (person: HumanPose) => contactError({ ...pose, [a.role]: person }, contact);
   const attempt = (start: HumanPose) => {
-    const solved = solveChain(start, chain, matrix, target, { fixed });
+    const solved = solveChain(start, chain, matrix, target, { fixed, freeTwist });
     // Out of reach with this twist: at least the points meet
     return errorWith(solved).millimetres > HOLDS.millimetres ? solveChain(solved, chain, matrix, target, { positionOnly: true, fixed }) : solved;
   };
@@ -171,7 +179,20 @@ export function connect(pose: AcroPose, contact: Contact, rigid: boolean, fixed:
   if (holdsWith(errorWith(first))) return first;
   // A straight limb is stuck at its limit when the target is closer than its length: retry half bent
   const second = attempt(towardsMiddle(mover, chain, fixed));
-  return offBy(errorWith(second)) < offBy(errorWith(first)) ? second : first;
+  const best = (candidates: HumanPose[]) => candidates.reduce((b, c) => (offBy(errorWith(c)) < offBy(errorWith(b)) ? c : b));
+  const better = best([first, second]);
+  if (holdsWith(errorWith(better))) return better;
+  // The solver is local: an orientation that needs e.g. a turned forearm may only be found from elsewhere
+  return best([better, ...SPREAD_STARTS.map(share => attempt(spreadOver(mover, chain, fixed, share)))]);
+}
+
+// Shares of each angle's range to start from, the same for all angles of a chain
+const SPREAD_STARTS = [0.2, 0.8, 0.35, 0.65];
+
+function spreadOver(pose: HumanPose, keys: BoneKey[], fixed: FixedAngle[], share: number): HumanPose {
+  return keys.reduce((result, key) => JOINTS[BONES[key].joint].angles
+    .filter(({ name }) => !fixed.some(f => f.key === key && f.name === name))
+    .reduce((r, { name, min, max }, i) => withAngle(r, key, name, min + (max - min) * (i % 2 ? 1 - share : share)), result), pose);
 }
 
 function towardsMiddle(pose: HumanPose, keys: BoneKey[], fixed: FixedAngle[]): HumanPose {
@@ -190,7 +211,8 @@ const offBy = ({ millimetres, degrees }: { millimetres: number; degrees: number 
 // Turns `a`'s limb so that its site has the orientation the contact needs, wherever it is
 function turnedTowards(pose: AcroPose, contact: Contact, fixed: FixedAngle[]): HumanPose {
   const { bone, matrix } = localSiteFrame(contact.a.site);
-  return solveChain(pose[contact.a.role], limbChain(bone), matrix, toTarget(targetOf(pose, contact)), { orientationOnly: true, fixed });
+  const freeTwist = contact.twist === 'free';
+  return solveChain(pose[contact.a.role], limbChain(bone), matrix, toTarget(targetOf(pose, contact)), { orientationOnly: true, fixed, freeTwist });
 }
 
 const pinned = (site: Site, pins: Pins) => pins[limbEffector(localSiteFrame(site).bone)!] !== undefined;
@@ -205,6 +227,28 @@ const pinned = (site: Site, pins: Pins) => pins[limbEffector(localSiteFrame(site
 // Pinned limbs do not move for a contact, `locks` never change; a lock on the other person's root keeps
 // them from turning.
 export function followContacts(
+  previous: AcroPose, pose: AcroPose, edited: Role, pins: Record<Role, Pins>, locks: Record<Role, FixedAngle[]>,
+): AcroPose {
+  const followed = followOtherPerson(previous, pose, edited, pins, locks);
+  return withOwnContacts(followed, { ...locks, [edited]: [...changedAngles(previous[edited], pose[edited]), ...locks[edited]] }, pins);
+}
+
+// A contact within one person, turned so that `a` is on a limb that can reach; null if neither site is
+export function ownContactMover(contact: Contact): Contact | null {
+  if (movesLimb(contact.a.site)) return contact;
+  return movesLimb(contact.b.site) ? reversed(contact) : null;
+}
+
+// Contacts within one person (a hand on their own knee) are held by that limb, unless it is pinned
+function withOwnContacts(pose: AcroPose, locks: Record<Role, FixedAngle[]>, pins: Record<Role, Pins>): AcroPose {
+  return pose.contacts.filter(c => c.a.role === c.b.role).reduce((next, contact) => {
+    const mover = ownContactMover(contact);
+    if (!mover || pinned(mover.a.site, pins[mover.a.role]) || holds(next, mover)) return next;
+    return { ...next, [mover.a.role]: connect(next, mover, false, locks[mover.a.role]) };
+  }, pose);
+}
+
+function followOtherPerson(
   previous: AcroPose, pose: AcroPose, edited: Role, pins: Record<Role, Pins>, locks: Record<Role, FixedAngle[]>,
 ): AcroPose {
   const follower = otherRole(edited);
@@ -241,4 +285,19 @@ export function followContacts(
   const turned = moved(pose, true);
   const totalError = (p: AcroPose) => contacts.reduce((sum, c) => sum + offBy(contactError(p, c)), 0);
   return totalError(turned) < totalError(shifted) ? turned : shifted;
+}
+
+// JSON with one line per joint and contact
+export function formatStoredAcroPose({ base, flyer, contacts }: StoredAcroPose): string {
+  const list = (open: string, close: string, lines: string[], indent: string) =>
+    (lines.length ? `${open}\n${lines.map(line => `${indent}  ${line}`).join(',\n')}\n${indent}${close}` : `${open}${close}`);
+  const person = ({ position, joints }: StoredHumanPose) => list('{', '}', [
+    `"position": ${JSON.stringify(position)}`,
+    `"joints": ${list('{', '}', Object.entries(joints).map(([joint, values]) => `"${joint}": ${JSON.stringify(values)}`), '    ')}`,
+  ], '  ');
+  return list('{', '}', [
+    `"base": ${person(base)}`,
+    `"flyer": ${person(flyer)}`,
+    `"contacts": ${list('[', ']', contacts.map(c => JSON.stringify(c)), '  ')}`,
+  ], '');
 }

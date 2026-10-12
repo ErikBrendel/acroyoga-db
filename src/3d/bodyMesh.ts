@@ -23,6 +23,12 @@ export const PALETTES = {
   flyer: { left: new THREE.Color(0x2fb8a0), right: new THREE.Color(0xe85d8f), shirt: new THREE.Color(0xe2d6f0), shorts: new THREE.Color(0x8a5fa8) },
 } satisfies Record<string, Palette>;
 
+// For viewing: neutral clothing, the two people told apart by colour instead of their sides
+export const DISPLAY_PALETTES = {
+  base: { left: new THREE.Color(0x4b5563), right: new THREE.Color(0x4b5563), shirt: new THREE.Color(0xcbd5e1), shorts: new THREE.Color(0x374151) },
+  flyer: { left: new THREE.Color(0x0f766e), right: new THREE.Color(0x0f766e), shirt: new THREE.Color(0xf5f0e6), shorts: new THREE.Color(0x115e59) },
+} satisfies Record<string, Palette>;
+
 const COLORS = {
   skin: new THREE.Color(0xf2c29b),
   dark: new THREE.Color(0x2a1f1a),
@@ -246,7 +252,10 @@ export function buildHead(): THREE.Group {
   const hairShell = new THREE.Group();
   hairShell.position.set(...skullCentre);
   hairShell.scale.set(...skullShape).multiplyScalar(1.12);
-  const hair = new THREE.Mesh(new THREE.SphereGeometry(0.125, 10, 6, 0, Math.PI * 2, 0, Math.PI * 0.45), flat(COLORS.hair));
+  // Open at the bottom, so its inside is drawn too and closes it when seen from below
+  const hairMaterial = flat(COLORS.hair);
+  hairMaterial.side = THREE.DoubleSide;
+  const hair = new THREE.Mesh(new THREE.SphereGeometry(0.125, 10, 6, 0, Math.PI * 2, 0, Math.PI * 0.45), hairMaterial);
   hair.rotation.x = -0.55;
   hairShell.add(hair);
   head.add(hairShell);

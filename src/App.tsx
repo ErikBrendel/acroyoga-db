@@ -23,6 +23,7 @@ function App() {
   const [isAddFlowDialogOpen, setIsAddFlowDialogOpen] = useState(false);
   const [editingFlow, setEditingFlow] = useState<Flow | null>(null);
   const [is3DEditorOpen, setIs3DEditorOpen] = useState(false);
+  const [editorPoseId, setEditorPoseId] = useState<string | null>(null);
   const [pendingPositions, setPendingPositions] = useState<Record<string, PosePosition | null>>({});
   const [isSaving, setIsSaving] = useState(false);
   const [searchInput, setSearchInput] = useUrlState<string>('search', '');
@@ -253,6 +254,7 @@ function App() {
           onFlowClick={handleFlowClick}
           onDataChange={isLocalEditMode() ? refetch : undefined}
           onUnpinNode={isLocalEditMode() ? handleUnpinNode : undefined}
+          onOpenIn3DEditor={isLocalEditMode() ? (poseId) => { setEditorPoseId(poseId); setIs3DEditorOpen(true); } : undefined}
           pendingPositions={pendingPositions}
         />
       </div>
@@ -277,7 +279,7 @@ function App() {
               + New Flow
             </button>
             <button
-              onClick={() => setIs3DEditorOpen(true)}
+              onClick={() => { setEditorPoseId(null); setIs3DEditorOpen(true); }}
               className="px-3 py-2 bg-cyan-600 text-white rounded hover:bg-cyan-700 transition-colors text-sm font-semibold"
             >
               🎭 3D Editor
@@ -328,6 +330,8 @@ function App() {
       <PoseEditor3D
         isOpen={is3DEditorOpen}
         onClose={() => setIs3DEditorOpen(false)}
+        poses={poses}
+        openPoseId={editorPoseId}
       />
     </div>
   );

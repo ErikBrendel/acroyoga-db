@@ -5,17 +5,23 @@ import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { z } from 'zod';
 import { Hit, Human } from '../3d/Human';
 import {
-  AcroPose, Contact, ROLES, Role, SiteRef, StoredAcroPose, connect, contactError, currentTwist, fitRigidly, followContacts,
-  initialAcroPose, isOwnMirrorImage, mirrorAcroPose, reversed, mirrorContact, mirrorPartner, movesLimb, parseAcroPose, serializeAcroPose,
+  AcroPose, Contact, ROLES, Role, SiteRef, Twist, connect, contactError, currentTwist, fitRigidly, followContacts,
+  initialAcroPose, isOwnMirrorImage, mirrorAcroPose, reversed, mirrorContact, mirrorPartner, movesLimb, normalizeTwist, ownContactMover,
+  parseAcroPose, serializeAcroPose, formatStoredAcroPose,
 } from '../3d/acroPose';
 import { PALETTES } from '../3d/bodyMesh';
 import {
   EFFECTORS, Effector, FixedAngle, FixedAngleSchema, IkTarget, Pins, PinsSchema, parentAngles, floorTarget, isEffector, limbChain, limbEffector, mirrorTarget, readTarget, solveIk, withPins, worldMatrix,
 } from '../3d/ik';
-import { HumanPose, StoredHumanPose, StoredJoints, breaksSymmetry, editedSide, symmetrized, withAngle, withJoints } from '../3d/humanPose';
-import { localSiteFrame, normalizeDegrees, siteAt, siteLabel, siteMatrix } from '../3d/sites';
-import { AngleDef, BONES, BoneKey, JOINT_IDS, JOINTS, JointId, Side, boneKey, boneLabel, oppositeBone } from '../3d/skeleton';
+import { HumanPose, breaksSymmetry, editedSide, symmetrized, withAngle, withJoints } from '../3d/humanPose';
+import { SITE_NAMES, localSiteFrame, normalizeDegrees, siteAt, siteLabel, siteMatrix } from '../3d/sites';
+import { AngleDef, BONES, BoneKey, JOINTS, JointId, Side, boneKey, boneLabel, oppositeBone } from '../3d/skeleton';
 import { useHistory } from '../hooks/useHistory';
+import { useLocalStorageState } from '../hooks/useLocalStorageState';
+import { PRESET_GROUPS, PresetGroup } from '../3d/presets';
+import { StoredPoses3d, deleteDraft3d, fetchPoses3d, savePose3d } from '../api/poses3d';
+import { loadPose3d } from '../3d/pose3dData';
+import { Pose } from '../types/data';
 
 const DRAFT_STORAGE_KEY = 'acroyoga-db:pose-editor-draft';
 const CAMERA_TARGET = new THREE.Vector3(0, 0.9, 0.35);
@@ -29,135 +35,6 @@ const VIEWS: Record<string, [number, number, number]> = {
 const ROLE_LABELS: Record<Role, string> = { base: 'Base', flyer: 'Flyer' };
 // A contact counts as broken beyond this
 const CONTACT_TOLERANCE = { millimetres: 10, degrees: 5 };
-
-interface PresetGroup {
-  name: string;
-  // Body presets change the orientation, so the root is moved to stand/lie on the floor afterwards
-  grounded: boolean;
-  // Hands / feet planted flat on the floor via IK, after the rest of the body was grounded
-  presets: { name: string; joints: StoredJoints; planted?: Effector[] }[];
-}
-
-const HANDS: Effector[] = ['left-wrist', 'right-wrist'];
-
-// Every angle not given is reset to 0
-function wholeBody(joints: StoredJoints): StoredJoints {
-  return Object.fromEntries(JOINT_IDS.map(joint => [
-    joint,
-    { ...Object.fromEntries(JOINTS[joint].angles.map(a => [a.name, 0])), ...joints[joint] },
-  ]));
-}
-
-const PRESET_GROUPS: PresetGroup[] = [
-  {
-    name: 'Whole',
-    grounded: true,
-    presets: [
-      { name: 'Neutral', joints: wholeBody({}) },
-      {
-        name: 'L-base',
-        joints: wholeBody({
-          root: { pitch: -90 }, hip: { pike: 90 }, ankle: { point: -15 },
-          shoulder: { forward: 90 }, elbow: { rotate: -27.2 }, wrist: { flex: -54.8 },
-        }),
-      },
-      {
-        name: '2-high prep',
-        joints: wholeBody({
-          hip: { pike: 60, straddle: 20, rotate: 20 }, knee: { bend: 95 }, ankle: { point: -35 },
-          waist: { bend: 15 }, shoulder: { forward: 150, raise: 15 }, elbow: { bend: 10 },
-        }),
-      },
-      {
-        name: 'Deep squat',
-        joints: wholeBody({
-          hip: { pike: 115, straddle: 20, rotate: 25 }, knee: { bend: 150 }, ankle: { point: -40 },
-          waist: { bend: 25 }, shoulder: { forward: 80 }, elbow: { bend: 20 },
-        }),
-      },
-      {
-        name: 'Cat',
-        joints: wholeBody({
-          root: { pitch: 52 }, hip: { pike: 52 }, knee: { bend: 90 }, ankle: { point: 85 },
-          waist: { bend: 20 }, chest: { bend: 20 }, neck: { nod: 40 },
-          shoulder: { forward: 92 }, elbow: { rotate: -90 }, wrist: { flex: -80 },
-        }),
-        planted: HANDS,
-      },
-      {
-        name: 'Cow',
-        joints: wholeBody({
-          root: { pitch: 100 }, hip: { pike: 100 }, knee: { bend: 90 }, ankle: { point: 85 },
-          waist: { bend: -15 }, chest: { bend: -15 }, neck: { nod: -40 },
-          shoulder: { forward: 70 }, elbow: { rotate: -90 }, wrist: { flex: -80 },
-        }),
-        planted: HANDS,
-      },
-      {
-        name: 'Cobra',
-        joints: wholeBody({
-          root: { pitch: 90 }, ankle: { point: 85 },
-          waist: { bend: -40 }, chest: { bend: -40 }, neck: { nod: -20 },
-          shoulder: { forward: 30 }, elbow: { rotate: -90 }, wrist: { flex: -80 },
-        }),
-        planted: HANDS,
-      },
-      {
-        name: 'Down dog',
-        joints: wholeBody({
-          root: { pitch: 130 }, hip: { pike: 92 }, ankle: { point: -40 },
-          shoulder: { forward: 175 }, elbow: { rotate: -90 }, wrist: { flex: -45 },
-        }),
-        planted: HANDS,
-      },
-    ],
-  },
-  {
-    name: 'Orient',
-    grounded: true,
-    presets: [
-      { name: 'Upright', joints: { root: { turn: 0, pitch: 0, roll: 0 } } },
-      { name: 'On back', joints: { root: { turn: 0, pitch: -90, roll: 0 } } },
-      { name: 'On belly', joints: { root: { turn: 0, pitch: 90, roll: 0 } } },
-      { name: 'Upside down', joints: { root: { turn: 0, pitch: 180, roll: 0 } } },
-    ],
-  },
-  {
-    name: 'Legs',
-    grounded: false,
-    presets: [
-      { name: 'Straight', joints: { hip: { pike: 0, straddle: 0, rotate: 0 }, knee: { bend: 0 } } },
-      { name: 'Straddle', joints: { hip: { pike: 0, straddle: 60 }, knee: { bend: 0 } } },
-      { name: 'Pike', joints: { hip: { pike: 90, straddle: 0 }, knee: { bend: 0 } } },
-      { name: 'Straddle pike', joints: { hip: { pike: 80, straddle: 50 }, knee: { bend: 0 } } },
-      { name: 'Tuck', joints: { hip: { pike: 110, straddle: 0 }, knee: { bend: 130 } } },
-      { name: 'Base legs up', joints: { hip: { pike: 90, straddle: 0 }, knee: { bend: 0 }, ankle: { point: -10 } } },
-    ],
-  },
-  {
-    name: 'Feet',
-    grounded: false,
-    presets: [
-      { name: 'Neutral', joints: { ankle: { point: 0, tilt: 0 } } },
-      { name: 'Pointed', joints: { ankle: { point: 70, tilt: 0 } } },
-      { name: 'Flexed', joints: { ankle: { point: -25, tilt: 0 } } },
-    ],
-  },
-  {
-    name: 'Arms',
-    grounded: false,
-    presets: [
-      { name: 'Hanging', joints: { shoulder: { forward: 0, raise: 0, rotate: 0 }, elbow: { bend: 0, rotate: 0 }, wrist: { flex: 0, tilt: 0 } } },
-      { name: 'Relaxed', joints: { shoulder: { forward: 10, raise: 10, rotate: 0 }, elbow: { bend: 25, rotate: 0 }, wrist: { flex: 10, tilt: 0 } } },
-      { name: 'T', joints: { shoulder: { forward: 0, raise: 90, rotate: 0 }, elbow: { bend: 0, rotate: 0 } } },
-      { name: 'Forward', joints: { shoulder: { forward: 90, raise: 0, rotate: 0 }, elbow: { bend: 0, rotate: 0 } } },
-      { name: 'Overhead', joints: { shoulder: { forward: 180, raise: 0, rotate: 0 }, elbow: { bend: 0, rotate: 0 } } },
-      // Solved with IK: palms together in front of the chest, fingers up and slightly forward
-      { name: 'Namaste', joints: { shoulder: { forward: 12, raise: 15.4, rotate: -79.6 }, elbow: { bend: 104.6, rotate: -9.5 }, wrist: { flex: -80, tilt: 30 } } },
-      { name: 'Hands on hips', joints: { shoulder: { forward: -9.8, raise: 42.3, rotate: -74.5 }, elbow: { bend: 87.1, rotate: -20.2 }, wrist: { flex: -34.3, tilt: 0.4 } } },
-    ],
-  },
-];
 
 type GizmoMode = 'translate' | 'rotate';
 
@@ -370,10 +247,10 @@ function withNewContact(state: EditorState, contact: Contact, rigid: boolean, mo
   return finished({ ...next, pose: { ...next.pose, contacts: [...state.pose.contacts, ...added] } }, contact.a.role, mode);
 }
 
-function withTwist(state: EditorState, index: number, twist: number, mode: SymmetryMode): EditorState {
+function withTwist(state: EditorState, index: number, twist: Twist, mode: SymmetryMode): EditorState {
   const contacts = [...state.pose.contacts];
   const partner = mode !== 'off' ? mirrorPartner(contacts, index) : -1;
-  contacts[index] = { ...contacts[index], twist: normalizeDegrees(twist) };
+  contacts[index] = { ...contacts[index], twist: normalizeTwist(twist) };
   if (partner >= 0) contacts[partner] = mirrorContact(contacts[index]);
   const changed = partner >= 0 ? [contacts[index], contacts[partner]] : [contacts[index]];
   return finished(withSolved({ ...state, pose: { ...state.pose, contacts } }, changed, false), contacts[index].a.role, mode);
@@ -388,19 +265,6 @@ const isBroken = (error: ReturnType<typeof contactError>) =>
   error.millimetres > CONTACT_TOLERANCE.millimetres || error.degrees > CONTACT_TOLERANCE.degrees;
 
 // One joint and one contact per line keeps the JSON short and diff-friendly
-function formatStoredAcroPose({ base, flyer, contacts }: StoredAcroPose): string {
-  const list = (open: string, close: string, lines: string[], indent: string) =>
-    (lines.length ? `${open}\n${lines.map(line => `${indent}  ${line}`).join(',\n')}\n${indent}${close}` : `${open}${close}`);
-  const person = ({ position, joints }: StoredHumanPose) => list('{', '}', [
-    `"position": ${JSON.stringify(position)}`,
-    `"joints": ${list('{', '}', Object.entries(joints).map(([joint, values]) => `"${joint}": ${JSON.stringify(values)}`), '    ')}`,
-  ], '  ');
-  return list('{', '}', [
-    `"base": ${person(base)}`,
-    `"flyer": ${person(flyer)}`,
-    `"contacts": ${list('[', ']', contacts.map(c => JSON.stringify(c)), '  ')}`,
-  ], '');
-}
 
 const markerMaterial = (color: number) => new THREE.MeshBasicMaterial({ color, depthTest: false, transparent: true, opacity: 0.85 });
 
@@ -424,15 +288,25 @@ function addMarkerMesh(group: THREE.Group, geometry: THREE.BufferGeometry, color
   return marker;
 }
 
-function addMarker(group: THREE.Group, position: THREE.Vector3, color: number, radius = 0.025): void {
-  addMarkerMesh(group, new THREE.SphereGeometry(radius, 12, 8), color).position.copy(position);
+function addMarker(group: THREE.Group, position: THREE.Vector3, color: number, radius = 0.025): THREE.Mesh {
+  const marker = addMarkerMesh(group, new THREE.SphereGeometry(radius, 12, 8), color);
+  marker.position.copy(position);
+  return marker;
 }
 
 const snapTwist = (twist: number) => normalizeDegrees(Math.round(twist / 90) * 90);
 
 type Pick = { role: Role; hit: Hit } | null;
 
-export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+interface PoseEditor3DProps {
+  isOpen: boolean;
+  onClose: () => void;
+  poses: Pose[];
+  // Opened for this pose: its 3D data (or AI draft) is loaded and becomes what "Show before" compares with
+  openPoseId: string | null;
+}
+
+export function PoseEditor3D({ isOpen, onClose, poses, openPoseId }: PoseEditor3DProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const humansRef = useRef<Record<Role, Human> | null>(null);
   const gizmoRef = useRef<TransformControls | null>(null);
@@ -461,6 +335,14 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
   const [importText, setImportText] = useState<string | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  // The pose the editor content is saved as
+  const [poseId, setPoseId] = useLocalStorageState<string | null>('acroyoga-db:pose-editor-pose-id', null);
+  const [stored, setStored] = useState<StoredPoses3d | null>(null);
+  const [storageMessage, setStorageMessage] = useState<string | null>(null);
+  // The pose as it was loaded or last saved
+  const [original, setOriginal] = useState<AcroPose | null>(null);
+  const [showBefore, setShowBefore] = useState(false);
+  const shownPose = showBefore && original ? original : acroPose;
 
   const togglePin = (effector: Effector) => history.commit(state => {
     const rolePins = { ...state.pins[active] };
@@ -474,6 +356,8 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
 
   const siteRefAt = ({ role, hit }: NonNullable<Pick>): SiteRef =>
     ({ role, site: siteAt(hit.key, hit.point.clone().applyMatrix4(worldMatrix(acroPose[role], hit.key).invert())) });
+
+  const siteBone = ({ site }: SiteRef) => localSiteFrame(site).bone;
 
   const isLocked = (key: BoneKey, name: string) => locks.some(l => l.key === key && l.name === name);
 
@@ -499,13 +383,17 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
     if (!pick) return;
     const picked = siteRefAt(pick);
     const from = connecting.from;
-    if (!from || from.role === picked.role) {
+    // A second site on the same bone picks that one instead; on another part of the same person it makes a
+    // contact within that person, moved by whichever of the two is on a limb
+    if (!from || (from.role === picked.role && siteBone(from) === siteBone(picked))) {
       setConnecting({ from: picked });
       return;
     }
-    const contact: Contact = { a: from, b: picked, twist: snapTwist(currentTwist(acroPose, from, picked)) };
+    const proposed: Contact = { a: from, b: picked, twist: snapTwist(currentTwist(acroPose, from, picked)) };
+    const contact = from.role === picked.role ? ownContactMover(proposed) : proposed;
+    if (!contact) return;
     setHovered(null);
-    history.commit(state => withNewContact(state, contact, rigid, symmetryMode));
+    history.commit(state => withNewContact(state, contact, rigid && contact.a.role !== contact.b.role, symmetryMode));
     setConnecting(null);
   };
 
@@ -681,15 +569,20 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
   }, [isOpen]);
 
   useEffect(() => {
-    ROLES.forEach(role => humansRef.current?.[role].apply(history.state.pose[role]));
     saveDraft(history.state);
+    setShowBefore(false);
   }, [history.state]);
+
+  useEffect(() => {
+    ROLES.forEach(role => humansRef.current?.[role].apply(shownPose[role]));
+  }, [shownPose]);
 
   // Pins as wireframe balls; contacts as a dot on the moved site, red on both sites with a line between them when broken
   useEffect(() => {
     const markers = markersRef.current;
     if (!markers) return;
     disposeChildren(markers);
+    if (showBefore) return;
     for (const role of ROLES) {
       for (const target of Object.values(allPins[role])) {
         const marker = new THREE.Mesh(
@@ -713,9 +606,16 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
       line.position.lerpVectors(a, b, 0.5);
       line.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize());
     }
+    // While connecting, the named sites are offered as points to click; picks near one snap onto it
+    if (connecting) {
+      // Hidden by the body where they are on its far side
+      ROLES.forEach(role => SITE_NAMES.forEach(site => {
+        (addMarker(markers, positionOf({ role, site }), 0x9be7ff, 0.015).material as THREE.Material).depthTest = true;
+      }));
+    }
     if (connecting?.from) addMarker(markers, positionOf(connecting.from), 0x40d0ff, 0.03);
     if (connecting && hovered) addMarker(markers, positionOf(hovered), 0xffffff, 0.02);
-  }, [acroPose, allPins, connecting, hovered, isOpen]);
+  }, [acroPose, allPins, connecting, hovered, isOpen, showBefore]);
 
   const selectedPin = selected && isEffector(selected) ? pins[selected] : undefined;
 
@@ -767,6 +667,8 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
         setGizmoMode('rotate');
       } else if (e.key === 's') {
         latest.current.toggleSolver();
+      } else if (e.key === 'b') {
+        setShowBefore(show => !show);
       } else if (e.key === 'c') {
         setConnecting(latest.current.connecting ? null : { from: null });
       } else if (e.key === 'p') {
@@ -777,6 +679,27 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen]);
+
+  const refreshStored = () => fetchPoses3d().then(setStored, e => setStorageMessage(e.message));
+
+  useEffect(() => {
+    if (isOpen) refreshStored();
+  }, [isOpen]);
+
+  useEffect(() => {
+    const pose = isOpen && poses.find(p => p.id === openPoseId);
+    if (!pose) return;
+    setPoseId(pose.id);
+    loadPose3d(pose).then(loaded => {
+      if (!loaded) {
+        setOriginal(null);
+        setStorageMessage('No 3D data for this pose yet: build it here and save it');
+        return;
+      }
+      load(loaded.pose);
+      setStorageMessage(loaded.isDraft ? 'AI draft loaded, saving approves it' : null);
+    }, e => setStorageMessage(e.message));
+  }, [isOpen, openPoseId]);
 
   if (!isOpen) return null;
 
@@ -820,6 +743,33 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
     setTimeout(() => setCopied(false), 1500);
   };
 
+  const saved = poseId ? stored?.saved[poseId] : undefined;
+  const draft = poseId ? stored?.drafts[poseId] : undefined;
+
+  const load = (loaded: AcroPose) => {
+    history.commit(() => ({ pose: loaded, pins: NO_PINS, locks: NO_LOCKS }));
+    setOriginal(loaded);
+    setStorageMessage(null);
+  };
+
+  const loadStored = (data: unknown) => {
+    try {
+      load(parseAcroPose(data));
+    } catch (e) {
+      setStorageMessage(e instanceof Error ? e.message : String(e));
+    }
+  };
+
+  const runStorage = async (action: () => Promise<unknown>, done: string) => {
+    try {
+      await action();
+      setStorageMessage(done);
+      await refreshStored();
+    } catch (e) {
+      setStorageMessage(e instanceof Error ? e.message : String(e));
+    }
+  };
+
   const applyImport = () => {
     try {
       const imported = parseAcroPose(JSON.parse(importText ?? ''));
@@ -840,7 +790,21 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
               {name}
             </button>
           ))}
+          {original && (
+            <button
+              onClick={() => setShowBefore(!showBefore)}
+              className={`ml-2 px-2 py-1 rounded text-xs ${showBefore ? 'bg-yellow-500 text-black' : 'bg-gray-800/80 text-gray-200 hover:bg-gray-700'}`}
+              title="Show the pose as it was loaded or last saved (B); any edit switches back"
+            >
+              Show before (B)
+            </button>
+          )}
         </div>
+        {showBefore && (
+          <div className="absolute top-12 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded bg-yellow-500/90 text-black text-sm pointer-events-none">
+            Showing the pose as loaded / last saved
+          </div>
+        )}
         {pausedAt && !connecting && (
           <div className="absolute top-3 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded bg-yellow-500/90 text-black text-sm pointer-events-none">
             Solver paused: pins and contacts are not held until you resume (S)
@@ -849,7 +813,7 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
         {connecting && (
           <div className="absolute top-3 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded bg-cyan-700/90 text-white text-sm pointer-events-none">
             {connecting.from
-              ? `Move ${ROLE_LABELS[connecting.from.role].toLowerCase()} ${siteLabel(connecting.from.site)} to… (click the other person, ⇧ moves the whole person)`
+              ? `Move ${ROLE_LABELS[connecting.from.role].toLowerCase()} ${siteLabel(connecting.from.site)} to… (click the other person, ⇧ moves the whole person; or another part of the same person)`
               : 'Click the part to move'}
             {hovered && <span className="ml-2 text-cyan-200">· {ROLE_LABELS[hovered.role]} {siteLabel(hovered.site)}</span>}
           </div>
@@ -875,6 +839,41 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
             <ToolbarButton onClick={onClose} className="bg-red-600 hover:bg-red-700" title="Close">✕</ToolbarButton>
           </div>
         </div>
+
+        <section className="space-y-2">
+          <select
+            value={poseId ?? ''}
+            onChange={e => { setPoseId(e.target.value || null); setStorageMessage(null); }}
+            className="w-full bg-gray-800 rounded px-2 py-1.5 text-sm"
+            title="The pose this is saved as; choosing one does not load it"
+          >
+            <option value="">Save as pose…</option>
+            {[...poses].sort((a, b) => (a.name ?? a.id).localeCompare(b.name ?? b.id)).map(p => (
+              <option key={p.id} value={p.id}>
+                {p.name ?? p.id}{stored?.saved[p.id] ? ' ✓' : ''}{stored?.drafts[p.id] ? ' · AI draft' : ''}
+              </option>
+            ))}
+          </select>
+          {poseId && (
+            <div className="flex flex-wrap gap-1">
+              {saved !== undefined && <ToolbarButton onClick={() => loadStored(saved)}>Load saved</ToolbarButton>}
+              {draft !== undefined && (
+                <>
+                  <ToolbarButton onClick={() => loadStored(draft)} className="bg-cyan-700 hover:bg-cyan-600">Load AI draft</ToolbarButton>
+                  <ToolbarButton onClick={() => runStorage(() => deleteDraft3d(poseId), 'Draft discarded')}>Discard draft</ToolbarButton>
+                </>
+              )}
+              <ToolbarButton
+                onClick={() => runStorage(async () => { await savePose3d(poseId, json); setOriginal(acroPose); }, 'Saved')}
+                className="bg-green-700 hover:bg-green-600"
+                title="Saves what the editor shows as this pose's 3D data; an AI draft of it is removed"
+              >
+                💾 Save
+              </ToolbarButton>
+            </div>
+          )}
+          {storageMessage && <p className="text-xs text-gray-400 whitespace-pre-wrap">{storageMessage}</p>}
+        </section>
 
         <section>
           <div className="flex justify-between items-center mb-2">
@@ -1032,13 +1031,13 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
   );
 }
 
-const TWIST_PRESETS = [0, 90, 180, -90];
+const TWIST_PRESETS: Twist[] = [0, 90, 180, -90, 'free'];
 
 interface ContactRowProps {
   contact: Contact;
   error: ReturnType<typeof contactError>;
   onBeginEdit: () => void;
-  onTwist: (twist: number, live: boolean) => void;
+  onTwist: (twist: Twist, live: boolean) => void;
   onRemove: () => void;
 }
 
@@ -1064,13 +1063,14 @@ function ContactRow({ contact: { a, b, twist }, error, onBeginEdit, onTwist, onR
             onClick={() => onTwist(preset, false)}
             className={`px-1.5 py-0.5 rounded ${twist === preset ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'}`}
           >
-            {preset}°
+            {preset === 'free' ? 'free' : `${preset}°`}
           </button>
         ))}
         <input
           type="number"
           step={5}
-          value={twist}
+          value={twist === 'free' ? '' : twist}
+          placeholder="any"
           onFocus={onBeginEdit}
           onChange={e => { const value = parseFloat(e.target.value); if (!Number.isNaN(value)) onTwist(value, true); }}
           className="w-14 ml-auto bg-gray-900 rounded px-1 text-right"
