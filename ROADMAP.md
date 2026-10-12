@@ -29,9 +29,13 @@ Ideas, grouped by area, in no particular order.
 ## Data
 - [ ] 3D data per pose (e.g. `public/data/poses3d/<poseId>.json`), saved by the editor through the dev API;
       mirrored poses derived by mirroring
-- [ ] Transitions in 3D: interpolation that keeps the contacts both poses share, optionally with in-between
-      keyframes. Each angle can be interpolated linearly (all stay within their limits); only `root` needs
+- [ ] Transitions in 3D: interpolation between the poses and the transition's keyframes that keeps the contacts
+      both share. Each angle can be interpolated linearly (all stay within their limits); only `root` needs
       quaternion slerp, since its angles are unbounded
+- [ ] AI-generated 3D drafts: AI writes poses and transition keyframes (contacts first, the solver does the
+      geometry, checked against renders of the result) into a drafts folder outside `public/`, so they are never
+      deployed. Edit mode lists the drafts, opens them in the 3D editor and moves them into the real data on
+      approval, and marks poses with a waiting draft or no 3D data yet
 - [ ] Safety notes per pose and transition: common mistakes, where to spot, risk
 - [ ] Other sources, e.g. https://www.christiangieger.de/acroyoga-poses/, https://www.yogaemotion.net/courses
       and flows on YouTube:
@@ -41,6 +45,8 @@ Ideas, grouped by area, in no particular order.
   - [ ] importing descriptions or images, only with the owner's permission
 
 ## 3D editor
+- [ ] Transition editor: keyframes with an explicitly set intermediate pose at relative times between 0 and 1,
+      on a timeline to add, move and delete them, scrub and play the interpolation between them
 - [ ] Floor contacts as contacts (replacing pins and the planted presets), so the base stays on the floor when
       the solver has to move them
 - [ ] Body proportions: re-solving stored poses from their contacts
