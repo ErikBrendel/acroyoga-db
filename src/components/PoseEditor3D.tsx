@@ -404,11 +404,28 @@ function formatStoredAcroPose({ base, flyer, contacts }: StoredAcroPose): string
 
 const markerMaterial = (color: number) => new THREE.MeshBasicMaterial({ color, depthTest: false, transparent: true, opacity: 0.85 });
 
-function addMarker(group: THREE.Group, position: THREE.Vector3, color: number, radius = 0.025): void {
-  const marker = new THREE.Mesh(new THREE.SphereGeometry(radius, 12, 8), markerMaterial(color));
+// Markers keep their size in the scene until it would exceed this on screen (about their size from the
+// default views), then shrink, so they don't cover the body when zoomed in
+const MAX_MARKER_PIXELS_PER_METRE = 280;
+
+// `keepLength` scales a line (along its Y) only in thickness
+function addMarkerMesh(group: THREE.Group, geometry: THREE.BufferGeometry, color: number, keepLength = false): THREE.Mesh {
+  const marker = new THREE.Mesh(geometry, markerMaterial(color));
   marker.renderOrder = 1;
-  marker.position.copy(position);
+  marker.onBeforeRender = (renderer, _, camera) => {
+    if (!(camera instanceof THREE.PerspectiveCamera)) return;
+    const distance = camera.position.distanceTo(marker.getWorldPosition(new THREE.Vector3()));
+    const pixelsPerMetre = renderer.domElement.clientHeight / (2 * distance * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)));
+    const scale = Math.min(1, MAX_MARKER_PIXELS_PER_METRE / pixelsPerMetre);
+    marker.scale.set(scale, keepLength ? 1 : scale, scale);
+    marker.updateMatrixWorld();
+  };
   group.add(marker);
+  return marker;
+}
+
+function addMarker(group: THREE.Group, position: THREE.Vector3, color: number, radius = 0.025): void {
+  addMarkerMesh(group, new THREE.SphereGeometry(radius, 12, 8), color).position.copy(position);
 }
 
 const snapTwist = (twist: number) => normalizeDegrees(Math.round(twist / 90) * 90);
@@ -596,7 +613,8 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
         ? { ...person, position: node.position.toArray() as [number, number, number] }
         : withBoneAngles(person, bone.key, bone.anglesFromQuaternion(node.quaternion, person.angles[bone.key], parentAngles(person.angles, bone.key)), mode !== 'off');
       const held = gizmo.mode === 'translate' ? [] : heldAngles(bone.key, bone.angles.map(a => a.name), mode !== 'off');
-      commitLive(withPerson(state, role, next, options, held));
+      // Like a slider, a rotated bone stays locked against the solver afterwards
+      commitLive(withLocked(withPerson(state, role, next, options, held), role, held));
     });
 
     // Click selects a bone (or picks a contact site), but not at the end of a camera orbit or gizmo drag
@@ -667,7 +685,7 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
     saveDraft(history.state);
   }, [history.state]);
 
-  // Pins as wireframe balls; contacts as a dot on the moved site, red with a line to where it belongs when broken
+  // Pins as wireframe balls; contacts as a dot on the moved site, red on both sites with a line between them when broken
   useEffect(() => {
     const markers = markersRef.current;
     if (!markers) return;
@@ -689,9 +707,11 @@ export function PoseEditor3D({ isOpen, onClose }: { isOpen: boolean; onClose: ()
       const [a, b] = [positionOf(contact.a), positionOf(contact.b)];
       addMarker(markers, a, broken ? 0xff4040 : 0x40e070);
       if (!broken) continue;
-      const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints([a, b]), new THREE.LineBasicMaterial({ color: 0xff4040, depthTest: false }));
-      line.renderOrder = 1;
-      markers.add(line);
+      addMarker(markers, b, 0xff4040);
+      // A cylinder, since WebGL draws lines only one pixel wide
+      const line = addMarkerMesh(markers, new THREE.CylinderGeometry(0.007, 0.007, a.distanceTo(b), 8), 0xff4040, true);
+      line.position.lerpVectors(a, b, 0.5);
+      line.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize());
     }
     if (connecting?.from) addMarker(markers, positionOf(connecting.from), 0x40d0ff, 0.03);
     if (connecting && hovered) addMarker(markers, positionOf(hovered), 0xffffff, 0.02);
