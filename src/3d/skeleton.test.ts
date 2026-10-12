@@ -3,6 +3,7 @@ import { createBones } from './Bone';
 import { HumanPose, neutralPose, withAngle } from './humanPose';
 import { BoneKey, Side, boneKey } from './skeleton';
 import { boneEnd, jointPosition, randomPose, seededRandom, worldDirection } from './testHelpers';
+import { parentAngles } from './ik';
 
 // The person faces +Z, their left is +X. `outward` is +1 for the left side and -1 for the right side.
 const limbCases: [string, string, string, number, (pose: HumanPose, side: Side, outward: number) => boolean][] = [
@@ -11,6 +12,10 @@ const limbCases: [string, string, string, number, (pose: HumanPose, side: Side, 
   ['knee bend moves the shin backward', 'knee', 'bend', 90, (p, s) => jointPosition(p, boneKey('ankle', s)).z < -0.3],
   ['turn points the toes outward', 'ankle', 'turn', 25, (p, s, o) => o * (boneEnd(p, boneKey('ankle', s)).x - jointPosition(p, boneKey('ankle', s)).x) > 0.05],
   ['point moves the toes down', 'ankle', 'point', 45, (p, s) => boneEnd(p, boneKey('ankle', s)).y < jointPosition(p, boneKey('ankle', s)).y - 0.1],
+  ['protract moves the shoulder forward', 'clavicle', 'protract', 20, (p, s) => jointPosition(p, boneKey('shoulder', s)).z > 0.05],
+  // The arm keeps hanging
+  ['elevate keeps the arm orientation', 'clavicle', 'elevate', 30, (p, s) => worldDirection(p, boneKey('shoulder', s), [0, 1, 0]).y < -0.999],
+  ['elevate moves the shoulder up', 'clavicle', 'elevate', 30, (p, s) => jointPosition(p, boneKey('shoulder', s)).y > jointPosition(neutralPose(), boneKey('shoulder', s)).y + 0.07],
   ['forward moves the arm forward', 'shoulder', 'forward', 90, (p, s) => jointPosition(p, boneKey('elbow', s)).z > 0.25],
   ['raise moves the arm outward', 'shoulder', 'raise', 90, (p, s, o) => o * jointPosition(p, boneKey('elbow', s)).x > 0.45],
   ['elbow bend moves the forearm forward', 'elbow', 'bend', 90, (p, s) => jointPosition(p, boneKey('wrist', s)).z > 0.2],
@@ -57,11 +62,12 @@ describe('Bone.anglesFromQuaternion', () => {
       for (const bone of Object.values(bones).filter(b => b.angles.length === 3)) {
         const angles = pose.angles[bone.key];
         const current = Object.fromEntries(Object.entries(angles).map(([name, v]) => [name, v + (random() - 0.5) * 10]));
-        const recovered = bone.anglesFromQuaternion(bone.quaternionFor(angles), current);
+        const parent = parentAngles(pose.angles, bone.key);
+        const recovered = bone.anglesFromQuaternion(bone.quaternionFor(angles, parent), current, parent);
         // Near ±90° in the middle axis the outer angles become interchangeable; only the rotation is unique then
         const nearGimbalLock = Math.abs(Math.abs(angles[bone.angles[1].name]) - 90) < 5;
         if (nearGimbalLock) {
-          expect(bone.quaternionFor(recovered).angleTo(bone.quaternionFor(angles))).toBeLessThan(1e-3);
+          expect(bone.quaternionFor(recovered, parent).angleTo(bone.quaternionFor(angles, parent))).toBeLessThan(1e-3);
           continue;
         }
         for (const { name } of bone.angles) expect(recovered[name]).toBeCloseTo(angles[name], 6);

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import * as THREE from 'three';
-import { ALL_BONES, BONES, BoneKey, DEFAULT_ROOT_POSITION, JOINT_IDS, JOINTS, JointId, boneKey, mirrorSign, oppositeBone } from './skeleton';
+import { ALL_BONES, AngleDef, BONES, BoneKey, DEFAULT_ROOT_POSITION, JOINT_IDS, JOINTS, JointId, Side, boneKey, mirrorSign, oppositeBone } from './skeleton';
 
 // Stored format: angles that are 0 are omitted, and a paired joint's angle is a plain number
 // when left and right agree, `{ left, right }` otherwise.
@@ -100,4 +100,27 @@ export function mirrorHumanPose(pose: HumanPose): HumanPose {
   }
   const [x, y, z] = pose.position;
   return { position: [-x, y, z], angles };
+}
+
+// Sideways angles of spine and neck, which a body that is symmetric in itself cannot have
+export const breaksSymmetry = (joint: JointId, angle: AngleDef) => !JOINTS[joint].paired && joint !== 'root' && mirrorSign(angle.axis) === -1;
+
+// The body made mirror-symmetric in itself: paired joints take the values of the `source` side, spine and
+// neck lose their sideways angles. Position and root orientation stay.
+export function symmetrized(pose: HumanPose, source: Side): HumanPose {
+  const angles = { ...pose.angles };
+  for (const { key, joint, side } of ALL_BONES) {
+    if (side && side !== source) angles[key] = { ...pose.angles[oppositeBone(key)!] };
+    if (!side) {
+      angles[key] = Object.fromEntries(JOINTS[joint].angles.map(a => [a.name, breaksSymmetry(joint, a) ? 0 : pose.angles[key][a.name]]));
+    }
+  }
+  return { ...pose, angles };
+}
+
+// The side an edit changed, the left one if both or neither
+export function editedSide(previous: HumanPose, next: HumanPose): Side {
+  const changed = (side: Side) => ALL_BONES.some(b => b.side === side
+    && Object.keys(next.angles[b.key]).some(name => next.angles[b.key][name] !== previous.angles[b.key][name]));
+  return changed('right') && !changed('left') ? 'right' : 'left';
 }

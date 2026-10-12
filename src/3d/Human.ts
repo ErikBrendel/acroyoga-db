@@ -1,11 +1,17 @@
 import * as THREE from 'three';
 import { Bone, createBones } from './Bone';
-import { buildFoot, buildHand, buildHead, buildSkinnedBody } from './bodyMesh';
+import { Palette, buildFoot, buildHand, buildHead, buildSkinnedBody } from './bodyMesh';
 import { HumanPose, neutralPose } from './humanPose';
-import { BoneKey, JOINTS, boneKey } from './skeleton';
+import { BoneKey, boneKey } from './skeleton';
 
 const HIGHLIGHT = new THREE.Color(0xffe066);
 const HIGHLIGHT_SHARE = 0.55;
+
+export interface Hit {
+  key: BoneKey;
+  point: THREE.Vector3;
+  distance: number;
+}
 
 export class Human {
   readonly bones: Record<BoneKey, Bone>;
@@ -21,19 +27,16 @@ export class Human {
     ankle: boneKey('ankle', side),
   }));
 
-  constructor() {
+  constructor(palette: Palette) {
     this.bones = createBones();
-    for (const bone of Object.values(this.bones)) {
-      const parent = JOINTS[bone.joint].parent;
-      if (parent) this.bones[boneKey(parent, JOINTS[parent].paired ? bone.side : null)].node.add(bone.node);
-    }
+    for (const bone of Object.values(this.bones)) bone.parent?.node.add(bone.node);
     this.object.add(this.bones.root.node);
     for (const { twist, knee } of this.shinTwists) this.bones[knee].node.add(twist);
 
     this.apply(neutralPose());
     this.object.updateMatrixWorld(true);
     const twists = Object.fromEntries(this.shinTwists.map(({ twist, knee }) => [knee, twist]));
-    const { mesh, faceBones, baseColors } = buildSkinnedBody(this.bones, twists);
+    const { mesh, faceBones, baseColors } = buildSkinnedBody(this.bones, twists, palette);
     this.body = mesh;
     this.faceBones = faceBones;
     this.baseColors = baseColors;
@@ -49,20 +52,21 @@ export class Human {
   apply(pose: HumanPose): void {
     this.bones.root.node.position.set(...pose.position);
     for (const bone of Object.values(this.bones)) {
-      bone.applyAngles(pose.angles[bone.key]);
+      bone.applyAngles(pose.angles[bone.key], bone.parent ? pose.angles[bone.parent.key] : undefined);
     }
     for (const { twist, ankle } of this.shinTwists) {
       twist.quaternion.copy(this.bones[ankle].firstAngleRotation(pose.angles[ankle].turn));
     }
   }
 
-  pick(raycaster: THREE.Raycaster): BoneKey | null {
+  pick(raycaster: THREE.Raycaster): Hit | null {
     // Bounds of a skinned mesh are computed once and go stale as soon as the pose changes
     this.body.computeBoundingSphere();
     this.body.computeBoundingBox();
     const hit = raycaster.intersectObject(this.object, true)[0];
     if (!hit) return null;
-    return hit.object === this.body ? this.faceBones[hit.faceIndex!] : hit.object.userData.boneKey ?? null;
+    const key: BoneKey | undefined = hit.object === this.body ? this.faceBones[hit.faceIndex!] : hit.object.userData.boneKey;
+    return key ? { key, point: hit.point, distance: hit.distance } : null;
   }
 
   setHighlighted(keys: BoneKey[]): void {

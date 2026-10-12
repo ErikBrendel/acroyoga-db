@@ -22,11 +22,14 @@ interface JointDef {
   offset?: [number, number, number];
   length: number;
   baseRotation?: [number, number, number];
+  // The parent's angles move this joint but do not turn the bone, e.g. the shoulder girdle shifts the
+  // shoulder joint while the arm keeps hanging
+  keepsOrientation?: boolean;
   // Applied in this order as intrinsic rotations, so every joint needs distinct axes
   angles: AngleDef[];
 }
 
-export const JOINT_IDS = ['root', 'waist', 'chest', 'neck', 'hip', 'knee', 'ankle', 'shoulder', 'elbow', 'wrist'] as const;
+export const JOINT_IDS = ['root', 'waist', 'chest', 'neck', 'hip', 'knee', 'ankle', 'clavicle', 'shoulder', 'elbow', 'wrist'] as const;
 export type JointId = (typeof JOINT_IDS)[number];
 
 const LIMB_POINTING_DOWN: [number, number, number] = [0, 0, Math.PI];
@@ -111,13 +114,30 @@ export const JOINTS: Record<JointId, JointDef> = {
       { name: 'tilt', axis: '-y', min: -30, max: 40 },
     ],
   },
-  shoulder: {
-    label: 'Upper arm',
+  // Shoulder girdle (collarbone and shoulder blade), pivoting at the top of the breastbone. Simplified to a
+  // bone straight out to the shoulder joint, so the joint moves on a sphere around that pivot.
+  clavicle: {
+    label: 'Shoulder',
     parent: 'chest',
     paired: true,
-    offset: [0.19, 0.22, 0],
+    offset: [0.02, 0.22, 0],
+    length: 0.17,
+    baseRotation: [0, 0, -Math.PI / 2],
+    angles: [
+      // Shoulder forward (towards where the person looks) / back, e.g. pushing up and settling in an L-base
+      { name: 'protract', axis: 'x', min: -25, max: 20 },
+      // Shrugging up / pulling down
+      { name: 'elevate', axis: 'z', min: -10, max: 40 },
+    ],
+  },
+  shoulder: {
+    label: 'Upper arm',
+    parent: 'clavicle',
+    paired: true,
+    keepsOrientation: true,
     length: 0.3,
-    baseRotation: LIMB_POINTING_DOWN,
+    // Pointing down, relative to the collarbone pointing outward
+    baseRotation: [0, 0, -Math.PI / 2],
     angles: [
       { name: 'forward', axis: 'x', min: -60, max: 180 },
       { name: 'raise', axis: 'z', min: -30, max: 180 },

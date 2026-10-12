@@ -10,11 +10,20 @@ const SEGMENTS = 8;
 // Distance over which two bones share the vertices around their joint, unless a tube sets its own
 const DEFAULT_BLEND = 0.05;
 
+export interface Palette {
+  left: THREE.Color;
+  right: THREE.Color;
+  shirt: THREE.Color;
+  shorts: THREE.Color;
+}
+
+// Left is a cool, right a warm colour for both people
+export const PALETTES = {
+  base: { left: new THREE.Color(0x4f8ef7), right: new THREE.Color(0xf59e42), shirt: new THREE.Color(0xb0bec5), shorts: new THREE.Color(0x607d8b) },
+  flyer: { left: new THREE.Color(0x2fb8a0), right: new THREE.Color(0xe85d8f), shirt: new THREE.Color(0xe2d6f0), shorts: new THREE.Color(0x8a5fa8) },
+} satisfies Record<string, Palette>;
+
 const COLORS = {
-  left: new THREE.Color(0x4f8ef7),
-  right: new THREE.Color(0xf59e42),
-  shirt: new THREE.Color(0xb0bec5),
-  shorts: new THREE.Color(0x607d8b),
   skin: new THREE.Color(0xf2c29b),
   dark: new THREE.Color(0x2a1f1a),
   hair: new THREE.Color(0x5a3b26),
@@ -29,15 +38,19 @@ interface Tube {
   // Bone sharing the vertices at the far end of this one
   child?: JointId;
   // `y` is the distance along the bone from its joint
-  color: (side: Side | null, y: number) => THREE.Color;
+  color: (palette: Palette, side: Side | null, y: number) => THREE.Color;
   // Wider at ball joints, so their twist spreads over more of the limb
   blend?: number;
 }
 
+// Sideways distance (m) and height (share of the chest's length) over which the chest blends into the shoulder girdle
+const GIRDLE_X = [0.06, 0.13];
+const GIRDLE_T = [0.55, 0.85];
+
 // Waist ring at which the shorts end (0.12 of the lower back's length)
 const SHORTS_TOP = 0.12 * JOINTS.waist.length;
 
-const limbColor = (side: Side | null) => COLORS[side ?? 'left'];
+const limbColor = (palette: Palette, side: Side | null) => palette[side ?? 'left'];
 // Limbs are drawn this much thicker than anatomical, for the caricature look
 const LIMB_SCALE = 1.2;
 
@@ -45,12 +58,12 @@ const LIMB_SCALE = 1.2;
 const TUBES: Partial<Record<JointId, Tube>> = {
   waist: {
     child: 'chest',
-    color: (_, y) => (y < SHORTS_TOP ? COLORS.shorts : COLORS.shirt),
+    color: (palette, _, y) => (y < SHORTS_TOP ? palette.shorts : palette.shirt),
     rings: [[-0.78, 0.06, 0.05], [-0.62, 0.13, 0.095, -0.012], [-0.38, 0.155, 0.11, -0.02], [-0.1, 0.15, 0.1, -0.01], [0.12, 0.142, 0.096, -0.004], [0.3, 0.13, 0.09], [0.7, 0.125, 0.088], [1, 0.135, 0.092]],
   },
   chest: {
     child: 'neck',
-    color: () => COLORS.shirt,
+    color: palette => palette.shirt,
     rings: [[0, 0.135, 0.092], [0.35, 0.155, 0.105, 0.012], [0.65, 0.165, 0.1, 0.008], [0.85, 0.15, 0.088], [1, 0.1, 0.066], [1.08, 0.05, 0.048]],
   },
   neck: {
@@ -83,6 +96,18 @@ const TUBES: Partial<Record<JointId, Tube>> = {
   },
 };
 
+// Cross-section of a tube at `t` (share of the bone's length), interpolated between its rings
+export function crossSection(joint: JointId, t: number): { rx: number; rz: number; cz: number; inward: number } {
+  const { rings } = TUBES[joint]!;
+  const clamped = THREE.MathUtils.clamp(t, rings[0][0], rings[rings.length - 1][0]);
+  const k = Math.max(0, rings.findIndex(r => r[0] >= clamped) - 1);
+  const [a, b] = [rings[k], rings[k + 1] ?? rings[k]];
+  const share = b[0] === a[0] ? 0 : (clamped - a[0]) / (b[0] - a[0]);
+  const lerp = (i: number) => (a[i] ?? 0) + ((b[i] ?? 0) - (a[i] ?? 0)) * share;
+  const scale = JOINTS[joint].paired ? LIMB_SCALE : 1;
+  return { rx: lerp(1) * scale, rz: lerp(2) * scale, cz: lerp(3), inward: lerp(4) };
+}
+
 export interface SkinnedBody {
   mesh: THREE.SkinnedMesh;
   // Bone of each triangle, for picking and highlighting
@@ -93,7 +118,7 @@ export interface SkinnedBody {
 // `bones` must be in the rest pose (neutral standing) with their world matrices updated
 // `twists` are extra bones at the start of a limb bone that rotate only about its axis: the limb's vertices
 // follow them increasingly towards its far end, so that it twists gradually instead of at one joint.
-export function buildSkinnedBody(bones: Record<BoneKey, Bone>, twists: Partial<Record<BoneKey, THREE.Bone>>): SkinnedBody {
+export function buildSkinnedBody(bones: Record<BoneKey, Bone>, twists: Partial<Record<BoneKey, THREE.Bone>>, palette: Palette): SkinnedBody {
   const boneList = Object.values(bones);
   const skeletonBones = [...boneList.map(b => b.node), ...Object.values(twists)];
   const indexOf = new Map(boneList.map((b, i) => [b.key, i]));
@@ -113,43 +138,51 @@ export function buildSkinnedBody(bones: Record<BoneKey, Bone>, twists: Partial<R
 
     const startBlend = tube.blend ?? DEFAULT_BLEND;
     const endBlend = (tube.child && TUBES[tube.child]?.blend) ?? DEFAULT_BLEND;
-    const influences = (y: number): [BoneKey, number][] => {
+    // `x` is sideways in the bone's frame, only used for the chest
+    const influences = (y: number, x: number): [BoneKey, number][] => {
       const self = THREE.MathUtils.clamp(0.5 + y / (2 * startBlend), 0, 1);
       const child = childKey ? THREE.MathUtils.clamp(0.5 + (y - bone.length) / (2 * endBlend), 0, 1) : 0;
-      return [[parentKey, 1 - self], [bone.key, self - child], ...(childKey ? [[childKey, child] as [BoneKey, number]] : [])];
+      const result: [BoneKey, number][] = [[parentKey, 1 - self], [bone.key, self - child], ...(childKey ? [[childKey, child] as [BoneKey, number]] : [])];
+      if (bone.joint !== 'chest') return result;
+      // The top outer chest (trapezius, shoulder blade) moves with the shoulder girdle of its side
+      const girdle = THREE.MathUtils.smoothstep(Math.abs(x), GIRDLE_X[0], GIRDLE_X[1]) * THREE.MathUtils.smoothstep(y / bone.length, GIRDLE_T[0], GIRDLE_T[1]);
+      const own = result.find(([key]) => key === bone.key)!;
+      const moved = own[1] * girdle;
+      own[1] -= moved;
+      return [...result, [boneKey('clavicle', x > 0 ? 'left' : 'right'), moved]];
     };
 
-    const limb = JOINTS[bone.joint].paired;
     const twist = twists[bone.key];
     const twistIndex = twist ? skeletonBones.indexOf(twist) : -1;
-    const skinWeights = (y: number): [number, number][] => influences(y).flatMap(([key, weight]): [number, number][] => {
+    const skinWeights = (y: number, x: number): [number, number][] => influences(y, x).flatMap(([key, weight]): [number, number][] => {
       if (key !== bone.key || !twist) return [[indexOf.get(key)!, weight]];
       const twisted = THREE.MathUtils.clamp(y / bone.length, 0, 1);
       return [[indexOf.get(key)!, weight * (1 - twisted)], [twistIndex, weight * twisted]];
     });
 
-    const ringPoints = tube.rings.map(([t, rawRx, rawRz, cz = 0, inward = 0]) => {
+    const ringPoints = tube.rings.map(([t]) => {
       const y = t * bone.length;
-      const [rx, rz] = limb ? [rawRx * LIMB_SCALE, rawRz * LIMB_SCALE] : [rawRx, rawRz];
+      const { rx, rz, cz, inward } = crossSection(bone.joint, t);
       return Array.from({ length: SEGMENTS }, (_, k) => {
         const angle = (2 * Math.PI * k) / SEGMENTS + Math.PI / SEGMENTS;
         // Limbs point down from their joint, so their local +x points towards the body's middle
         const x = inward + rx * Math.cos(angle);
         const local = new THREE.Vector3(mirrored ? -x : x, y, cz + rz * Math.sin(angle));
-        return { world: local.applyMatrix4(bone.node.matrixWorld), y };
+        return { world: local.applyMatrix4(bone.node.matrixWorld), y, x: local.x };
       });
     });
 
-    const addTriangle = (corners: { world: THREE.Vector3; y: number }[]) => {
+    const addTriangle = (corners: { world: THREE.Vector3; y: number; x: number }[]) => {
       // Mirroring flips the winding
       const ordered = mirrored ? [corners[0], corners[2], corners[1]] : corners;
       const middleY = corners.reduce((sum, c) => sum + c.y, 0) / 3;
-      const dominant = influences(middleY).reduce((a, b) => (b[1] > a[1] ? b : a))[0];
+      const middleX = corners.reduce((sum, c) => sum + c.x, 0) / 3;
+      const dominant = influences(middleY, middleX).reduce((a, b) => (b[1] > a[1] ? b : a))[0];
       faceBones.push(dominant);
-      const color = tube.color(bone.side, middleY);
+      const color = tube.color(palette, bone.side, middleY);
       for (const corner of ordered) {
         positions.push(...corner.world.toArray());
-        const weights = skinWeights(corner.y);
+        const weights = skinWeights(corner.y, corner.x);
         skinIndices.push(...weights.map(([index]) => index), ...Array(4 - weights.length).fill(0));
         skinWeightValues.push(...weights.map(([, w]) => w), ...Array(4 - weights.length).fill(0));
         colors.push(color.r, color.g, color.b);
@@ -166,7 +199,7 @@ export function buildSkinnedBody(bones: Record<BoneKey, Bone>, twists: Partial<R
     }
     // Close both ends, e.g. the crotch at the bottom of the pelvis
     for (const [ring, flip] of [[ringPoints[0], true], [ringPoints[ringPoints.length - 1], false]] as const) {
-      const centre = { world: ring.reduce((s, p) => s.add(p.world), new THREE.Vector3()).divideScalar(SEGMENTS), y: ring[0].y };
+      const centre = { world: ring.reduce((s, p) => s.add(p.world), new THREE.Vector3()).divideScalar(SEGMENTS), y: ring[0].y, x: 0 };
       for (let k = 0; k < SEGMENTS; k++) {
         const a = ring[k], b = ring[(k + 1) % SEGMENTS];
         addTriangle(flip ? [centre, a, b] : [centre, b, a]);

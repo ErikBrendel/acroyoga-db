@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { mirrorHumanPose, neutralPose, parseHumanPose, serializeHumanPose, withJoints } from './humanPose';
+import { mirrorHumanPose, neutralPose, parseHumanPose, serializeHumanPose, symmetrized, withJoints } from './humanPose';
 import { ALL_BONES, oppositeBone } from './skeleton';
 import { boneEnd, randomPose, seededRandom } from './testHelpers';
 
@@ -35,5 +35,16 @@ describe('mirrorHumanPose', () => {
         expect(boneEnd(mirrored, key).distanceTo(expected)).toBeLessThan(1e-9);
       }
     }
+  });
+});
+
+describe('symmetrized', () => {
+  it('copies the source side and straightens the spine, keeping the root', () => {
+    const pose = withJoints(neutralPose(), {
+      root: { turn: 30, roll: 10 }, chest: { bend: 20, twist: 15 }, hip: { pike: { left: 40, right: 10 } }, shoulder: { raise: { left: 0, right: 70 } },
+    });
+    expect(serializeHumanPose(symmetrized(pose, 'right')).joints).toEqual({
+      root: { turn: 30, roll: 10 }, chest: { bend: 20 }, hip: { pike: 10 }, shoulder: { raise: 70 },
+    });
   });
 });

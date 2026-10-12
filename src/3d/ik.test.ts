@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
 import { HumanPose, neutralPose, withAngle, withJoints } from './humanPose';
-import { EFFECTORS, Effector, IkTarget, Pins, chainOf, mirrorTarget, readTarget, solveIk, withPins } from './ik';
+import { EFFECTORS, Effector, IkTarget, Pins, limbChain, mirrorTarget, readTarget, solveIk, withPins } from './ik';
 import { ALL_BONES, BoneKey, JOINTS, oppositeBone } from './skeleton';
 import { jointPosition, randomAngles, seededRandom } from './testHelpers';
 
@@ -34,9 +34,9 @@ describe('solveIk', () => {
   it.each(EFFECTORS)('%s: reaches targets of nearby poses exactly, within the joint limits', effector => {
     const random = seededRandom(1);
     for (let i = 0; i < 50; i++) {
-      const goal = randomAngles(neutralPose(), chainOf(effector), random);
+      const goal = randomAngles(neutralPose(), limbChain(effector), random);
       const target = readTarget(goal, effector);
-      const start = chainOf(effector).reduce((pose, key) => Object.entries(goal.angles[key])
+      const start = limbChain(effector).reduce((pose, key) => Object.entries(goal.angles[key])
         .reduce((p, [name, value]) => withAngle(p, key, name, value + (random() * 2 - 1) * 15), pose), goal);
 
       const solved = solveIk(start, effector, target);
@@ -50,7 +50,7 @@ describe('solveIk', () => {
 
   it.each(EFFECTORS)('%s: follows a dragged target without jumping to another solution', effector => {
     const random = seededRandom(2);
-    let pose = randomAngles(neutralPose(), chainOf(effector), random, 0.5);
+    let pose = randomAngles(neutralPose(), limbChain(effector), random, 0.5);
     const step = new THREE.Vector3(random() - 0.5, random() - 0.5, random() - 0.5).normalize().multiplyScalar(0.01);
     const moved = (target: IkTarget, distance: THREE.Vector3) =>
       ({ ...target, position: new THREE.Vector3(...target.position).add(distance).toArray() });
@@ -63,8 +63,9 @@ describe('solveIk', () => {
         fine = solveIk(fine, effector, moved(target, step.clone().multiplyScalar(j / 10)), { positionOnly: true });
       }
       // A (nearly) straight limb is singular: which way it starts bending again is path dependent there
-      const nearlyStraight = next.angles[chainOf(effector)[1]].bend < 10;
-      if (!nearlyStraight) expect(maxAngleChange(next, fine, chainOf(effector))).toBeLessThan(0.5);
+      const chain = limbChain(effector);
+      const nearlyStraight = next.angles[chain[chain.length - 2]].bend < 10;
+      if (!nearlyStraight) expect(maxAngleChange(next, fine, limbChain(effector))).toBeLessThan(0.5);
       pose = next;
       target = moved(target, step);
     }

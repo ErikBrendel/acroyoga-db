@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { z } from 'zod';
 import { createBones } from './Bone';
 import { HumanPose } from './humanPose';
-import { BONES, BoneKey, CONTACT_NORMALS, CONTACT_POINTS, JOINTS, boneKey } from './skeleton';
+import { ALL_BONES, BONES, BoneKey, CONTACT_NORMALS, CONTACT_POINTS, JOINTS, boneKey } from './skeleton';
 
 export const EFFECTORS = ['left-wrist', 'right-wrist', 'left-ankle', 'right-ankle'] as const satisfies readonly BoneKey[];
 export type Effector = (typeof EFFECTORS)[number];
@@ -43,16 +43,25 @@ function parentOf(key: BoneKey): BoneKey | null {
   return parent ? boneKey(parent, JOINTS[parent].paired ? side : null) : null;
 }
 
-// Upper limb, lower limb and the effector itself
-export function chainOf(effector: Effector): BoneKey[] {
-  const lower = parentOf(effector)!;
-  return [parentOf(lower)!, lower, effector];
+// The bones of an arm / leg from the shoulder / hip down to `key`; empty for the torso and head
+export function limbChain(key: BoneKey): BoneKey[] {
+  const chain: BoneKey[] = [];
+  for (let k: BoneKey | null = key; k && BONES[k].side; k = parentOf(k)) chain.unshift(k);
+  return chain;
 }
+
+// The hand / foot at the end of the limb `key` belongs to
+export const limbEffector = (key: BoneKey): Effector | undefined => EFFECTORS.find(e => limbChain(e).includes(key));
+
+export const parentAngles = (angles: HumanPose['angles'], key: BoneKey) => {
+  const parent = bones[key].parent;
+  return parent ? angles[parent.key] : undefined;
+};
 
 function localMatrix(pose: HumanPose, key: BoneKey): THREE.Matrix4 {
   return key === 'root'
-    ? bones.root.localMatrix(pose.angles.root, new THREE.Vector3(...pose.position))
-    : bones[key].localMatrix(pose.angles[key]);
+    ? bones.root.localMatrix(pose.angles.root, undefined, new THREE.Vector3(...pose.position))
+    : bones[key].localMatrix(pose.angles[key], parentAngles(pose.angles, key));
 }
 
 export function worldMatrix(pose: HumanPose, key: BoneKey): THREE.Matrix4 {
@@ -61,7 +70,7 @@ export function worldMatrix(pose: HumanPose, key: BoneKey): THREE.Matrix4 {
   return parent ? worldMatrix(pose, parent).multiply(local) : local;
 }
 
-function toTarget(matrix: THREE.Matrix4): IkTarget {
+export function toTarget(matrix: THREE.Matrix4): IkTarget {
   const position = new THREE.Vector3();
   const quaternion = new THREE.Quaternion();
   matrix.decompose(position, quaternion, new THREE.Vector3());
@@ -100,8 +109,15 @@ export function mirrorTarget(pose: HumanPose, target: IkTarget): IkTarget {
   return toTarget(root.multiply(mirror).multiply(local).multiply(mirror));
 }
 
-const changedAngles = (previous: HumanPose, next: HumanPose, key: BoneKey) =>
-  Object.keys(next.angles[key]).filter(name => previous.angles[key][name] !== next.angles[key][name]);
+export interface FixedAngle {
+  key: BoneKey;
+  name: string;
+}
+
+export const FixedAngleSchema = z.object({ key: z.string() as z.ZodType<BoneKey>, name: z.string() });
+
+export const changedAngles = (previous: HumanPose, next: HumanPose): FixedAngle[] => ALL_BONES.flatMap(({ key }) =>
+  Object.keys(next.angles[key]).filter(name => previous.angles[key][name] !== next.angles[key][name]).map(name => ({ key, name })));
 
 function reaches(pose: HumanPose, effector: Effector, target: IkTarget): boolean {
   const reached = readTarget(pose, effector);
@@ -113,16 +129,27 @@ function reaches(pose: HumanPose, effector: Effector, target: IkTarget): boolean
 // Angles the edit changed within a pinned limb are kept if the rest of the limb can still reach the pin
 // (e.g. rotating the upper arm of a pinned hand swivels the elbow). Otherwise, e.g. for a preset, the whole
 // limb is solved, as close to the edited pose as the pin allows.
-export function withPins(previous: HumanPose, next: HumanPose, pins: Pins): HumanPose {
+// `locked` angles never change.
+export function withPins(previous: HumanPose, next: HumanPose, pins: Pins, locked: FixedAngle[] = []): HumanPose {
   let pose = next;
   for (const effector of EFFECTORS) {
     const target = pins[effector];
     if (!target) continue;
-    const edited = chainOf(effector).flatMap(key => changedAngles(previous, next, key).map(name => ({ key, name })));
-    const keepingEdit = solveIk(pose, effector, target, { fixed: edited });
-    pose = reaches(keepingEdit, effector, target) ? keepingEdit : solveIk(pose, effector, target);
+    const chain = limbChain(effector);
+    const edited = changedAngles(previous, next).filter(f => chain.includes(f.key));
+    const keepingEdit = solveIk(pose, effector, target, { fixed: [...edited, ...locked] });
+    pose = reaches(keepingEdit, effector, target) ? keepingEdit : solveIk(pose, effector, target, { fixed: locked });
   }
   return pose;
+}
+
+function averageQuaternion(quaternions: THREE.Quaternion[]): THREE.Quaternion {
+  const [first] = quaternions;
+  const sum = quaternions.reduce((acc, q) => {
+    const sign = q.dot(first) < 0 ? -1 : 1;
+    return acc.set(acc.x + sign * q.x, acc.y + sign * q.y, acc.z + sign * q.z, acc.w + sign * q.w);
+  }, new THREE.Quaternion(0, 0, 0, 0));
+  return sum.normalize();
 }
 
 function rotationVector(q: THREE.Quaternion): THREE.Vector3 {
@@ -133,17 +160,46 @@ function rotationVector(q: THREE.Quaternion): THREE.Vector3 {
   return new THREE.Vector3(shortest.x, shortest.y, shortest.z).multiplyScalar(scale);
 }
 
-// Damped least squares over the chain's semantic angles, clamped to the joint limits. Redundant degrees
-// of freedom (e.g. elbow swivel) are pulled back towards the starting angles, so the limb changes no more
-// than needed. With `positionOnly`, the hand / foot orientation is free.
-// `fixed` angles keep their values.
-export function solveIk(
+interface IkOptions {
+  positionOnly?: boolean;
+  orientationOnly?: boolean;
+  fixed?: FixedAngle[];
+}
+
+export function solveIk(pose: HumanPose, effector: Effector, target: IkTarget, options: IkOptions = {}): HumanPose {
+  return solveChain(pose, limbChain(effector), contactOffset(effector), target, options);
+}
+
+// Moves the whole person so that the frames `from` come as close to their `to` as possible together:
+// exactly for a single pair, otherwise by the average rotation, matching the centroids of the frames.
+// Without `rotate`, only the centroids are matched.
+export function movedRigidly(pose: HumanPose, moves: { from: THREE.Matrix4; to: THREE.Matrix4 }[], rotate = true): HumanPose {
+  const rotation = rotate
+    ? averageQuaternion(moves.map(({ from, to }) => new THREE.Quaternion().setFromRotationMatrix(to.clone().multiply(from.clone().invert()))))
+    : new THREE.Quaternion();
+  const centroid = (frames: THREE.Matrix4[]) => frames
+    .reduce((sum, m) => sum.add(new THREE.Vector3().setFromMatrixPosition(m)), new THREE.Vector3())
+    .divideScalar(frames.length);
+  const translation = centroid(moves.map(m => m.to)).sub(centroid(moves.map(m => m.from)).applyQuaternion(rotation));
+  const moved = new THREE.Matrix4().compose(translation, rotation, new THREE.Vector3(1, 1, 1)).multiply(worldMatrix(pose, 'root'));
+  const position = new THREE.Vector3();
+  const quaternion = new THREE.Quaternion();
+  moved.decompose(position, quaternion, new THREE.Vector3());
+  const root = rotate ? bones.root.anglesFromQuaternion(quaternion, pose.angles.root) : pose.angles.root;
+  return { position: position.toArray(), angles: { ...pose.angles, root } };
+}
+
+// Damped least squares over the chain's semantic angles, clamped to the joint limits, bringing the frame
+// `offset` (relative to the last bone of the chain) onto the target. Redundant degrees of freedom
+// (e.g. elbow swivel) are pulled back towards the starting angles, so the limb changes no more than needed.
+// With `positionOnly` / `orientationOnly`, the orientation / position is free. `fixed` angles keep their values.
+export function solveChain(
   pose: HumanPose,
-  effector: Effector,
+  chain: BoneKey[],
+  offset: THREE.Matrix4,
   target: IkTarget,
-  { positionOnly = false, fixed = [] }: { positionOnly?: boolean; fixed?: { key: BoneKey; name: string }[] } = {},
+  { positionOnly = false, orientationOnly = false, fixed = [] }: IkOptions = {},
 ): HumanPose {
-  const chain = chainOf(effector);
   const base = worldMatrix(pose, parentOf(chain[0])!);
   const params = chain.flatMap(key => bones[key].angles
     .filter(angle => !fixed.some(f => f.key === key && f.name === angle.name))
@@ -153,7 +209,6 @@ export function solveIk(
       min: THREE.MathUtils.degToRad(angle.min),
       max: THREE.MathUtils.degToRad(angle.max),
     })));
-  const contact = contactOffset(effector);
   const targetPosition = new THREE.Vector3(...target.position);
   const targetQuaternion = new THREE.Quaternion(...target.quaternion);
 
@@ -164,7 +219,8 @@ export function solveIk(
   };
   const effectorFrame = (values: number[]) => {
     const angles = anglesOf(values);
-    const matrix = chain.reduce((m, key) => m.multiply(bones[key].localMatrix(angles[key])), base.clone()).multiply(contact);
+    const all = { ...pose.angles, ...angles };
+    const matrix = chain.reduce((m, key) => m.multiply(bones[key].localMatrix(all[key], parentAngles(all, key))), base.clone()).multiply(offset);
     const position = new THREE.Vector3();
     const quaternion = new THREE.Quaternion();
     matrix.decompose(position, quaternion, new THREE.Vector3());
@@ -173,6 +229,7 @@ export function solveIk(
   const frameDelta = (from: ReturnType<typeof effectorFrame>, to: { position: THREE.Vector3; quaternion: THREE.Quaternion }) => {
     const rotation = rotationVector(to.quaternion.clone().multiply(from.quaternion.clone().invert()));
     const positionDelta = to.position.clone().sub(from.position).toArray();
+    if (orientationOnly) return rotation.toArray();
     return positionOnly ? positionDelta : [...positionDelta, ...rotation.multiplyScalar(ORIENTATION_WEIGHT).toArray()];
   };
 
