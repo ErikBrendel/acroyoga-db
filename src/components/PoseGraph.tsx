@@ -127,6 +127,12 @@ export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, matchingPo
   const handleNodeDragStop = useCallback(
     (_: React.MouseEvent, node: Node) => {
       if (onNodeDragStop) {
+        const members = node.data?.members as { id: string; offset: { x: number; y: number } }[] | undefined;
+        if (members) {
+          for (const { id, offset } of members) onNodeDragStop(id, { x: node.position.x + offset.x, y: node.position.y + offset.y });
+          return;
+        }
+
         onNodeDragStop(node.id, node.position);
 
         const mirroredPoseId = node.data?.mirroredPoseId;

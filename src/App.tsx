@@ -1,6 +1,7 @@
 import {useMemo, useState} from 'react';
 import {usePoseData} from './hooks/usePoseData';
 import {useUrlState} from './hooks/useUrlState';
+import {useLocalStorageState} from './hooks/useLocalStorageState';
 import {PoseGraph} from './components/PoseGraph';
 import {PoseDetailSidebar} from './components/PoseDetailSidebar';
 import {FlowsList} from './components/FlowsList';
@@ -8,7 +9,7 @@ import {AddPoseDialog} from './components/AddPoseDialog';
 import {AddFlowDialog} from './components/AddFlowDialog';
 import {PoseEditor3D} from './components/PoseEditor3D';
 import {DifficultyGuide} from './components/DifficultyGuide';
-import {transformToGraph, PosePosition} from './utils/graphTransform';
+import {transformToGraph, collapseMirroredPoses, CollapsedGraph, PosePosition} from './utils/graphTransform';
 import {isLocalEditMode} from './utils/editMode';
 import {updatePosePositions} from './api/layout';
 import {parseFlowVariantKey, getMirroredFlow} from './utils/flowMirror';
@@ -25,6 +26,7 @@ function App() {
   const [pendingPositions, setPendingPositions] = useState<Record<string, PosePosition | null>>({});
   const [isSaving, setIsSaving] = useState(false);
   const [searchInput, setSearchInput] = useUrlState<string>('search', '');
+  const [collapseMirrors, setCollapseMirrors] = useLocalStorageState('collapseMirroredPoses', false);
 
   const isDirty = Object.keys(pendingPositions).length > 0;
 
@@ -50,9 +52,14 @@ function App() {
     );
   }, [poses, searchInput]);
 
-  const { nodes, edges } = useMemo(
+  const graph = useMemo(
     () => transformToGraph(poses, transitions),
     [poses, transitions]
+  );
+
+  const { nodes, edges, nodeIdOf } = useMemo(
+    (): CollapsedGraph => collapseMirrors ? collapseMirroredPoses(graph, poses) : { ...graph, nodeIdOf: id => id },
+    [graph, poses, collapseMirrors]
   );
 
   const activeFlow = useMemo(() => {
@@ -72,6 +79,16 @@ function App() {
 
     return flow;
   }, [activeFlowName, flows, poses]);
+
+  const graphFlow = useMemo(
+    () => activeFlow && { ...activeFlow, poseIds: activeFlow.poseIds.map(nodeIdOf) },
+    [activeFlow, nodeIdOf]
+  );
+
+  const matchingNodeIds = useMemo(
+    () => matchingPoseIds && new Set([...matchingPoseIds].map(nodeIdOf)),
+    [matchingPoseIds, nodeIdOf]
+  );
 
   const handleNodeDragStop = (nodeId: string, position: PosePosition) => {
     setPendingPositions(prev => ({
@@ -164,6 +181,14 @@ function App() {
               <p className="text-sm text-gray-600">{poses.length} poses, {transitions.length} transitions</p>
             </div>
             <DifficultyGuide />
+            <label className="flex items-center gap-1.5 text-sm text-gray-600 cursor-pointer select-none" title="Show each left/right pair of mirrored poses as one node">
+              <input
+                type="checkbox"
+                checked={collapseMirrors}
+                onChange={(e) => setCollapseMirrors(e.target.checked)}
+              />
+              Merge mirrored
+            </label>
             <div className="relative w-full md:w-64">
               <input
                 type="text"
@@ -208,9 +233,9 @@ function App() {
           <PoseGraph
             nodes={nodes}
             edges={edges}
-            selectedPoseId={selectedPoseId}
-            activeFlow={activeFlow}
-            matchingPoseIds={matchingPoseIds}
+            selectedPoseId={selectedPoseId && nodeIdOf(selectedPoseId)}
+            activeFlow={graphFlow}
+            matchingPoseIds={matchingNodeIds}
             onSelectPose={setSelectedPoseId}
             onNodeDragStop={isLocalEditMode() ? handleNodeDragStop : undefined}
             isEditMode={isLocalEditMode()}

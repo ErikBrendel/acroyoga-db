@@ -11,6 +11,7 @@ import {
 } from 'd3-force';
 import { getPoseColor, getTransitionColor } from './difficultyColors';
 import { NODE_DIAMETER } from './nodeConstants';
+import { mirrorText } from './mirrorText';
 
 export interface GraphData {
   nodes: Node[];
@@ -178,4 +179,45 @@ export function transformToGraph(poses: Pose[], transitions: Transition[]): Grap
   const edges = [...transitionEdges, ...mirrorEdges];
 
   return { nodes, edges };
+}
+
+export interface CollapsedGraph extends GraphData {
+  nodeIdOf: (poseId: string) => string;
+}
+
+// Each mirrored pair shares one node, centred between both, under the id of its "left" pose
+export function collapseMirroredPoses({ nodes, edges }: GraphData, poses: Pose[]): CollapsedGraph {
+  const nodeIds = new Map(poses.map(p => [p.id, p.mirroredPoseId && p.mirroredPoseId < p.id ? p.mirroredPoseId : p.id]));
+  const nodeIdOf = (poseId: string) => nodeIds.get(poseId) ?? poseId;
+  const nodesById = new Map(nodes.map(n => [n.id, n]));
+
+  const collapsedNodes = nodes.filter(n => nodeIdOf(n.id) === n.id).map((node): Node => {
+    const mirror = nodesById.get(node.data.mirroredPoseId as string);
+    if (!mirror) return node;
+    const center = {
+      x: (node.position.x + mirror.position.x) / 2,
+      y: (node.position.y + mirror.position.y) / 2,
+    };
+    return {
+      ...node,
+      position: center,
+      data: {
+        label: String(node.data.label).replace(/\b(left|right)\b/gi, side => `${side}/${mirrorText(side)}`),
+        members: [node, mirror].map(n => ({ id: n.id, offset: { x: n.position.x - center.x, y: n.position.y - center.y } })),
+      },
+    };
+  });
+
+  // Mirrored transitions fall onto the same edge, possibly defined in the other direction
+  const collapsedEdges = new Map<string, Edge>();
+  for (const edge of edges) {
+    if (edge.id.startsWith('mirror-')) continue;
+    const source = nodeIdOf(edge.source);
+    const target = nodeIdOf(edge.target);
+    const id = `${source}-to-${target}`;
+    if (source === target || collapsedEdges.has(id) || (edge.data?.isReversible && collapsedEdges.has(`${target}-to-${source}`))) continue;
+    collapsedEdges.set(id, { ...edge, id, source, target });
+  }
+
+  return { nodes: collapsedNodes, edges: [...collapsedEdges.values()], nodeIdOf };
 }
