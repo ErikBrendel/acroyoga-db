@@ -17,6 +17,7 @@ in the 3D editor ("🎭 Open in 3D editor") and saving. Agents only write drafts
 | `pnpm pose:orient '<joints JSON>' [presets…]` | Which way head, front, own left, soles and palms point. Use it before guessing root angles. |
 | `pnpm pose:solve <params.json> [--out <file>]` | Builds and solves the pose, writes the draft (or `--out` for trying variants), prints a report (below). Takes about 2 s. |
 | `pnpm pose:solve <params.json> --vary <path>=<v1>,<v2> [--vary …]` | Solves every combination and prints one summary line each (contacts ok, worst error, limits, overlaps); writes nothing. `<path>` is a dot path into the params, e.g. `flyer.joints.hip.pike` or `contacts.0.a.flyer.around`. Use it instead of hand-written loops. |
+| `pnpm pose:suggest <params.json \| pose.json> [<role>:<site> [<role>:<segment>]]` | Where contacts could go: free hands and feet near a surface facing them, or with a site (`flyer:left-palm`) its best points on the bodies, optionally on one segment (`base:left-thigh`). Prints ready contact JSON. Works on params and on stored drafts. |
 | `pnpm pose:render <poseId> [--view Side] [--saved]` | Renders the draft in the 3D editor to `data-drafts/renders/<poseId>.png` (Front, Side / Angled, Top) or one larger view. |
 
 `pose:render` needs the dev server (`POSE_APP_URL`, default `http://localhost:5173/acroyoga-db/`) and starts a
@@ -69,6 +70,9 @@ base legs blue / orange, flyer legs teal / pink.
   palms, knees, soles of both people in cm, and the lowest point above the floor (the base should be 0, a
   flyer below 0 is in the floor). Use them for checks like "feet above the base's face" without a render.
 - A contact that does not hold names straight knees / elbows of its limbs: the target is then out of reach.
+- **Possible contacts**: free hands and feet within 12 cm of a surface that faces them (on the other person,
+  or on the same person outside their own limb), with ready contact JSON. Check each against the description:
+  hands resting on knees, palms together in Namaste, crossed ankles are contacts too and hold the shape.
 - **Overlaps**: body parts sinking into each other by 3 cm or more (rough capsules, parts in contact excepted;
   touching forearms or hands of one person can show up and are fine).
 - The solver is local: starting angles matter, especially of ankles and wrists that a reach barely turns, and a

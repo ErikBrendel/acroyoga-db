@@ -11,7 +11,8 @@
     "test": "vitest run",
     "pose:solve": "tsx scripts/ai-pose/solve.ts",
     "pose:render": "tsx scripts/ai-pose/render.ts",
-    "pose:orient": "tsx scripts/ai-pose/orient.ts"
+    "pose:orient": "tsx scripts/ai-pose/orient.ts",
+    "pose:suggest": "tsx scripts/ai-pose/suggest.ts"
   },
   "dependencies": {
     "@types/d3-force": "^3.0.10",

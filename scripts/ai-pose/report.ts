@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { AcroPose, Contact, ROLES, Role, contactError, currentTwist } from '../../src/3d/acroPose';
 import { Human } from '../../src/3d/Human';
+import { possibleContacts, suggestionLine } from './contacts';
 import { limbChain, worldMatrix } from '../../src/3d/ik';
 import { localSiteFrame, siteLabel, siteMatrix } from '../../src/3d/sites';
 import { ALL_BONES, BONES, BoneKey, JOINTS, JointId } from '../../src/3d/skeleton';
@@ -128,5 +129,7 @@ export function report(pose: AcroPose, humans: Record<Role, Human>): string {
     section('Angles at their limits:', limitLines(pose)),
     section('Key points (cm):', pointLines(pose, humans)),
     section(`Overlaps (rough, ${OVERLAP_REPORTED * 100} cm or more):`, overlapLines(pose)),
+    section('Possible contacts (free hands and feet within 12 cm of a surface facing them; add them if the pose has them):',
+      possibleContacts(pose).map(suggestionLine)),
   ].join('\n\n');
 }

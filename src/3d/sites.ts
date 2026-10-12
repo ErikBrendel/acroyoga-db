@@ -85,6 +85,10 @@ export const SITE_NAMES = [
   ...Object.keys(CENTER_SITES),
 ];
 
+// Segments that coordinate sites can lie on, e.g. "pelvis", "left-thigh"
+export const SEGMENT_NAMES = (Object.keys(SEGMENTS) as SegmentName[]).flatMap(name =>
+  (JOINTS[SEGMENTS[name].joint].paired ? [`left-${name}`, `right-${name}`] : [name]));
+
 function splitSide(name: string): [Side | null, string] {
   const match = /^(left|right)-(.+)$/.exec(name);
   return match ? [match[1] as Side, match[2]] : [null, name];
