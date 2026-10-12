@@ -104,16 +104,3 @@ Ranges live in `skeleton.ts`; the stored data never contains limits, axes or bon
 - Pause (S) stops IK and contact solving; resuming solves everything changed since as one edit of the
   active person.
 - Tests: `pnpm test` (vitest), next to the sources in `src/3d/*.test.ts`.
-
-## Interpolation (not built yet)
-Interpolating each angle linearly gives anatomically plausible in-between poses, since every
-joint stays within its limits. Only `root` should be converted to a quaternion and slerped,
-because its angles are unbounded.
-
-## Next steps
-- Floor contacts as contacts (replacing pins and the planted presets), so the base stays on the floor
-  when the solver has to move them.
-- Transitions: interpolation that keeps the contacts that exist in both poses.
-- Body proportions: re-solving stored poses from their contacts.
-- Store 3D data per pose (e.g. `public/data/poses3d/<poseId>.json`) via the dev API, mirrored poses derived via mirroring.
-- Read-only 3D preview in the pose sidebar, transition playback.
