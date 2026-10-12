@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { Bone, createBones } from './Bone';
-import { Palette, buildFoot, buildHand, buildHead, buildSkinnedBody } from './bodyMesh';
+import { CAPPED_JOINTS, Palette, buildFoot, buildHand, buildHead, buildJointCap, buildSkinnedBody } from './bodyMesh';
 import { HumanPose, neutralPose } from './humanPose';
 import { BoneKey, boneKey } from './skeleton';
 
@@ -46,6 +46,7 @@ export class Human {
     for (const side of ['left', 'right'] as const) {
       this.attachRigid(this.bones[boneKey('wrist', side)], buildHand());
       this.attachRigid(this.bones[boneKey('ankle', side)], buildFoot());
+      for (const joint of CAPPED_JOINTS) this.attachRigid(this.bones[boneKey(joint, side)], buildJointCap(joint, palette, side));
     }
   }
 

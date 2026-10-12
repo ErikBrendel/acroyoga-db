@@ -262,6 +262,20 @@ export function buildHead(): THREE.Group {
   return head;
 }
 
+// Kneecap on the front of the knee and point of the elbow on its back, at the start of the shin / forearm
+const JOINT_CAPS = {
+  knee: { position: [0, 0.01, 0.05], radius: 0.036, scale: [1, 1.2, 0.5] },
+  elbow: { position: [0, 0.004, -0.034], radius: 0.026, scale: [1, 1.2, 0.55] },
+} satisfies Partial<Record<JointId, { position: [number, number, number]; radius: number; scale: [number, number, number] }>>;
+
+export const CAPPED_JOINTS = Object.keys(JOINT_CAPS) as (keyof typeof JOINT_CAPS)[];
+
+// Lighter than the limb's colour, so it shows on the coloured legs as on the bare forearms
+export function buildJointCap(joint: keyof typeof JOINT_CAPS, palette: Palette, side: Side): THREE.Mesh {
+  const { position, radius, scale } = JOINT_CAPS[joint];
+  return meshAt(new THREE.IcosahedronGeometry(radius, 0), flat(palette[side].clone().lerp(new THREE.Color(0xffffff), 0.6)), position, scale);
+}
+
 // Mitten hand: palm normal +X (facing the body when standing), fingers along +Y, thumb towards +Z
 export function buildHand(): THREE.Group {
   const hand = new THREE.Group();
