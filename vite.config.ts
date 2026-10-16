@@ -235,6 +235,7 @@ const apiRoutes: Record<string, ApiHandler> = {
     poses[poseIndex] = {
       id: body.id,
       ...(body.name !== undefined && { name: body.name }),
+      ...(body.aliases?.length && { aliases: body.aliases }),
       ...(body.description !== undefined && { description: body.description }),
       ...(body.mirroredPoseId !== undefined && { mirroredPoseId: body.mirroredPoseId }),
       ...(body.difficulty !== undefined && body.difficulty !== '' && { difficulty: body.difficulty }),

@@ -14,6 +14,7 @@ import {isLocalEditMode} from './utils/editMode';
 import {updatePosePositions} from './api/layout';
 import {parseFlowVariantKey, getMirroredFlow} from './utils/flowMirror';
 import {Flow} from './types/data';
+import {searchPoses} from './utils/poseNames';
 
 function App() {
   const { poses, transitions, flows, loading, error, refetch } = usePoseData();
@@ -31,27 +32,10 @@ function App() {
 
   const isDirty = Object.keys(pendingPositions).length > 0;
 
-  const matchingPoseIds = useMemo(() => {
-    if (!searchInput.trim()) {
-      return undefined; // Show all poses with full opacity
-    }
-
-    const words = searchInput.toLowerCase().trim().split(/\s+/);
-
-    return new Set(
-      poses
-        .filter(pose => {
-          const searchText = [
-            pose.id,
-            pose.name || '',
-            pose.description || ''
-          ].join(' ').toLowerCase();
-
-          return words.every(word => searchText.includes(word));
-        })
-        .map(p => p.id)
-    );
-  }, [poses, searchInput]);
+  const matchingPoseIds = useMemo(
+    () => searchInput.trim() ? new Set(searchPoses(poses, searchInput).map(p => p.id)) : undefined,
+    [poses, searchInput]
+  );
 
   const graph = useMemo(
     () => transformToGraph(poses, transitions),

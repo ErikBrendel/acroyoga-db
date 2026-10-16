@@ -6,6 +6,7 @@ export const TransitionDifficultySchema = z.enum(['trivial', 'easy', 'intermedia
 export const PoseSchema = z.object({
   id: z.string(),
   name: z.string().optional(),
+  aliases: z.array(z.string()).optional(),
   description: z.string().optional(),
   mirroredPoseId: z.string().optional(),
   difficulty: PoseDifficultySchema,

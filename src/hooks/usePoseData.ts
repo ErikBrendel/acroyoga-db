@@ -136,6 +136,11 @@ function validateData(poses: Pose[], transitions: Transition[], flows: Flow[]): 
             }
           }
 
+          const expectedMirroredAliases = (pose.aliases ?? []).map(mirrorText).join(', ');
+          if (expectedMirroredAliases !== (mirroredPose.aliases ?? []).join(', ')) {
+            errors.push(`Pose "${pose.id}": mirrored pose aliases should be "${expectedMirroredAliases}"`);
+          }
+
           if (pose.description && mirroredPose.description) {
             const expectedMirroredDesc = mirrorText(pose.description);
             if (mirroredPose.description !== expectedMirroredDesc) {

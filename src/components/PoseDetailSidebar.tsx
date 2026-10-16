@@ -9,6 +9,7 @@ import { PosePosition } from '../utils/graphTransform';
 import { mirrorText } from '../utils/mirrorText';
 import { getFlowVariants, getFlowVariantKey } from '../utils/flowMirror';
 import { getPoseColor } from '../utils/difficultyColors';
+import { poseName, sharedNames } from '../utils/poseNames';
 
 // three.js is only loaded once a pose is opened
 const PosePreview3D = lazy(() => import('./PosePreview3D').then(m => ({ default: m.PosePreview3D })));
@@ -43,6 +44,7 @@ export function PoseDetailSidebar({
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState('');
+  const [editAliases, setEditAliases] = useState('');
   const [editDescription, setEditDescription] = useState('');
   const [editDifficulty, setEditDifficulty] = useState<PoseDifficulty>('easy');
   const [isSaving, setIsSaving] = useState(false);
@@ -235,6 +237,7 @@ export function PoseDetailSidebar({
 
   const handleEditClick = () => {
     setEditName(pose.name || '');
+    setEditAliases((pose.aliases ?? []).join(', '));
     setEditDescription(pose.description || '');
     setEditDifficulty(pose.difficulty);
     setIsEditing(true);
@@ -249,10 +252,12 @@ export function PoseDetailSidebar({
 
   const handleSaveEdit = async () => {
     setIsSaving(true);
+    const aliases = editAliases.split(',').map(a => a.trim()).filter(Boolean);
     try {
       await updatePose({
         id: pose.id,
         name: editName,
+        aliases,
         description: editDescription,
         difficulty: editDifficulty,
         mirroredPoseId: pose.mirroredPoseId,
@@ -262,6 +267,7 @@ export function PoseDetailSidebar({
         await updatePose({
           id: mirroredPose.id,
           name: editName ? mirrorText(editName) : '',
+          aliases: aliases.map(mirrorText),
           description: editDescription ? mirrorText(editDescription) : '',
           difficulty: editDifficulty,
           mirroredPoseId: pose.id,
@@ -296,8 +302,11 @@ export function PoseDetailSidebar({
           ) : (
             <div>
               <h2 className="text-2xl font-bold text-gray-900">
-                {pose.name || pose.id}
+                {poseName(pose)}
               </h2>
+              {pose.aliases && (
+                <p className="text-sm text-gray-600">Also called {pose.aliases.join(', ')}</p>
+              )}
               <div className="mt-1">
                 <span
                   className="inline-block px-2 py-1 text-xs font-semibold text-white rounded"
@@ -329,6 +338,13 @@ export function PoseDetailSidebar({
 
         {isEditing && (
           <div className="mb-4">
+            <input
+              type="text"
+              value={editAliases}
+              onChange={(e) => setEditAliases(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 mb-3"
+              placeholder="Other names, comma-separated"
+            />
             <textarea
               value={editDescription}
               onChange={(e) => setEditDescription(e.target.value)}
@@ -410,6 +426,18 @@ export function PoseDetailSidebar({
             )}
           </div>
         )}
+
+        {sharedNames(pose, poses).map(({ name, others }) => (
+          <p key={name} className="mb-4 px-3 py-2 bg-amber-50 border border-amber-200 rounded text-sm text-amber-900">
+            "{name}" can also mean{' '}
+            {others.map((other, i) => (
+              <span key={other.id}>
+                {i > 0 && ', '}
+                <button onClick={() => onSelectPose(other.id)} className="font-medium underline">{poseName(other)}</button>
+              </span>
+            ))}
+          </p>
+        ))}
 
         {!isEditing && pose.description && (
           <div className="mb-6">
