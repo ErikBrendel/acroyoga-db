@@ -1,132 +1,49 @@
 import {useMemo, useState} from 'react';
 import {usePoseData} from './hooks/usePoseData';
 import {useUrlState} from './hooks/useUrlState';
-import {useLocalStorageState} from './hooks/useLocalStorageState';
-import {PoseGraph} from './components/PoseGraph';
 import {PoseDetailSidebar} from './components/PoseDetailSidebar';
-import {FlowsList} from './components/FlowsList';
 import {AddPoseDialog} from './components/AddPoseDialog';
 import {AddFlowDialog} from './components/AddFlowDialog';
 import {PoseEditor3D} from './components/PoseEditor3D';
-import {DifficultyGuide} from './components/DifficultyGuide';
-import {transformToGraph, collapseMirroredPoses, CollapsedGraph, PosePosition} from './utils/graphTransform';
+import {NavBar} from './components/NavBar';
+import {HomeView} from './views/HomeView';
+import {PosesView} from './views/PosesView';
+import {FlowsView} from './views/FlowsView';
+import {MapView} from './views/MapView';
+import {AboutView} from './views/AboutView';
+import {PosePosition} from './utils/graphTransform';
 import {isLocalEditMode} from './utils/editMode';
-import {updatePosePositions} from './api/layout';
-import {parseFlowVariantKey, getMirroredFlow} from './utils/flowMirror';
+import {getFlowVariants, getFlowVariantKey} from './utils/flowMirror';
+import {resolveFlow} from './utils/flows';
+import {goTo, useView} from './utils/navigation';
 import {Flow} from './types/data';
-import {searchPoses} from './utils/poseNames';
 
 function App() {
   const { poses, transitions, flows, loading, error, refetch } = usePoseData();
-  const [selectedPoseId, setSelectedPoseId] = useUrlState<string | null>('pose', null);
-  const [activeFlowName, setActiveFlowName] = useUrlState<string | null>('flow', null);
+  const view = useView();
+  const [selectedPoseId, setSelectedPoseId] = useUrlState<string | null>('pose', null, true);
+  const [activeFlowKey] = useUrlState<string | null>('flow', null);
   const [isAddPoseDialogOpen, setIsAddPoseDialogOpen] = useState(false);
   const [isAddFlowDialogOpen, setIsAddFlowDialogOpen] = useState(false);
   const [editingFlow, setEditingFlow] = useState<Flow | null>(null);
   const [is3DEditorOpen, setIs3DEditorOpen] = useState(false);
   const [editorPoseId, setEditorPoseId] = useState<string | null>(null);
   const [pendingPositions, setPendingPositions] = useState<Record<string, PosePosition | null>>({});
-  const [isSaving, setIsSaving] = useState(false);
-  const [searchInput, setSearchInput] = useUrlState<string>('search', '');
-  const [collapseMirrors, setCollapseMirrors] = useLocalStorageState('collapseMirroredPoses', false);
 
-  const isDirty = Object.keys(pendingPositions).length > 0;
-
-  const matchingPoseIds = useMemo(
-    () => searchInput.trim() ? new Set(searchPoses(poses, searchInput).map(p => p.id)) : undefined,
-    [poses, searchInput]
+  const activeFlow = useMemo(
+    () => activeFlowKey ? resolveFlow(activeFlowKey, flows, [], null, poses) : null,
+    [activeFlowKey, flows, poses]
   );
 
-  const graph = useMemo(
-    () => transformToGraph(poses, transitions),
-    [poses, transitions]
+  const flowChoices = useMemo(
+    () => flows.slice().sort((a, b) => a.name.localeCompare(b.name)).flatMap(flow =>
+      getFlowVariants(flow, poses).map(variant => ({
+        key: getFlowVariantKey(flow.name, variant.isMirrored),
+        name: variant.isMirrored ? `${flow.name} (mirrored)` : flow.name,
+      }))
+    ),
+    [flows, poses]
   );
-
-  const { nodes, edges, nodeIdOf } = useMemo(
-    (): CollapsedGraph => collapseMirrors ? collapseMirroredPoses(graph, poses) : { ...graph, nodeIdOf: id => id },
-    [graph, poses, collapseMirrors]
-  );
-
-  const activeFlow = useMemo(() => {
-    if (!activeFlowName) return null;
-
-    const { flowName, isMirrored } = parseFlowVariantKey(activeFlowName);
-    const flow = flows.find(f => f.name === flowName);
-
-    if (!flow) return null;
-
-    if (isMirrored) {
-      return {
-        name: flow.name,
-        poseIds: getMirroredFlow(flow, poses),
-      };
-    }
-
-    return flow;
-  }, [activeFlowName, flows, poses]);
-
-  const graphFlow = useMemo(
-    () => activeFlow && { ...activeFlow, poseIds: activeFlow.poseIds.map(nodeIdOf) },
-    [activeFlow, nodeIdOf]
-  );
-
-  const matchingNodeIds = useMemo(
-    () => matchingPoseIds && new Set([...matchingPoseIds].map(nodeIdOf)),
-    [matchingPoseIds, nodeIdOf]
-  );
-
-  const handleNodeDragStop = (nodeId: string, position: PosePosition) => {
-    setPendingPositions(prev => ({
-      ...prev,
-      [nodeId]: position,
-    }));
-  };
-
-  const handleUnpinNode = (nodeId: string) => {
-    setPendingPositions(prev => ({
-      ...prev,
-      [nodeId]: null,
-    }));
-  };
-
-  const handleSavePositions = async () => {
-    setIsSaving(true);
-    try {
-      await updatePosePositions(pendingPositions);
-      setPendingPositions({});
-      refetch();
-    } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to save positions');
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const handleDiscardChanges = () => {
-    setPendingPositions({});
-    window.location.reload();
-  };
-
-  const handleRegenerateLayout = async () => {
-    if (!confirm('Regenerate layout for all nodes? This will clear all pinned positions.')) {
-      return;
-    }
-    setIsSaving(true);
-    try {
-      // Clear all positions by setting them to null
-      const allPositionsNull = poses.reduce((acc, pose) => {
-        acc[pose.id] = null;
-        return acc;
-      }, {} as Record<string, null>);
-      await updatePosePositions(allPositionsNull);
-      setPendingPositions({});
-      refetch();
-    } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to regenerate layout');
-    } finally {
-      setIsSaving(false);
-    }
-  };
 
   if (loading) {
     return (
@@ -150,153 +67,64 @@ function App() {
     );
   }
 
-  const handleFlowClick = (flowVariantKey: string) => {
-    setActiveFlowName(activeFlowName === flowVariantKey ? null : flowVariantKey);
-  };
+  const handleFlowClick = (flowKey: string) =>
+    view === 'map' ? goTo('map', { flow: flowKey }) : goTo('flows', { flow: flowKey, pose: null });
+
+  const showsPanel = poses.some(p => p.id === selectedPoseId) && view !== 'home' && view !== 'about';
 
   return (
-    <div className="w-screen h-screen flex flex-col md:relative bg-gray-50">
-      {/* Header wrapper - flows positioned absolutely relative to this */}
-      <div className={`relative shrink-0 md:absolute md:top-0 md:left-0 z-20 transition-transform ${selectedPoseId ? 'max-md:hidden' : ''}`}>
-        {/* Top bar - always visible */}
-        <div className="p-4 bg-white shadow-md md:rounded-br-lg">
-          <div className="flex flex-wrap items-center gap-4">
-            <div className="flex-shrink-0">
-              <h1 className="text-xl font-bold text-gray-900">Acroyoga DB</h1>
-              <p className="text-sm text-gray-600">{poses.length} poses, {transitions.length} transitions</p>
-            </div>
-            <DifficultyGuide />
-            <label className="flex items-center gap-1.5 text-sm text-gray-600 cursor-pointer select-none" title="Show each left/right pair of mirrored poses as one node">
-              <input
-                type="checkbox"
-                checked={collapseMirrors}
-                onChange={(e) => setCollapseMirrors(e.target.checked)}
-              />
-              Merge mirrored
-            </label>
-            <div className="relative w-full md:w-64">
-              <input
-                type="text"
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                placeholder="Search poses..."
-                className="px-3 py-2 pr-8 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
-              />
-              {searchInput && (
-                <button
-                  onClick={() => setSearchInput('')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  title="Clear search"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Flows list - absolutely positioned below header with gap */}
-        <div className="absolute top-full left-0 right-0 px-2 mt-2 md:left-4 md:right-auto md:px-0 z-10">
-          <FlowsList
-            flows={flows}
+    <div className="w-screen h-dvh flex flex-col bg-gray-50">
+      <NavBar view={view} />
+      <div className="flex-1 min-h-0 flex flex-col md:flex-row">
+        <main className={`flex-1 min-h-0 relative overflow-y-auto ${showsPanel && view !== 'map' ? 'max-md:hidden' : ''}`}>
+          {view === 'home' && <HomeView poseCount={poses.length} transitionCount={transitions.length} flowCount={flows.length} />}
+          {view === 'poses' && <PosesView poses={poses} selectedPoseId={selectedPoseId} onSelectPose={setSelectedPoseId} />}
+          {view === 'flows' && (
+            <FlowsView
+              flows={flows}
+              poses={poses}
+              transitions={transitions}
+              activeFlow={activeFlow}
+              onSelectPose={setSelectedPoseId}
+              onEditFlow={isLocalEditMode() ? setEditingFlow : undefined}
+            />
+          )}
+          {view === 'map' && (
+            <MapView
+              poses={poses}
+              transitions={transitions}
+              flowChoices={flowChoices}
+              activeFlow={activeFlow}
+              selectedPoseId={selectedPoseId}
+              onSelectPose={setSelectedPoseId}
+              editMode={isLocalEditMode() ? {
+                pendingPositions,
+                setPendingPositions,
+                refetch,
+                onNewPose: () => setIsAddPoseDialogOpen(true),
+                onNewFlow: () => setIsAddFlowDialogOpen(true),
+                onOpen3DEditor: () => { setEditorPoseId(null); setIs3DEditorOpen(true); },
+              } : undefined}
+            />
+          )}
+          {view === 'about' && <AboutView />}
+        </main>
+        {showsPanel && (
+          <PoseDetailSidebar
+            selectedPoseId={selectedPoseId}
             poses={poses}
             transitions={transitions}
-            activeFlowName={activeFlowName}
-            onFlowClick={handleFlowClick}
-            isEditMode={isLocalEditMode()}
-            onEditFlow={(flow) => setEditingFlow(flow)}
-          />
-        </div>
-      </div>
-
-      {/* Main content area - flex column on mobile, fills remaining space */}
-      <div className="flex-1 flex flex-col overflow-hidden md:contents">
-        {/* Graph - top half on mobile, absolute positioned on desktop */}
-        <div className="flex-1 relative md:absolute md:inset-0">
-          <PoseGraph
-            nodes={nodes}
-            edges={edges}
-            selectedPoseId={selectedPoseId && nodeIdOf(selectedPoseId)}
-            activeFlow={graphFlow}
-            matchingPoseIds={matchingNodeIds}
+            flows={flows}
+            activeFlowName={activeFlowKey}
             onSelectPose={setSelectedPoseId}
-            onNodeDragStop={isLocalEditMode() ? handleNodeDragStop : undefined}
-            isEditMode={isLocalEditMode()}
+            onFlowClick={handleFlowClick}
+            onDataChange={isLocalEditMode() ? refetch : undefined}
+            onUnpinNode={isLocalEditMode() ? (nodeId) => setPendingPositions({ ...pendingPositions, [nodeId]: null }) : undefined}
+            onOpenIn3DEditor={isLocalEditMode() ? (poseId) => { setEditorPoseId(poseId); setIs3DEditorOpen(true); } : undefined}
+            pendingPositions={pendingPositions}
           />
-        </div>
-
-        {/* Sidebar - bottom half on mobile, absolute right side on desktop */}
-        <PoseDetailSidebar
-          selectedPoseId={selectedPoseId}
-          poses={poses}
-          transitions={transitions}
-          flows={flows}
-          activeFlowName={activeFlowName}
-          onSelectPose={setSelectedPoseId}
-          onFlowClick={handleFlowClick}
-          onDataChange={isLocalEditMode() ? refetch : undefined}
-          onUnpinNode={isLocalEditMode() ? handleUnpinNode : undefined}
-          onOpenIn3DEditor={isLocalEditMode() ? (poseId) => { setEditorPoseId(poseId); setIs3DEditorOpen(true); } : undefined}
-          pendingPositions={pendingPositions}
-        />
+        )}
       </div>
-
-      {/* Edit mode floating toolbar - bottom left */}
-      {isLocalEditMode() && (
-        <div className="absolute bottom-[116px] left-4 z-20 bg-white shadow-lg rounded-lg border border-gray-200 p-3">
-          <div className="flex flex-col gap-2">
-            <div className="px-3 py-1 bg-green-100 border border-green-300 rounded text-center mb-2">
-              <span className="text-xs font-semibold text-green-700">Edit Mode</span>
-            </div>
-            <button
-              onClick={() => setIsAddPoseDialogOpen(true)}
-              className="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm font-semibold"
-            >
-              + New Pose
-            </button>
-            <button
-              onClick={() => setIsAddFlowDialogOpen(true)}
-              className="px-3 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors text-sm font-semibold"
-            >
-              + New Flow
-            </button>
-            <button
-              onClick={() => { setEditorPoseId(null); setIs3DEditorOpen(true); }}
-              className="px-3 py-2 bg-cyan-600 text-white rounded hover:bg-cyan-700 transition-colors text-sm font-semibold"
-            >
-              🎭 3D Editor
-            </button>
-            <div className="h-px bg-gray-300 my-1"></div>
-            {isDirty ? (
-              <>
-                <button
-                  onClick={handleSavePositions}
-                  disabled={isSaving}
-                  className="px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400 transition-colors text-sm font-semibold"
-                >
-                  💾 Save ({Object.keys(pendingPositions).length})
-                </button>
-                <button
-                  onClick={handleDiscardChanges}
-                  className="px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-sm font-semibold"
-                >
-                  ✕ Discard
-                </button>
-              </>
-            ) : (
-              <button
-                onClick={handleRegenerateLayout}
-                disabled={isSaving}
-                className="px-3 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 disabled:bg-gray-400 transition-colors text-sm font-semibold"
-              >
-                ↻ Regenerate
-              </button>
-            )}
-          </div>
-        </div>
-      )}
       <AddPoseDialog
         isOpen={isAddPoseDialogOpen}
         onClose={() => setIsAddPoseDialogOpen(false)}

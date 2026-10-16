@@ -8,7 +8,7 @@ import { updatePose } from '../api/poses';
 import { PosePosition } from '../utils/graphTransform';
 import { mirrorText } from '../utils/mirrorText';
 import { getFlowVariants, getFlowVariantKey } from '../utils/flowMirror';
-import { getPoseColor } from '../utils/difficultyColors';
+import { DifficultyBadge } from './DifficultyBadge';
 import { poseName, sharedNames } from '../utils/poseNames';
 
 // three.js is only loaded once a pose is opened
@@ -286,7 +286,7 @@ export function PoseDetailSidebar({
   };
 
   return (
-    <div className="flex-1 md:absolute md:top-0 md:right-0 md:h-full w-full md:w-96 bg-white shadow-2xl border-t md:border-t-0 md:border-l border-gray-200 overflow-y-auto z-10">
+    <div className="flex-1 md:flex-none min-h-0 w-full md:w-96 bg-white shadow-2xl border-t md:border-t-0 md:border-l border-gray-200 overflow-y-auto z-10">
       <div className="p-6">
         <div className="flex justify-between items-start mb-4">
           {isEditing ? (
@@ -308,12 +308,7 @@ export function PoseDetailSidebar({
                 <p className="text-sm text-gray-600">Also called {pose.aliases.join(', ')}</p>
               )}
               <div className="mt-1">
-                <span
-                  className="inline-block px-2 py-1 text-xs font-semibold text-white rounded"
-                  style={{ backgroundColor: getPoseColor(pose.difficulty) }}
-                >
-                  {pose.difficulty.charAt(0).toUpperCase() + pose.difficulty.slice(1)}
-                </span>
+                <DifficultyBadge difficulty={pose.difficulty} />
               </div>
             </div>
           )}
