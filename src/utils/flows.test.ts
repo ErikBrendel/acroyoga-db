@@ -30,8 +30,8 @@ describe('parseSharedFlow', () => {
 describe('importName', () => {
   const own = [{ name: 'Sunday', poseIds: ['bird', 'throne'] }];
 
-  it('skips a flow that is already there and renames one whose name is taken', () => {
-    expect(importName({ name: 'Sunday', poseIds: ['bird', 'throne'] }, own)).toBeNull();
+  it('skips a flow whose steps are already there and renames one whose name is taken', () => {
+    expect(importName({ name: 'From Anna', poseIds: ['bird', 'throne'] }, own)).toBeNull();
     expect(importName({ name: 'Sunday', poseIds: ['bird', 'whale'] }, own)).toBe('Sunday (2)');
     expect(importName({ name: 'Monday', poseIds: ['bird', 'whale'] }, own)).toBe('Monday');
   });

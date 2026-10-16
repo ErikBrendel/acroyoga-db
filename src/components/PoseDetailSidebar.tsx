@@ -10,6 +10,7 @@ import { mirrorText } from '../utils/mirrorText';
 import { getFlowVariants, getFlowVariantKey } from '../utils/flowMirror';
 import { DifficultyBadge } from './DifficultyBadge';
 import { poseName, sharedNames } from '../utils/poseNames';
+import { nextPoses, OWN_FLOW_PREFIX } from '../utils/flows';
 
 // three.js is only loaded once a pose is opened
 const PosePreview3D = lazy(() => import('./PosePreview3D').then(m => ({ default: m.PosePreview3D })));
@@ -19,6 +20,7 @@ interface PoseDetailSidebarProps {
   poses: Pose[];
   transitions: Transition[];
   flows: Flow[];
+  ownFlows: Flow[];
   activeFlowName: string | null;
   onSelectPose: (poseId: string | null) => void;
   onFlowClick: (flowName: string) => void;
@@ -33,6 +35,7 @@ export function PoseDetailSidebar({
   poses,
   transitions,
   flows,
+  ownFlows,
   activeFlowName,
   onSelectPose,
   onFlowClick,
@@ -173,6 +176,12 @@ export function PoseDetailSidebar({
     (t) => t.fromPoseId
   );
   const mirroredPose = pose.mirroredPoseId ? poses.find((p) => p.id === pose.mirroredPoseId) : null;
+  const ownFlowsWithPose = ownFlows.filter(flow => flow.poseIds.includes(pose.id));
+  const poseDifficultyRank = (p: Pose) => difficultyOrder[p.difficulty];
+  const stepUps = nextPoses(pose.id, transitions)
+    .flatMap(next => poses.filter(p => p.id === next.poseId).map(p => ({ ...next, pose: p })))
+    .filter(next => poseDifficultyRank(next.pose) > poseDifficultyRank(pose))
+    .sort((a, b) => poseDifficultyRank(a.pose) - poseDifficultyRank(b.pose) || poseName(a.pose).localeCompare(poseName(b.pose)));
 
   const pendingPosition = pendingPositions?.[selectedPoseId];
   const hasPosition = pendingPosition !== undefined ? pendingPosition !== null : !!pose.position;
@@ -498,6 +507,47 @@ export function PoseDetailSidebar({
                   </div>
                 );
               })}
+            </div>
+          </div>
+        )}
+
+        {ownFlowsWithPose.length > 0 && (
+          <div className="mb-6">
+            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">
+              In My Flows
+            </h3>
+            <div className="space-y-2">
+              {ownFlowsWithPose.map(flow => (
+                <button
+                  key={flow.name}
+                  onClick={() => onFlowClick(OWN_FLOW_PREFIX + flow.name)}
+                  className="w-full px-3 py-2 text-left text-sm rounded bg-gray-100 text-gray-700 hover:bg-gray-200 font-medium"
+                >
+                  {flow.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {stepUps.length > 0 && (
+          <div className="mb-6">
+            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-1">
+              What's Next
+            </h3>
+            <p className="text-xs text-gray-500 mb-2">Harder poses reachable from here</p>
+            <div className="space-y-2">
+              {stepUps.map(({ pose: next, transition }) => (
+                <button
+                  key={next.id}
+                  onClick={() => onSelectPose(next.id)}
+                  className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm rounded border border-gray-200 hover:border-blue-400"
+                >
+                  <span className="flex-1 font-medium text-gray-800">{poseName(next)}</span>
+                  <span className="text-xs text-gray-500">{transition.difficulty} transition</span>
+                  <DifficultyBadge difficulty={next.difficulty} />
+                </button>
+              ))}
             </div>
           </div>
         )}

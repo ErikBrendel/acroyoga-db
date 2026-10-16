@@ -1,6 +1,7 @@
 import {useMemo, useState} from 'react';
 import {usePoseData} from './hooks/usePoseData';
-import {useUrlState} from './hooks/useUrlState';
+import {setUrlParams, useUrlState} from './hooks/useUrlState';
+import {useOwnFlows} from './hooks/useOwnFlows';
 import {PoseDetailSidebar} from './components/PoseDetailSidebar';
 import {AddPoseDialog} from './components/AddPoseDialog';
 import {AddFlowDialog} from './components/AddFlowDialog';
@@ -14,7 +15,7 @@ import {AboutView} from './views/AboutView';
 import {PosePosition} from './utils/graphTransform';
 import {isLocalEditMode} from './utils/editMode';
 import {getFlowVariants, getFlowVariantKey} from './utils/flowMirror';
-import {resolveFlow} from './utils/flows';
+import {importName, OWN_FLOW_PREFIX, parseSharedFlow, resolveFlow} from './utils/flows';
 import {goTo, useView} from './utils/navigation';
 import {Flow} from './types/data';
 
@@ -23,6 +24,10 @@ function App() {
   const view = useView();
   const [selectedPoseId, setSelectedPoseId] = useUrlState<string | null>('pose', null, true);
   const [activeFlowKey] = useUrlState<string | null>('flow', null);
+  const [sharedName] = useUrlState<string | null>('shared', null);
+  const [sharedSteps] = useUrlState<string | null>('steps', null);
+  const { ownFlows, saveOwnFlow, deleteOwnFlow } = useOwnFlows();
+  const [isImportDismissed, setIsImportDismissed] = useState(false);
   const [isAddPoseDialogOpen, setIsAddPoseDialogOpen] = useState(false);
   const [isAddFlowDialogOpen, setIsAddFlowDialogOpen] = useState(false);
   const [editingFlow, setEditingFlow] = useState<Flow | null>(null);
@@ -30,20 +35,35 @@ function App() {
   const [editorPoseId, setEditorPoseId] = useState<string | null>(null);
   const [pendingPositions, setPendingPositions] = useState<Record<string, PosePosition | null>>({});
 
+  const sharedFlow = useMemo(
+    () => parseSharedFlow(new URLSearchParams({ shared: sharedName ?? '', steps: sharedSteps ?? '' }), poses),
+    [sharedName, sharedSteps, poses]
+  );
+  const sharedImportName = sharedFlow && importName(sharedFlow, ownFlows);
+
   const activeFlow = useMemo(
-    () => activeFlowKey ? resolveFlow(activeFlowKey, flows, [], null, poses) : null,
-    [activeFlowKey, flows, poses]
+    () => activeFlowKey ? resolveFlow(activeFlowKey, flows, ownFlows, sharedFlow, poses) : null,
+    [activeFlowKey, flows, ownFlows, sharedFlow, poses]
   );
 
   const flowChoices = useMemo(
-    () => flows.slice().sort((a, b) => a.name.localeCompare(b.name)).flatMap(flow =>
-      getFlowVariants(flow, poses).map(variant => ({
-        key: getFlowVariantKey(flow.name, variant.isMirrored),
-        name: variant.isMirrored ? `${flow.name} (mirrored)` : flow.name,
-      }))
-    ),
-    [flows, poses]
+    () => [
+      ...ownFlows.map(flow => ({ key: OWN_FLOW_PREFIX + flow.name, name: `My flow: ${flow.name}` })),
+      ...flows.slice().sort((a, b) => a.name.localeCompare(b.name)).flatMap(flow =>
+        getFlowVariants(flow, poses).map(variant => ({
+          key: getFlowVariantKey(flow.name, variant.isMirrored),
+          name: variant.isMirrored ? `${flow.name} (mirrored)` : flow.name,
+        }))
+      ),
+    ],
+    [flows, ownFlows, poses]
   );
+
+  const importSharedFlow = () => {
+    if (!sharedFlow || !sharedImportName) return;
+    saveOwnFlow({ name: sharedImportName, poseIds: sharedFlow.poseIds });
+    setUrlParams({ shared: null, steps: null, flow: OWN_FLOW_PREFIX + sharedImportName });
+  };
 
   if (loading) {
     return (
@@ -82,10 +102,14 @@ function App() {
           {view === 'flows' && (
             <FlowsView
               flows={flows}
+              ownFlows={ownFlows}
               poses={poses}
               transitions={transitions}
               activeFlow={activeFlow}
               onSelectPose={setSelectedPoseId}
+              onSaveOwnFlow={saveOwnFlow}
+              onDeleteOwnFlow={deleteOwnFlow}
+              onImportShared={importSharedFlow}
               onEditFlow={isLocalEditMode() ? setEditingFlow : undefined}
             />
           )}
@@ -115,6 +139,7 @@ function App() {
             poses={poses}
             transitions={transitions}
             flows={flows}
+            ownFlows={ownFlows}
             activeFlowName={activeFlowKey}
             onSelectPose={setSelectedPoseId}
             onFlowClick={handleFlowClick}
@@ -125,6 +150,21 @@ function App() {
           />
         )}
       </div>
+      {sharedFlow && sharedImportName && !isImportDismissed && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/30 p-4">
+          <div className="w-full max-w-sm bg-white rounded-lg shadow-xl p-5">
+            <h2 className="text-lg font-semibold text-gray-900">Save "{sharedFlow.name}"?</h2>
+            <p className="mt-1 text-sm text-gray-600">
+              Someone shared a flow of {sharedFlow.poseIds.length} poses with you. Save it to your flows in this browser
+              {sharedImportName !== sharedFlow.name && ` as "${sharedImportName}"`}?
+            </p>
+            <div className="flex gap-2 mt-4">
+              <button onClick={importSharedFlow} className="flex-1 px-4 py-2 bg-blue-600 text-white rounded font-medium">Save</button>
+              <button onClick={() => setIsImportDismissed(true)} className="flex-1 px-4 py-2 bg-gray-100 rounded font-medium">Just look</button>
+            </div>
+          </div>
+        </div>
+      )}
       <AddPoseDialog
         isOpen={isAddPoseDialogOpen}
         onClose={() => setIsAddPoseDialogOpen(false)}

@@ -24,7 +24,7 @@ export function FlowSteps({ poseIds, poses, transitions, onSelectPose, onRemoveS
               <div className="ml-5 pl-4 border-l-2 border-gray-200 py-1 text-xs">
                 {transition ? (
                   <span style={{ color: getTransitionColor(transition.difficulty) }}>
-                    {transition.name ?? 'Transition'}, {transition.difficulty}
+                    {transition.name && `${transition.name}, `}{transition.difficulty} transition
                   </span>
                 ) : (
                   <span className="text-amber-700">No known transition</span>

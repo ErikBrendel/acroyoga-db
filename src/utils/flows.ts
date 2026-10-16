@@ -46,10 +46,9 @@ export function parseSharedFlow(params: URLSearchParams, poses: Pose[]): Flow | 
   return { name, poseIds };
 }
 
-/** The name to import a shared flow under, or null if the same flow is already among the own flows */
+/** The name to import a shared flow under, or null if its steps are already among the own flows */
 export function importName(flow: Flow, ownFlows: Flow[]): string | null {
-  const sameSteps = (other: Flow) => other.poseIds.join(',') === flow.poseIds.join(',');
-  if (ownFlows.some(other => other.name === flow.name && sameSteps(other))) return null;
+  if (ownFlows.some(other => other.poseIds.join(',') === flow.poseIds.join(','))) return null;
   let name = flow.name;
   for (let i = 2; ownFlows.some(other => other.name === name); i++) name = `${flow.name} (${i})`;
   return name;
