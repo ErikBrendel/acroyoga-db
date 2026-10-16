@@ -17,4 +17,6 @@ AI-generated drafts in `data-drafts/poses3d/` (never deployed) until approved by
 ## Docs
 - `docs/3d-model.md`: the 3D pose model, its stored format and the editor's solver
 - `docs/ai-pose-generation.md`: generating pose drafts with AI agents (`pnpm pose:solve`, `pose:render`, `pose:orient`)
+- `docs/related-work.md`: other acroyoga libraries and apps, and how this site differs
+- `docs/synthetic-users/`: simulated user research: personas, user stories, product ideas (`ideas.md`)
 - `ROADMAP.md`: planned ideas

@@ -8,3 +8,5 @@ pnpm-lock.yaml
 
 # Renders of the AI pose tools
 data-drafts/renders/
+docs/synthetic-users/runs/*/shots/
+.playwright-cli/

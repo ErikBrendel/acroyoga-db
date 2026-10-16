@@ -1,6 +1,6 @@
 # Roadmap
 
-Ideas, grouped by area, in no particular order.
+Ideas, grouped by area, in no particular order. Related tools: `docs/related-work.md`; ideas from simulated user research: `docs/synthetic-users/ideas.md`.
 
 ## Site structure
 - [ ] Overview page as the entry point, linking to poses, flows and the map
