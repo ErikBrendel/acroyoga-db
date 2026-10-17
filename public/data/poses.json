@@ -35,6 +35,9 @@
   {
     "id": "front-plank",
     "name": "Front Plank",
+    "aliases": [
+      "Bird"
+    ],
     "description": "Base lies on back with feet up, supporting flyer's hips. Flyer balances horizontally face-down. Hands connected for support.",
     "difficulty": "easy",
     "position": {
@@ -159,7 +162,7 @@
     "aliases": [
       "Pashi"
     ],
-    "description": "Flyer in triangle form: grabbing their own ankles, and upside down. Base grabs the Fyler upper arms, balances whole weight with their arms.",
+    "description": "Flyer in triangle form: grabbing their own ankles, and upside down. Base grabs the Flyer's upper arms, balances whole weight with their arms.",
     "difficulty": "intermediate",
     "position": {
       "x": 407,
@@ -376,7 +379,7 @@
     "aliases": [
       "Thigh Stand Face Away"
     ],
-    "description": "Base standing slightly squatting, Flyer standing on Base knees looking away. Base holding Fyler hips, leaning back. Counterbalance",
+    "description": "Base standing slightly squatting, Flyer standing on Base knees looking away. Base holding Flyer's hips, leaning back. Counterbalance",
     "difficulty": "intermediate",
     "position": {
       "x": 1602,
