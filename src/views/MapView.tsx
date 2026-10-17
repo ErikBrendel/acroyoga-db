@@ -17,6 +17,7 @@ interface MapViewProps {
   flowChoices: { key: string; name: string }[];
   activeFlow: ResolvedFlow | null;
   selectedPoseId: string | null;
+  bottomInset?: number;
   onSelectPose: (poseId: string | null) => void;
   editMode?: {
     pendingPositions: Record<string, PosePosition | null>;
@@ -28,7 +29,7 @@ interface MapViewProps {
   };
 }
 
-export function MapView({ poses, transitions, flowChoices, activeFlow, selectedPoseId, onSelectPose, editMode }: MapViewProps) {
+export function MapView({ poses, transitions, flowChoices, activeFlow, selectedPoseId, bottomInset, onSelectPose, editMode }: MapViewProps) {
   const [searchInput, setSearchInput] = useUrlState<string>('search', '');
   const [collapseMirrors, setCollapseMirrors] = useLocalStorageState('collapseMirroredPoses', false);
 
@@ -65,8 +66,9 @@ export function MapView({ poses, transitions, flowChoices, activeFlow, selectedP
         onSelectPose={onSelectPose}
         onNodeDragStop={editMode && ((nodeId, position) => editMode.setPendingPositions({ ...editMode.pendingPositions, [nodeId]: position }))}
         isEditMode={!!editMode}
+        bottomInset={bottomInset}
       />
-      <div className="absolute top-2 left-2 right-2 md:right-auto z-20 flex flex-wrap items-center gap-2 p-2 bg-white/95 shadow rounded-lg md:w-[28rem]">
+      <div className={`absolute top-2 left-2 right-2 md:right-auto z-20 flex flex-wrap items-center gap-2 p-2 bg-white/95 shadow rounded-lg md:w-[28rem] ${(bottomInset ?? 0) > 0.5 ? 'hidden' : ''}`}>
         <SearchInput value={searchInput} onChange={setSearchInput} placeholder="Search poses..." className="w-full" />
         <select
           value={activeFlow?.key ?? ''}

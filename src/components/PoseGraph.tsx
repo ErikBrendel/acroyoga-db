@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useEffect } from 'react';
+import { useCallback, useMemo, useEffect, useRef } from 'react';
 import {
   ReactFlow,
   Controls,
@@ -10,6 +10,7 @@ import {
   Node,
   Edge,
   useViewport,
+  ReactFlowInstance,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { PoseNode } from './PoseNode';
@@ -25,6 +26,8 @@ interface PoseGraphProps {
   onSelectPose: (poseId: string | null) => void;
   onNodeDragStop?: (nodeId: string, position: { x: number; y: number }) => void;
   isEditMode?: boolean;
+  /** Share of the map's height covered by a drawer from below; the selected pose is centred in the rest */
+  bottomInset?: number;
 }
 
 function SelectionRings({ selectedPoseId, nodes }: { selectedPoseId: string | null; nodes: Node[] }) {
@@ -58,7 +61,9 @@ function SelectionRings({ selectedPoseId, nodes }: { selectedPoseId: string | nu
   );
 }
 
-export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, matchingPoseIds, onSelectPose, onNodeDragStop, isEditMode = false }: PoseGraphProps) {
+export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, matchingPoseIds, onSelectPose, onNodeDragStop, isEditMode = false, bottomInset }: PoseGraphProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const flowRef = useRef<Pick<ReactFlowInstance, 'getZoom' | 'setCenter'> | null>(null);
   const [localNodes, setNodes, onNodesChange] = useNodesState(nodes);
   const [localEdges, setEdges, onEdgesChange] = useEdgesState(edges);
 
@@ -78,6 +83,16 @@ export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, matchingPo
       data: { ...edge.data, nodes: localNodes },
     })));
   }, [localNodes, setEdges]);
+
+  useEffect(() => {
+    const flow = flowRef.current;
+    const node = nodes.find(n => n.id === selectedPoseId);
+    const height = containerRef.current?.clientHeight;
+    if (bottomInset === undefined || !flow || !node || !height) return;
+    const visibleHeight = height * (1 - bottomInset);
+    const zoom = Math.min(flow.getZoom(), visibleHeight / 260);
+    flow.setCenter(node.position.x + 60, node.position.y + 60 + height * bottomInset / 2 / zoom, { zoom, duration: 300 });
+  }, [selectedPoseId, bottomInset]); // not on node changes, so dragging nodes does not move the view
 
   const nodeTypes = useMemo(() => ({ pose: PoseNode }), []);
   const edgeTypes = useMemo(() => ({ smart: SmartEdge }), []);
@@ -223,8 +238,9 @@ export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, matchingPo
   });
 
   return (
-    <div className="w-full h-full">
+    <div ref={containerRef} className="w-full h-full">
       <ReactFlow
+        onInit={(flow) => { flowRef.current = flow; }}
         nodes={highlightedNodes}
         edges={highlightedEdges}
         onNodesChange={onNodesChange}

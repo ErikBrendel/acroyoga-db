@@ -1,4 +1,4 @@
-import {useMemo, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import {usePoseData} from './hooks/usePoseData';
 import {setUrlParams, useUrlState} from './hooks/useUrlState';
 import {useOwnFlows} from './hooks/useOwnFlows';
@@ -7,6 +7,8 @@ import {AddPoseDialog} from './components/AddPoseDialog';
 import {AddFlowDialog} from './components/AddFlowDialog';
 import {PoseEditor3D} from './components/PoseEditor3D';
 import {NavBar} from './components/NavBar';
+import {BottomSheet, SHEET_HEIGHT} from './components/BottomSheet';
+import {useMediaQuery} from './hooks/useMediaQuery';
 import {HomeView} from './views/HomeView';
 import {PosesView} from './views/PosesView';
 import {FlowsView} from './views/FlowsView';
@@ -28,6 +30,10 @@ function App() {
   const [sharedSteps] = useUrlState<string | null>('steps', null);
   const { ownFlows, saveOwnFlow, deleteOwnFlow } = useOwnFlows();
   const [isImportDismissed, setIsImportDismissed] = useState(false);
+  const isPhone = useMediaQuery('(max-width: 767px)');
+  const [isSheetExpanded, setIsSheetExpanded] = useState(false);
+
+  useEffect(() => setIsSheetExpanded(false), [selectedPoseId]);
   const [isAddPoseDialogOpen, setIsAddPoseDialogOpen] = useState(false);
   const [isAddFlowDialogOpen, setIsAddFlowDialogOpen] = useState(false);
   const [editingFlow, setEditingFlow] = useState<Flow | null>(null);
@@ -91,6 +97,25 @@ function App() {
     view === 'map' ? goTo('map', { flow: flowKey }) : goTo('flows', { flow: flowKey, pose: null });
 
   const showsPanel = poses.some(p => p.id === selectedPoseId) && view !== 'home' && view !== 'about';
+  const inSheet = isPhone && view === 'map';
+
+  const poseDetail = (
+    <PoseDetailSidebar
+      selectedPoseId={selectedPoseId}
+      poses={poses}
+      transitions={transitions}
+      flows={flows}
+      ownFlows={ownFlows}
+      activeFlowName={activeFlowKey}
+      onSelectPose={setSelectedPoseId}
+      onFlowClick={handleFlowClick}
+      onDataChange={isLocalEditMode() ? refetch : undefined}
+      onUnpinNode={isLocalEditMode() ? (nodeId) => setPendingPositions({ ...pendingPositions, [nodeId]: null }) : undefined}
+      onOpenIn3DEditor={isLocalEditMode() ? (poseId) => { setEditorPoseId(poseId); setIs3DEditorOpen(true); } : undefined}
+      onShowOnMap={view !== 'map' ? (poseId) => goTo('map', { pose: poseId }) : undefined}
+      pendingPositions={pendingPositions}
+    />
+  );
 
   return (
     <div className="w-screen h-dvh flex flex-col bg-gray-50">
@@ -120,6 +145,7 @@ function App() {
               flowChoices={flowChoices}
               activeFlow={activeFlow}
               selectedPoseId={selectedPoseId}
+              bottomInset={inSheet ? (showsPanel ? (isSheetExpanded ? SHEET_HEIGHT.full : SHEET_HEIGHT.peek) : 0) : undefined}
               onSelectPose={setSelectedPoseId}
               editMode={isLocalEditMode() ? {
                 pendingPositions,
@@ -132,24 +158,11 @@ function App() {
             />
           )}
           {view === 'about' && <AboutView />}
+          {showsPanel && inSheet && (
+            <BottomSheet expanded={isSheetExpanded} onExpandedChange={setIsSheetExpanded}>{poseDetail}</BottomSheet>
+          )}
         </main>
-        {showsPanel && (
-          <PoseDetailSidebar
-            selectedPoseId={selectedPoseId}
-            poses={poses}
-            transitions={transitions}
-            flows={flows}
-            ownFlows={ownFlows}
-            activeFlowName={activeFlowKey}
-            onSelectPose={setSelectedPoseId}
-            onFlowClick={handleFlowClick}
-            onDataChange={isLocalEditMode() ? refetch : undefined}
-            onUnpinNode={isLocalEditMode() ? (nodeId) => setPendingPositions({ ...pendingPositions, [nodeId]: null }) : undefined}
-            onOpenIn3DEditor={isLocalEditMode() ? (poseId) => { setEditorPoseId(poseId); setIs3DEditorOpen(true); } : undefined}
-            onShowOnMap={view !== 'map' ? (poseId) => goTo('map', { pose: poseId }) : undefined}
-            pendingPositions={pendingPositions}
-          />
-        )}
+        {showsPanel && !inSheet && poseDetail}
       </div>
       {sharedFlow && sharedImportName && !isImportDismissed && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/30 p-4">
