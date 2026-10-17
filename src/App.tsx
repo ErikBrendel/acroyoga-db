@@ -146,6 +146,7 @@ function App() {
             onDataChange={isLocalEditMode() ? refetch : undefined}
             onUnpinNode={isLocalEditMode() ? (nodeId) => setPendingPositions({ ...pendingPositions, [nodeId]: null }) : undefined}
             onOpenIn3DEditor={isLocalEditMode() ? (poseId) => { setEditorPoseId(poseId); setIs3DEditorOpen(true); } : undefined}
+            onShowOnMap={view !== 'map' ? (poseId) => goTo('map', { pose: poseId }) : undefined}
             pendingPositions={pendingPositions}
           />
         )}

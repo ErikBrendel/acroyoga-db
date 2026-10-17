@@ -238,6 +238,7 @@ export function PoseGraph({ nodes, edges, selectedPoseId, activeFlow, matchingPo
         nodesDraggable={isEditMode}
         nodesConnectable={false}
         fitView
+        fitViewOptions={selectedPoseId ? { nodes: [{ id: selectedPoseId }], maxZoom: 1 } : undefined}
         minZoom={0.1}
         maxZoom={2}
       >

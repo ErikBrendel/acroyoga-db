@@ -27,6 +27,7 @@ interface PoseDetailSidebarProps {
   onDataChange?: () => void;
   onUnpinNode?: (nodeId: string) => void;
   onOpenIn3DEditor?: (poseId: string) => void;
+  onShowOnMap?: (poseId: string) => void;
   pendingPositions?: Record<string, PosePosition | null>;
 }
 
@@ -42,6 +43,7 @@ export function PoseDetailSidebar({
   onDataChange,
   onUnpinNode,
   onOpenIn3DEditor,
+  onShowOnMap,
   pendingPositions,
 }: PoseDetailSidebarProps) {
   const [isDeleting, setIsDeleting] = useState(false);
@@ -386,6 +388,15 @@ export function PoseDetailSidebar({
               </button>
             </div>
           </div>
+        )}
+
+        {onShowOnMap && (
+          <button
+            onClick={() => onShowOnMap(pose.id)}
+            className="mb-4 px-3 py-1.5 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 text-sm font-medium"
+          >
+            Show on map
+          </button>
         )}
 
         <Suspense fallback={null}>
