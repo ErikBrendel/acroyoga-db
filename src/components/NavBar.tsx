@@ -11,7 +11,7 @@ export function NavBar({ view }: { view: View }) {
       {LINKS.map(([target, label]) => (
         <button
           key={target}
-          onClick={() => goTo(target, { flow: null })}
+          onClick={() => goTo(target, { flow: null, pose: null })}
           className={`px-2.5 py-1.5 rounded text-sm font-medium whitespace-nowrap ${
             view === target ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100'
           }`}
