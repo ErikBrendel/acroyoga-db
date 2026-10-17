@@ -9,6 +9,7 @@ import { PosePosition } from '../utils/graphTransform';
 import { mirrorText } from '../utils/mirrorText';
 import { getFlowVariants, getFlowVariantKey } from '../utils/flowMirror';
 import { DifficultyBadge } from './DifficultyBadge';
+import { DifficultyGuide } from './DifficultyGuide';
 import { poseName, sharedNames } from '../utils/poseNames';
 import { nextPoses, OWN_FLOW_PREFIX } from '../utils/flows';
 
@@ -318,8 +319,9 @@ export function PoseDetailSidebar({
               {pose.aliases && (
                 <p className="text-sm text-gray-600">Also called {pose.aliases.join(', ')}</p>
               )}
-              <div className="mt-1">
+              <div className="mt-1 flex items-center gap-1">
                 <DifficultyBadge difficulty={pose.difficulty} />
+                <DifficultyGuide compact />
               </div>
             </div>
           )}

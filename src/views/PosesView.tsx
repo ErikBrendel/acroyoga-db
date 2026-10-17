@@ -2,6 +2,7 @@ import { Pose, PoseDifficulty } from '../types/data';
 import { useUrlState } from '../hooks/useUrlState';
 import { SearchInput } from '../components/SearchInput';
 import { DifficultyBadge } from '../components/DifficultyBadge';
+import { DifficultyGuide } from '../components/DifficultyGuide';
 import { matchedAlias, poseName, searchPoses } from '../utils/poseNames';
 
 const DIFFICULTIES: PoseDifficulty[] = ['easy', 'intermediate', 'hard'];
@@ -23,7 +24,7 @@ export function PosesView({ poses, selectedPoseId, onSelectPose }: PosesViewProp
   return (
     <div className="max-w-2xl mx-auto px-4 py-4">
       <SearchInput value={search} onChange={setSearch} placeholder="Search names, other names and descriptions" />
-      <div className="flex gap-2 mt-3">
+      <div className="flex flex-wrap items-center gap-2 mt-3">
         {[null, ...DIFFICULTIES].map(d => (
           <button
             key={d ?? 'all'}
@@ -35,6 +36,7 @@ export function PosesView({ poses, selectedPoseId, onSelectPose }: PosesViewProp
             {d ? d.charAt(0).toUpperCase() + d.slice(1) : 'All'}
           </button>
         ))}
+        <DifficultyGuide compact />
       </div>
       <p className="mt-3 text-sm text-gray-500">{found.length} of {poses.length} poses</p>
       <ul className="mt-2 divide-y divide-gray-100 bg-white border border-gray-200 rounded-lg">

@@ -5,6 +5,7 @@ import { useLocalStorageState } from '../hooks/useLocalStorageState';
 import { FlowSteps } from '../components/FlowSteps';
 import { FlowDraft, FlowEditor } from '../components/FlowEditor';
 import { StarDifficulty } from '../components/StarDifficulty';
+import { DifficultyGuide } from '../components/DifficultyGuide';
 import { calculateFlowDifficulty } from '../utils/flowDifficulty';
 import { getFlowVariantKey, hasFlowMirrorVariant, parseFlowVariantKey } from '../utils/flowMirror';
 import { flowShareUrl, importName, OWN_FLOW_PREFIX, ResolvedFlow, SHARED_FLOW_KEY } from '../utils/flows';
@@ -137,6 +138,7 @@ function FlowDetail({ flow, builtIn, isSaved, poses, transitions, onSelectPose, 
       <div className="flex items-center gap-3 mt-2">
         <h2 className="text-2xl font-bold text-gray-900">{flow.name}{isMirrored && ' (mirrored)'}</h2>
         <StarDifficulty rating={calculateFlowDifficulty(flow, poses, transitions)} />
+        <DifficultyGuide compact />
       </div>
       {isShared && <p className="text-sm text-gray-600 mt-1">Shared with you{isSaved && ', saved in your flows'}</p>}
       <div className="flex flex-wrap gap-2 mt-3">
