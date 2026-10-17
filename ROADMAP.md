@@ -3,12 +3,15 @@
 Ideas, grouped by area, in no particular order. Related tools: `docs/related-work.md`; ideas from simulated user research: `docs/synthetic-users/ideas.md`.
 
 ## Site structure
-- [ ] Overview page as the entry point, linking to poses, flows and the map
-- [ ] Pose list as grid (thumbnails) and table (sortable), with the existing filters
-- [ ] Flows page
-- [ ] The map as one view among these instead of the default
-- [ ] Search over names, aliases and tags
-- [ ] Shareable deep links for poses, transitions, flows and the player state, e.g. to send a flow to a partner
+- [x] Overview page as the entry point, linking to poses, flows and the map
+- [x] Pose list with search and difficulty filter
+- [ ] Pose list as grid with thumbnails, to recognise a pose by its shape
+- [x] Flows page, the map as one view among these
+- [x] Search over names and aliases; a name used for several poses is pointed out on each of them
+- [ ] Search over tags
+- [x] Own flows: built from the map's transitions (or any pose), kept in the browser, shared as a link and imported
+- [ ] Shareable deep links for transitions and the player state
+- [x] What's next in the pose panel: harder poses reachable from it
 - [ ] Installable and usable offline (PWA), for jams without signal
 
 ## 3D for visitors
@@ -40,7 +43,7 @@ Ideas, grouped by area, in no particular order. Related tools: `docs/related-wor
 - [ ] Other sources, e.g. https://www.christiangieger.de/acroyoga-poses/, https://www.yogaemotion.net/courses
       and flows on YouTube:
   - [ ] links per pose and flow (YouTube with timestamps)
-  - [ ] alternative names used elsewhere, for search and matching
+  - [x] alternative names used elsewhere, for search and matching (`aliases` per pose; more only with two sources or an explicit "aka")
   - [ ] coverage check: poses and flows that exist elsewhere but not here yet
   - [ ] importing descriptions or images, only with the owner's permission
 

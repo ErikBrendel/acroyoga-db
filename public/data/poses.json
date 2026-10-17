@@ -2,6 +2,9 @@
   {
     "id": "bird",
     "name": "Bird",
+    "aliases": [
+      "Free Bird"
+    ],
     "description": "Base lies on back with feet up, supporting flyer's hips. Flyer balances horizontally face-down. Hands are free.",
     "difficulty": "easy",
     "position": {
@@ -62,6 +65,9 @@
   {
     "id": "star",
     "name": "Star",
+    "aliases": [
+      "Shoulderstand on Feet"
+    ],
     "description": "Flyer does a shoulderstand on Base feet. Hands connected in \"stargrip\". Base straight arms, Flyer bent arms.",
     "difficulty": "easy",
     "position": {
@@ -102,6 +108,9 @@
   {
     "id": "whale",
     "name": "Whale",
+    "aliases": [
+      "High Flying Whale"
+    ],
     "description": "Flyer lays on Base feet with their shoulderblades, arches slightly backwards, watches ceiling. Base holds Flyers lower legs in hands.",
     "difficulty": "easy",
     "position": {
@@ -134,6 +143,9 @@
   {
     "id": "straddlebat",
     "name": "Straddlebat",
+    "aliases": [
+      "Straddle Bat"
+    ],
     "description": "Like star, but lower donw: Instead of Base feet on Flyer shoulders, they are on the outer thighs. Flyer head almost on Base belly.",
     "difficulty": "easy",
     "position": {
@@ -144,6 +156,9 @@
   {
     "id": "floating-paschi",
     "name": "Floating Paschi",
+    "aliases": [
+      "Pashi"
+    ],
     "description": "Flyer in triangle form: grabbing their own ankles, and upside down. Base grabs the Fyler upper arms, balances whole weight with their arms.",
     "difficulty": "intermediate",
     "position": {
@@ -164,6 +179,11 @@
   {
     "id": "sidestar-left",
     "name": "Side Star (Left)",
+    "aliases": [
+      "Inside Star",
+      "Inside Side Star",
+      "Sidestar"
+    ],
     "description": "Bases left leg on Flyer left hip. Flyer leans inward, from base perspective to right. Both hands connected.",
     "mirroredPoseId": "sidestar-right",
     "difficulty": "intermediate",
@@ -175,6 +195,11 @@
   {
     "id": "sidestar-right",
     "name": "Side Star (Right)",
+    "aliases": [
+      "Inside Star",
+      "Inside Side Star",
+      "Sidestar"
+    ],
     "description": "Bases right leg on Flyer right hip. Flyer leans inward, from base perspective to left. Both hands connected.",
     "mirroredPoseId": "sidestar-left",
     "difficulty": "intermediate",
@@ -262,6 +287,9 @@
   {
     "id": "low-foot-to-hand",
     "name": "Low F2H",
+    "aliases": [
+      "Low Foot-to-Hand"
+    ],
     "description": "Base elbows close to chest, Flyer faces away, heels at Base fingers and toes at Base wrist. High-Heels!",
     "difficulty": "intermediate",
     "position": {
@@ -332,6 +360,9 @@
   {
     "id": "two-high",
     "name": "Two High",
+    "aliases": [
+      "2 High"
+    ],
     "description": "Base standing, Flyer on shoulders, Base holding back of Flyer kneepits/calves donw",
     "difficulty": "intermediate",
     "position": {
@@ -342,6 +373,9 @@
   {
     "id": "galionsfigur",
     "name": "Galionsfigur",
+    "aliases": [
+      "Thigh Stand Face Away"
+    ],
     "description": "Base standing slightly squatting, Flyer standing on Base knees looking away. Base holding Fyler hips, leaning back. Counterbalance",
     "difficulty": "intermediate",
     "position": {
@@ -352,6 +386,9 @@
   {
     "id": "standing-counterbalance",
     "name": "Standing Counterbalance",
+    "aliases": [
+      "Thigh Stand Facing"
+    ],
     "description": "Base slightly squatting, Flyer standing on knees, facing each other. Both holding wrists with long arms, leaning back",
     "difficulty": "easy",
     "position": {
@@ -484,6 +521,9 @@
   {
     "id": "reverse-star",
     "name": "Reverse Star",
+    "aliases": [
+      "Reverse Shoulderstand on Feet"
+    ],
     "description": "Like star, but Flyer facing away. Base arms straight and pushing upwards, Flyer arms also almost straight.",
     "difficulty": "intermediate",
     "position": {
@@ -494,6 +534,10 @@
   {
     "id": "outside-sidestar-left",
     "name": "Outside Sidestar (Left)",
+    "aliases": [
+      "Outside Star",
+      "Outside Side Star"
+    ],
     "description": "Flyer on left Base leg, head towards left.",
     "mirroredPoseId": "outside-sidestar-right",
     "difficulty": "intermediate",
@@ -505,6 +549,10 @@
   {
     "id": "outside-sidestar-right",
     "name": "Outside Sidestar (Right)",
+    "aliases": [
+      "Outside Star",
+      "Outside Side Star"
+    ],
     "description": "Flyer on right Base leg, head towards right.",
     "mirroredPoseId": "outside-sidestar-left",
     "difficulty": "intermediate",
@@ -734,6 +782,9 @@
   {
     "id": "low-h2h",
     "name": "Low H2H",
+    "aliases": [
+      "Low Hand-to-Hand"
+    ],
     "description": "L-Base, Base elbows close to chest. Hands are gripping opposed, Flyer doing handstand facing Base head.",
     "difficulty": "intermediate",
     "position": {
