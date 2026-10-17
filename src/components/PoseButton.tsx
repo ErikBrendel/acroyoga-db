@@ -1,11 +1,15 @@
 import {useState} from 'react';
 import {isLocalEditMode} from '../utils/editMode';
-import {TransitionDifficulty} from '../types/data';
+import {PoseDifficulty, TransitionDifficulty} from '../types/data';
+import {DifficultyBadge} from './DifficultyBadge';
 import {getTransitionColor} from '../utils/difficultyColors';
 
 interface PoseButtonProps {
   poseId: string;
   poseName: string | undefined;
+  poseDifficulty: PoseDifficulty | undefined;
+  /** The target pose is harder than the current one, a step up */
+  isStepUp: boolean;
   direction: 'bidirectional' | 'to' | 'from';
   difficulty: TransitionDifficulty;
   transitionName?: string;
@@ -15,7 +19,7 @@ interface PoseButtonProps {
   onNameChange?: (name: string) => void;
 }
 
-export function PoseButton({ poseId, poseName, direction, difficulty, transitionName, onSelectPose, onDelete, onDifficultyChange, onNameChange }: PoseButtonProps) {
+export function PoseButton({ poseId, poseName, poseDifficulty, isStepUp, direction, difficulty, transitionName, onSelectPose, onDelete, onDifficultyChange, onNameChange }: PoseButtonProps) {
   const [showConfirm, setShowConfirm] = useState(false);
   const symbols = {
     bidirectional: '↔',
@@ -38,13 +42,17 @@ export function PoseButton({ poseId, poseName, direction, difficulty, transition
     <div className={`border-l-4 pl-3 py-2 ${showConfirm ? 'bg-red-50' : ''}`} style={{ borderColor: difficultyColor }}>
       <div className="flex items-center justify-between gap-2">
         <div className="flex-1">
-          <button
-            onClick={() => onSelectPose(poseId)}
-            className="hover:underline font-medium text-left block"
-            style={{ color: difficultyColor }}
-          >
-            {symbols[direction]} {poseName || poseId}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => onSelectPose(poseId)}
+              className="hover:underline font-medium text-left"
+              style={{ color: difficultyColor }}
+            >
+              {symbols[direction]} {poseName || poseId}
+            </button>
+            {poseDifficulty && <DifficultyBadge difficulty={poseDifficulty} />}
+            {isStepUp && <span className="text-xs font-semibold text-indigo-700" title="Harder than this pose">↑ step up</span>}
+          </div>
           {transitionName && (
             <div className="text-xs text-gray-600 italic ml-4">
               {transitionName}
