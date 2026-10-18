@@ -1,6 +1,7 @@
 const SITES: [host: string, name: string][] = [
   ['acropassport.com', 'AcroPassport'],
   ['acrodemy.eu', 'Acrodemy'],
+  ['christiangieger.de', 'Christian Gieger'],
   ['jacobbrownacro.com', 'Jacob Brown'],
   ['partneracrobatics.com', 'Partner Acrobatics'],
   ['acroadventure.com', 'AcroAdventure'],

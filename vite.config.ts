@@ -11,6 +11,8 @@ const flowsPath = path.join(dataDir, 'flows.json')
 // 3D data per pose, one file each: approved in the deployed data, AI drafts outside of it until approved
 const poses3dDir = path.join(dataDir, 'poses3d')
 const drafts3dDir = path.join(process.cwd(), 'data-drafts/poses3d')
+// Human feedback on a pose's 3D data for the next AI revision, one markdown file per pose
+const feedbackDir = path.join(process.cwd(), 'data-drafts/feedback')
 
 const readPoseFiles = (dir: string) => Object.fromEntries(
   (fs.existsSync(dir) ? fs.readdirSync(dir) : [])
@@ -322,9 +324,32 @@ const apiRoutes: Record<string, ApiHandler> = {
     return { code: 201, data: { success: true, flow: body } }
   },
 
-  'GET:/api/poses3d': () => ({ code: 200, data: { saved: readPoseFiles(poses3dDir), drafts: readPoseFiles(drafts3dDir) } }),
+  'GET:/api/poses3d': () => ({
+    code: 200,
+    data: {
+      saved: readPoseFiles(poses3dDir),
+      drafts: readPoseFiles(drafts3dDir),
+      feedback: Object.fromEntries((fs.existsSync(feedbackDir) ? fs.readdirSync(feedbackDir) : [])
+        .filter(file => file.endsWith('.md'))
+        .map(file => [file.slice(0, -'.md'.length), fs.readFileSync(path.join(feedbackDir, file), 'utf-8')])),
+    },
+  }),
 
-  // Saving a pose settles it, so its draft goes
+  'PUT:/api/poses3d/feedback': (body) => {
+    if (!isPoseId(body.poseId) || typeof body.text !== 'string') {
+      return { code: 400, data: { error: 'poseId and text are required' } }
+    }
+    const filePath = path.join(feedbackDir, `${body.poseId}.md`)
+    if (body.text.trim()) {
+      fs.mkdirSync(feedbackDir, { recursive: true })
+      fs.writeFileSync(filePath, body.text.trim() + '\n')
+    } else {
+      fs.rmSync(filePath, { force: true })
+    }
+    return { code: 200, data: { success: true } }
+  },
+
+  // Saving a pose settles it, so its draft and feedback go
   'PUT:/api/poses3d': (body) => {
     if (!isPoseId(body.poseId) || typeof body.json !== 'string') {
       return { code: 400, data: { error: 'poseId and json are required' } }
@@ -335,6 +360,7 @@ const apiRoutes: Record<string, ApiHandler> = {
     fs.writeFileSync(filePath + '.tmp', body.json + '\n')
     fs.renameSync(filePath + '.tmp', filePath)
     fs.rmSync(path.join(drafts3dDir, `${body.poseId}.json`), { force: true })
+    fs.rmSync(path.join(feedbackDir, `${body.poseId}.md`), { force: true })
     return { code: 200, data: { success: true } }
   },
 

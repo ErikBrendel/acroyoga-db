@@ -1,6 +1,7 @@
 export interface StoredPoses3d {
   saved: Record<string, unknown>;
   drafts: Record<string, unknown>;
+  feedback: Record<string, string>;
 }
 
 async function request<T>(method: string, url: string, body?: unknown): Promise<T> {
@@ -21,3 +22,5 @@ export const fetchPoses3d = () => request<StoredPoses3d>('GET', '/api/poses3d');
 export const savePose3d = (poseId: string, json: string) => request('PUT', '/api/poses3d', { poseId, json });
 
 export const deleteDraft3d = (poseId: string) => request('DELETE', '/api/poses3d/draft', { poseId });
+
+export const saveFeedback3d = (poseId: string, text: string) => request('PUT', '/api/poses3d/feedback', { poseId, text });

@@ -19,7 +19,7 @@ import { AngleDef, BONES, BoneKey, JOINTS, JointId, Side, boneKey, boneLabel, op
 import { useHistory } from '../hooks/useHistory';
 import { useLocalStorageState } from '../hooks/useLocalStorageState';
 import { PRESET_GROUPS, PresetGroup } from '../3d/presets';
-import { StoredPoses3d, deleteDraft3d, fetchPoses3d, savePose3d } from '../api/poses3d';
+import { StoredPoses3d, deleteDraft3d, fetchPoses3d, saveFeedback3d, savePose3d } from '../api/poses3d';
 import { loadPose3d } from '../3d/pose3dData';
 import { Pose } from '../types/data';
 
@@ -872,6 +872,13 @@ export function PoseEditor3D({ isOpen, onClose, poses, openPoseId }: PoseEditor3
               </ToolbarButton>
             </div>
           )}
+          {poseId && (
+            <FeedbackNote
+              key={`${poseId}:${stored?.feedback[poseId] ?? ''}`}
+              initial={stored?.feedback[poseId] ?? ''}
+              onSave={text => runStorage(() => saveFeedback3d(poseId, text), text.trim() ? 'Feedback saved for the next AI revision' : 'Feedback removed')}
+            />
+          )}
           {storageMessage && <p className="text-xs text-gray-400 whitespace-pre-wrap">{storageMessage}</p>}
         </section>
 
@@ -1256,6 +1263,23 @@ function RootControls({ pose, onBeginEdit, onChange, onGround }: RootControlsPro
         ))}
         <ToolbarButton onClick={onGround} title="Move vertically so the lowest point touches the floor">⤓</ToolbarButton>
       </div>
+    </div>
+  );
+}
+
+/** What a human wants changed, for the AI's next revision of this pose (docs/ai-pose-generation.md) */
+function FeedbackNote({ initial, onSave }: { initial: string; onSave: (text: string) => void }) {
+  const [text, setText] = useState(initial);
+  return (
+    <div className="space-y-1">
+      <textarea
+        value={text}
+        onChange={e => setText(e.target.value)}
+        placeholder="Feedback for the AI, e.g. flyer's feet hook around the base's shins from the outside"
+        rows={3}
+        className="w-full bg-gray-800 rounded px-2 py-1.5 text-xs"
+      />
+      {text !== initial && <ToolbarButton onClick={() => onSave(text)}>Save feedback</ToolbarButton>}
     </div>
   );
 }

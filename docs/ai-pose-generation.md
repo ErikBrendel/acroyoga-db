@@ -134,3 +134,16 @@ More facts:
 3. `pose:render`, compare with the description, adjust; `--view Side` for details.
 4. Stop when it matches the description and the contacts are ok, or after about 12 rounds. Report what you
    decided where the description was open, and what still looks wrong, so the human knows what to check.
+
+## Revising a pose after human feedback
+Humans write what is wrong in the 3D editor's feedback field; it is stored in `data-drafts/feedback/<poseId>.md`
+and removed when they approve the pose by saving it.
+1. Read the feedback, the pose's description and links (look at the reference photos again), and the current data:
+   the draft, or the approved pose if there is no draft. `pnpm pose:check` gives its report.
+2. Render it first (`pose:render`) and keep that image as `data-drafts/renders/<poseId>-before.png`.
+3. Revise the params (or start from the stored data's angles) until every feedback point is addressed; physics
+   and contacts still have to hold. Write the draft as usual; for an approved pose the draft stands next to it
+   until a human saves one of them.
+4. Render again and report per feedback point what you changed, and where the reference photos and the feedback
+   disagree. Leave the feedback file alone; the human clears or approves.
+
