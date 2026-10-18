@@ -10,6 +10,7 @@ export interface PoseUpdateRequest {
   id: string;
   name?: string;
   aliases?: string[];
+  links?: string[];
   description?: string;
   mirroredPoseId?: string;
   difficulty: 'easy' | 'intermediate' | 'hard';

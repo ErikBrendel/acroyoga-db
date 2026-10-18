@@ -7,6 +7,7 @@ export const PoseSchema = z.object({
   id: z.string(),
   name: z.string().optional(),
   aliases: z.array(z.string()).optional(),
+  links: z.array(z.url()).optional(),
   description: z.string().optional(),
   mirroredPoseId: z.string().optional(),
   difficulty: PoseDifficultySchema,

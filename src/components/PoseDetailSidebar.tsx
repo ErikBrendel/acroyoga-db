@@ -12,6 +12,7 @@ import { DifficultyBadge } from './DifficultyBadge';
 import { DifficultyGuide } from './DifficultyGuide';
 import { poseName, sharedNames } from '../utils/poseNames';
 import { OWN_FLOW_PREFIX } from '../utils/flows';
+import { linkLabel } from '../utils/linkLabels';
 
 // three.js is only loaded once a pose is opened
 const PosePreview3D = lazy(() => import('./PosePreview3D').then(m => ({ default: m.PosePreview3D })));
@@ -51,6 +52,7 @@ export function PoseDetailSidebar({
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState('');
   const [editAliases, setEditAliases] = useState('');
+  const [editLinks, setEditLinks] = useState('');
   const [editDescription, setEditDescription] = useState('');
   const [editDifficulty, setEditDifficulty] = useState<PoseDifficulty>('easy');
   const [isSaving, setIsSaving] = useState(false);
@@ -246,6 +248,7 @@ export function PoseDetailSidebar({
   const handleEditClick = () => {
     setEditName(pose.name || '');
     setEditAliases((pose.aliases ?? []).join(', '));
+    setEditLinks((pose.links ?? []).join('\n'));
     setEditDescription(pose.description || '');
     setEditDifficulty(pose.difficulty);
     setIsEditing(true);
@@ -261,11 +264,13 @@ export function PoseDetailSidebar({
   const handleSaveEdit = async () => {
     setIsSaving(true);
     const aliases = editAliases.split(',').map(a => a.trim()).filter(Boolean);
+    const links = editLinks.split('\n').map(l => l.trim()).filter(Boolean);
     try {
       await updatePose({
         id: pose.id,
         name: editName,
         aliases,
+        links,
         description: editDescription,
         difficulty: editDifficulty,
         mirroredPoseId: pose.mirroredPoseId,
@@ -276,6 +281,7 @@ export function PoseDetailSidebar({
           id: mirroredPose.id,
           name: editName ? mirrorText(editName) : '',
           aliases: aliases.map(mirrorText),
+          links,
           description: editDescription ? mirrorText(editDescription) : '',
           difficulty: editDifficulty,
           mirroredPoseId: pose.id,
@@ -348,6 +354,13 @@ export function PoseDetailSidebar({
               onChange={(e) => setEditAliases(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 mb-3"
               placeholder="Other names, comma-separated"
+            />
+            <textarea
+              value={editLinks}
+              onChange={(e) => setEditLinks(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 mb-3 text-sm"
+              placeholder="Links to this pose elsewhere, one per line"
+              rows={3}
             />
             <textarea
               value={editDescription}
@@ -455,6 +468,27 @@ export function PoseDetailSidebar({
         {!isEditing && pose.description && (
           <div className="mb-6">
             <p className="text-gray-700 leading-relaxed">{pose.description}</p>
+          </div>
+        )}
+
+        {pose.links && (
+          <div className="mb-6">
+            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">
+              Elsewhere
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {pose.links.map(url => (
+                <a
+                  key={url}
+                  href={url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded text-sm font-medium hover:bg-gray-200"
+                >
+                  {linkLabel(url)} ↗
+                </a>
+              ))}
+            </div>
           </div>
         )}
 
