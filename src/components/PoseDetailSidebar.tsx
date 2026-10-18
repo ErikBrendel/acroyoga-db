@@ -182,7 +182,6 @@ export function PoseDetailSidebar({
   );
   const mirroredPose = pose.mirroredPoseId ? poses.find((p) => p.id === pose.mirroredPoseId) : null;
   const ownFlowsWithPose = ownFlows.filter(flow => flow.poseIds.includes(pose.id));
-  const isStepUp = (target: Pose | undefined) => !!target && difficultyOrder[target.difficulty] > difficultyOrder[pose.difficulty];
 
   const pendingPosition = pendingPositions?.[selectedPoseId];
   const hasPosition = pendingPosition !== undefined ? pendingPosition !== null : !!pose.position;
@@ -591,7 +590,6 @@ export function PoseDetailSidebar({
                       poseId={primaryTargetId}
                       poseName={primaryTargetPose?.name}
                       poseDifficulty={primaryTargetPose?.difficulty}
-                      isStepUp={isStepUp(primaryTargetPose)}
                       direction="bidirectional"
                       difficulty={primaryTransition.difficulty}
                       transitionName={primaryTransition.name}
@@ -633,7 +631,6 @@ export function PoseDetailSidebar({
                       poseId={primaryTargetId}
                       poseName={primaryTargetPose?.name}
                       poseDifficulty={primaryTargetPose?.difficulty}
-                      isStepUp={isStepUp(primaryTargetPose)}
                       direction="to"
                       difficulty={primaryTransition.difficulty}
                       transitionName={primaryTransition.name}
@@ -675,7 +672,6 @@ export function PoseDetailSidebar({
                       poseId={primaryTargetId}
                       poseName={primaryTargetPose?.name}
                       poseDifficulty={primaryTargetPose?.difficulty}
-                      isStepUp={isStepUp(primaryTargetPose)}
                       direction="from"
                       difficulty={primaryTransition.difficulty}
                       transitionName={primaryTransition.name}

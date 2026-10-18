@@ -8,8 +8,6 @@ interface PoseButtonProps {
   poseId: string;
   poseName: string | undefined;
   poseDifficulty: PoseDifficulty | undefined;
-  /** The target pose is harder than the current one, a step up */
-  isStepUp: boolean;
   direction: 'bidirectional' | 'to' | 'from';
   difficulty: TransitionDifficulty;
   transitionName?: string;
@@ -19,7 +17,7 @@ interface PoseButtonProps {
   onNameChange?: (name: string) => void;
 }
 
-export function PoseButton({ poseId, poseName, poseDifficulty, isStepUp, direction, difficulty, transitionName, onSelectPose, onDelete, onDifficultyChange, onNameChange }: PoseButtonProps) {
+export function PoseButton({ poseId, poseName, poseDifficulty, direction, difficulty, transitionName, onSelectPose, onDelete, onDifficultyChange, onNameChange }: PoseButtonProps) {
   const [showConfirm, setShowConfirm] = useState(false);
   const symbols = {
     bidirectional: '↔',
@@ -51,7 +49,6 @@ export function PoseButton({ poseId, poseName, poseDifficulty, isStepUp, directi
               {symbols[direction]} {poseName || poseId}
             </button>
             {poseDifficulty && <DifficultyBadge difficulty={poseDifficulty} />}
-            {isStepUp && <span className="text-xs font-semibold text-indigo-700" title="Harder than this pose">↑ step up</span>}
           </div>
           {transitionName && (
             <div className="text-xs text-gray-600 italic ml-4">
