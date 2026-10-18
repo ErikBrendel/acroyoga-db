@@ -8,6 +8,10 @@ in the 3D editor ("🎭 Open in 3D editor") and saving. Agents only write drafts
 - Read `docs/3d-model.md`: conventions, joints, sites, contacts.
 - The pose's name and description in `public/data/poses.json` are the ground truth, written by a human.
   Neighbouring poses in `public/data/flows.json` tell how the pose is entered and left.
+- The pose's `links` in `public/data/poses.json` point to pages that show it. Open them and look at the photos
+  (download an image with curl into a scratch folder and open it with Read): they are the reference for the
+  shape, the description only names it. Never copy images into the repo. Note where a reference disagrees with
+  the description; the description wins, but say so in your report.
 - Approved poses in `public/data/poses3d/` are the best examples (`front-plank.json`).
 - The dev server must run (`pnpm dev`) for rendering only.
 
@@ -18,6 +22,7 @@ in the 3D editor ("🎭 Open in 3D editor") and saving. Agents only write drafts
 | `pnpm pose:solve <params.json> [--out <file>]` | Builds and solves the pose, writes the draft (or `--out` for trying variants), prints a report (below). Takes about 2 s. |
 | `pnpm pose:solve <params.json> --vary <path>=<v1>,<v2> [--vary …]` | Solves every combination and prints one summary line each (contacts ok, worst error, limits, overlaps); writes nothing. `<path>` is a dot path into the params, e.g. `flyer.joints.hip.pike` or `contacts.0.a.flyer.around`. Use it instead of hand-written loops. |
 | `pnpm pose:suggest <params.json \| pose.json> [<role>:<site> [<role>:<segment>]]` | Where contacts could go: free hands and feet near a surface facing them, or with a site (`flyer:left-palm`) its best points on the bodies, optionally on one segment (`base:left-thigh`). Prints ready contact JSON. Works on params and on stored drafts. |
+| `pnpm pose:check <pose.json>` | The same report for stored pose data as it is, e.g. a draft under review or an approved pose to compare with. |
 | `pnpm pose:render <poseId> [--view Side] [--saved]` | Renders the draft in the 3D editor to `data-drafts/renders/<poseId>.png` (Front, Side / Angled, Top) or one larger view. |
 
 `pose:render` needs the dev server (`POSE_APP_URL`, default `http://localhost:5173/acroyoga-db/`) and starts a
@@ -73,11 +78,26 @@ base legs blue / orange, flyer legs teal / pink.
 - **Possible contacts**: free hands and feet within 12 cm of a surface that faces them (on the other person,
   or on the same person outside their own limb), with ready contact JSON. Check each against the description:
   hands resting on knees, palms together in Namaste, crossed ankles are contacts too and hold the shape.
+- **Balance**: centres of mass from rough body-part masses. The flyer's should lie over the contacts that carry
+  it (seen from above), and both people's together over the base's floor contact; anything outside falls over
+  unless a grip pulls against it (counterbalance poses like whale). Per contact on the base it lists the bend of
+  the base limb taking it: stacked (nearly straight, bones in line with the load) is what bases aim for in
+  L-basing; a strongly bent limb under a big load is a sign the pose is off.
 - **Overlaps**: body parts sinking into each other by 3 cm or more (rough capsules, parts in contact excepted;
   touching forearms or hands of one person can show up and are fine).
 - The solver is local: starting angles matter, especially of ankles and wrists that a reach barely turns, and a
   site on a limb that another contact also moves rolls with that limb's rotation (e.g. a thigh's `around` shifts
   with `hip.rotate`). Sweep such values with `--vary`.
+
+## Physics
+Before tuning angles, think through where the weight goes, and check it in the Balance section:
+- Which contacts carry the flyer's weight, and which only stabilise (hands on ankles, a hooked foot)? The
+  carrying ones lie under the flyer's centre of mass; the base's limbs under them are as vertical and straight
+  as the pose allows.
+- Hooks and grips work by pulling against something: a foot hooked around the base's leg presses with its
+  instep or the back of the ankle against the far side of the leg, and the leg it belongs to pulls towards the
+  flyer. Model the contact on the side that is pressed, not just somewhere near.
+- In counterbalances the centre of mass may lie outside the contacts, if a grip pulls the other way; say which.
 
 ## Orientation recipes
 Checked with `pose:orient`. World: +X is the left of a person standing at turn 0, +Y up, +Z their front.

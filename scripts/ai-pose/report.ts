@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { AcroPose, Contact, ROLES, Role, contactError, currentTwist } from '../../src/3d/acroPose';
 import { Human } from '../../src/3d/Human';
 import { possibleContacts, suggestionLine } from './contacts';
+import { balanceLines } from './balance';
 import { limbChain, worldMatrix } from '../../src/3d/ik';
 import { localSiteFrame, siteLabel, siteMatrix } from '../../src/3d/sites';
 import { ALL_BONES, BONES, BoneKey, JOINTS, JointId } from '../../src/3d/skeleton';
@@ -128,6 +129,7 @@ export function report(pose: AcroPose, humans: Record<Role, Human>): string {
       + ' normals / directions of a / b, direction = towards fingers, toes, a limb\'s far end or the head):', contactLines(pose)),
     section('Angles at their limits:', limitLines(pose)),
     section('Key points (cm):', pointLines(pose, humans)),
+    section('Balance (rough body masses; the flyer should sit over the contacts that carry it, the base\'s limbs ideally stacked):', balanceLines(pose)),
     section(`Overlaps (rough, ${OVERLAP_REPORTED * 100} cm or more):`, overlapLines(pose)),
     section('Possible contacts (free hands and feet within 12 cm of a surface facing them; add them if the pose has them):',
       possibleContacts(pose).map(suggestionLine)),
