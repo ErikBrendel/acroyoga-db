@@ -1,0 +1,27 @@
+## 2026-10-19: generated
+- **Result**: the draft `data-drafts/poses3d/bird.json` (params in `data-drafts/params/bird.json`). The flyer lies face down at root pitch 88 with a mild arch (waist -8, chest -18, neck -30), legs straight and horizontal, arms swept back beside the hips. The base is in an L-base with straight vertical legs and the arms flat on the floor. Both contacts (flyer pelvis along 0.9, around ±35, on the base's soles, twist 0) were ok at 0 mm and 2°. No limits, no overlaps, flyer centre of mass over the feet, base knees stacked.
+  - **What the human corrected afterwards**: the base's feet. The main agent changed the sole roll 25→13 and turned the toes 15° outward (ankle turn 15, hip.rotate locked, contact twist "free"). The contacts moved from around ±35 to ±28 on the pelvis. After that the human approved.
+  - **Why the feet came out rolled 25°**: I took the contact's `around` from the named `hip` site (35°) and never checked it against the photos. A point that far round the pelvis has a normal tilted about 35° sideways. My ankle sweep then picked the tilt (25) that made the sole's normal match that surface, because that is what "contacts ok" measures. Twist 0 also forced the toes straight to the head. I took the contact error as proof that the foot was right, but it only showed that the foot matched where I had put the contact. In the photos the feet sit closer to the centre of the pelvis, the soles lie flatter and the toes turn out slightly. I never rendered or looked at the foot close up.
+- **Decisions**:
+  - **Arms**: the description only says "hands free". Every photo shows the arms swept back along the body, not out to the sides or forward, so I used swept back (shoulder forward -35, raise 8, palms down).
+  - **Base's arms**: on the floor, as in most photos.
+  - **Where the feet go**: pelvis along 0.9 instead of the `hip` site (0.8), about 2 cm towards the head, so that the flyer's centre of mass lies over the feet.
+  - **Flyer's legs**: horizontal, as in the photos.
+- **References**:
+  - **Used**: christiangieger (one large side photo, the best), acrodemy (5 photos), partneracrobatics (small), yogaemotion (the file is named "Front Plank" but shows bird), and the thumbnails of both YouTube videos.
+  - **Misleading**: none of them is taken from the head end, despite the doc's hint. acrodemy's "bokafotosmadar" shows the flyer holding the base's shins, a hands-on variant. "madarativiki" shows one bent knee and the base spotting.
+  - **Useless**: the page text.
+  - **Example pose**: `public/data/poses3d/front-plank.json`. I also copied its ankle tilt (28) as a starting value without questioning it.
+- **Tools**:
+  - `pose:solve` about 10 times, of which `--vary` 6 times. The sweeps made finding the contact setup quick.
+  - `pose:render` 6 times (default, Side, "Head end"). The side render was close to the photos immediately.
+  - `pose:check` 2 times.
+- **Missing**:
+  - **Scratch scripts**: none, only curl and jq.
+  - **Sites**: no named site for "front of the pelvis between the hip bones". I had to guess the pelvis along / around and judged it only by contact error, not by the photos.
+  - **Foot check**: no report line that says how a base sole is rolled and turned compared with "flat, toes to the head". The report only gives errors against the target I had chosen myself.
+  - **Videos**: no way to grab a YouTube frame at the `&t=` timestamp.
+- **Time sinks**:
+  - **Getting the base's soles onto the flyer**: about 5 rounds. A reach with twist "free" turned the toes 65° outward, and the base's legs ran into each other. A reach with twist 0, or with locked ankles, got stuck at 14° or 28 mm. Only a flyer `fit` onto locked base legs, with the ankle swept, held.
+  - **Small traps**: `--vary` needs `'"free"'` as a JSON string, and a bare `free` crashes it. `pose:check` with a site prints only the site line.
+- **Suggestion**: a line in the report per base sole on the flyer: roll and toe turn against a flat sole with the toes to the head, plus a note in the doc. Then a contact that is "ok" but has the sole rolled 25° would be noticed, instead of passing as correct.

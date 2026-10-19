@@ -109,13 +109,31 @@ function overlapLines(pose: AcroPose): string[] {
   return lines;
 }
 
-// Toes turned outward by the hip's rotation and the ankle's turn together, both positive outward
+// Calibrated on the human-approved poses (none of them is flagged) and on what humans corrected in drafts: a
+// flyer's sickled, inward-turned hooking feet and a strongly rotated hip. The base's soles roll a lot to lie on
+// a flyer's pelvis or thighs, the flyer's feet point a lot when free, both are fine.
+const ODD_FEET = {
+  base: { toesIn: -15, toesOut: 30, rolled: 35 },
+  flyer: { toesIn: -5, toesOut: 30, rolled: 20 },
+  hipRotate: 25,
+};
+
+// Toes turned outward by the hip's rotation and the ankle's turn together, both positive outward. A contact that
+// holds says nothing about whether the foot looks natural, so this is reported for every foot.
 function feetLines(pose: AcroPose): string[] {
-  return (['left', 'right'] as const).map(side => {
-    const { hip, ankle } = { hip: pose.base.angles[`${side}-hip`], ankle: pose.base.angles[`${side}-ankle`] };
-    return `  ${side}: toes ${Math.round(hip.rotate + ankle.turn)}° outward (hip rotate ${Math.round(hip.rotate)}, ankle turn ${Math.round(ankle.turn)}), `
-      + `sole tilted ${Math.round(ankle.tilt)}° inward, pointed ${Math.round(ankle.point)}°`;
-  });
+  return ROLES.flatMap(role => (['left', 'right'] as const).map(side => {
+    const { hip, ankle } = { hip: pose[role].angles[`${side}-hip`], ankle: pose[role].angles[`${side}-ankle`] };
+    const toesOut = hip.rotate + ankle.turn;
+    const limits = ODD_FEET[role];
+    const odd = [
+      toesOut < limits.toesIn && 'toes turned in',
+      toesOut > limits.toesOut && 'toes turned far out',
+      Math.abs(ankle.tilt) > limits.rolled && 'sole strongly rolled (sickled)',
+      Math.abs(hip.rotate) > ODD_FEET.hipRotate && 'hip strongly rotated',
+    ].filter(Boolean);
+    return `  ${role} ${side}: toes ${Math.round(toesOut)}° outward (hip rotate ${Math.round(hip.rotate)}, ankle turn ${Math.round(ankle.turn)}), `
+      + `sole tilted ${Math.round(ankle.tilt)}° inward, pointed ${Math.round(ankle.point)}°${odd.length ? `  <- check: ${odd.join(', ')}` : ''}`;
+  }));
 }
 
 // One line for comparing variants
@@ -135,7 +153,7 @@ export function report(pose: AcroPose, humans: Record<Role, Human>): string {
     section('Angles at their limits:', limitLines(pose)),
     section('Key points (cm):', pointLines(pose, humans)),
     section('Lowest surface point above the floor (cm; rough capsules, so a few cm off the mesh):', heightLines(pose)),
-    section('Base\'s feet (usually the most important contact; compare with the photos):', feetLines(pose)),
+    section('Feet (the base\'s are usually the most important contact; a holding contact does not mean the foot looks right, compare with the photos):', feetLines(pose)),
     section('Balance (rough body masses; the flyer should sit over the contacts that carry it, the base\'s limbs ideally stacked):', balanceLines(pose)),
     section(`Overlaps (rough, ${OVERLAP_REPORTED * 100} cm or more):`, overlapLines(pose)),
     section('Possible contacts (free hands and feet within 12 cm of a surface facing them; add them if the pose has them):',

@@ -2,17 +2,20 @@
 // angles and contacts, solves it and writes the AI draft data-drafts/poses3d/<poseId>.json (or --out); prints
 // contact errors, angles at their limits, key points and overlaps. With --vary, every combination of the
 // values is solved and summed up in one line each, nothing is written; <path> is a dot path into the params,
-// e.g. flyer.joints.hip.pike or contacts.1.b.base.around. See docs/ai-pose-generation.md.
+// e.g. flyer.joints.hip.pike or contacts.1.b.base.around; --show adds chosen angles or site positions to each line.
+// See docs/ai-pose-generation.md.
 import fs from 'fs';
 import path from 'path';
-import { formatStoredAcroPose, serializeAcroPose } from '../../src/3d/acroPose';
+import * as THREE from 'three';
+import { AcroPose, Role, formatStoredAcroPose, serializeAcroPose } from '../../src/3d/acroPose';
+import { siteMatrix } from '../../src/3d/sites';
 import { ParamsSchema } from './params';
 import { report, summary } from './report';
 import { humans, solvePose } from './solver';
 
 const args = process.argv.slice(2);
 const option = (name: string) => args.flatMap((a, i) => (a === name ? [args[i + 1]] : []));
-const paramsPath = args.find((a, i) => !a.startsWith('--') && !['--out', '--vary'].includes(args[i - 1]));
+const paramsPath = args.find((a, i) => !a.startsWith('--') && !['--out', '--vary', '--show'].includes(args[i - 1]));
 if (!paramsPath) {
   console.error('Usage: pnpm pose:solve <params.json> [--out <file.json>] [--vary <path>=<v1>,<v2>…]');
   process.exit(1);
@@ -24,6 +27,20 @@ const variations = option('--vary').map(spec => {
   const parse = (v: string) => { try { return JSON.parse(v); } catch { return v; } };
   return { key, values: values.split(',').map(parse) };
 });
+
+// --show base.left-elbow.bend (an angle) or flyer:left-sole (a site's position in cm), comma-separated
+const shows = option('--show').flatMap(s => s.split(','));
+function showValue(pose: AcroPose, spec: string): string {
+  if (spec.includes(':')) {
+    const [role, site] = spec.split(':') as [Role, string];
+    const v = new THREE.Vector3().setFromMatrixPosition(siteMatrix(pose[role], site));
+    return `(${[v.x, v.y, v.z].map(x => Math.round(x * 100)).join(', ')})`;
+  }
+  const [role, bone, angle] = spec.split('.');
+  const value = (pose[role as Role].angles as Record<string, Record<string, number>>)[bone]?.[angle];
+  if (value === undefined) throw new Error(`--show ${spec}: use <role>.<bone>.<angle> or <role>:<site>`);
+  return value.toFixed(1);
+}
 
 if (variations.length) {
   const combinations = variations.reduce<Record<string, unknown>[]>(
@@ -37,7 +54,9 @@ if (variations.length) {
       parent[keys[keys.length - 1]] = value;
     }
     const label = Object.entries(combination).map(([k, v]) => `${k}=${JSON.stringify(v)}`).join(' ');
-    console.log(`${label}: ${summary(solvePose(ParamsSchema.parse(varied)))}`);
+    const pose = solvePose(ParamsSchema.parse(varied));
+    const shown = shows.map(spec => `${spec} ${showValue(pose, spec)}`).join(', ');
+    console.log(`${label}: ${summary(pose)}${shown ? `; ${shown}` : ''}`);
   }
   process.exit(0);
 }

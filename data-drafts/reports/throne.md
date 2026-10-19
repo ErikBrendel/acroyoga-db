@@ -1,0 +1,71 @@
+
+## 2026-10-19: revised (soles mid-thigh)
+- **Result**: Base soles moved from along 0.65 / around 195 to 0.52 / 210 on the flyer's thighs. The instep hooks moved from base shin 0.30 / -125 to 0.42 / -135. All 4 contacts ok (≤1 mm, ≤3°).
+  - Flyer: hip pike 90→80, straddle 75→85, rotate -5→0.
+  - Base ankles locked at turn 0 / tilt 10, point 9.
+  - Flyer pelvis 4 cm behind the base soles (was about 9). The knees stick out 23 cm beyond the soles (was 17).
+  - Flagged for checking: the base soles face 18° towards the flyer's back, the thighs are horizontal (photos slope down a little), and the base's legs are wider apart than in the photos.
+  - Outcome: the human approved after changing the flyer's straddle 85→68, ankle point 43→30, tilt -27→-15, turn -12→+15 (toes outward instead of inward) and hip rotate 0→6.
+  - So both fixes I made beyond the feedback were wrong:
+    - The extra straddle I used to bring her pelvis over the soles over-split her legs. Pelvis placement mattered less than a natural straddle.
+    - The solver left the flyer's hooking feet sickled, toes turned inward and points/tilts near the limits, and I did not look at them. I checked the base's feet for toe-in and locked them, but not the flyer's, though they are the same kind of error.
+- **Decisions**: I kept the calf hook from the previous revision.
+  - The feedback's "more to the inside" (around 210) has two fixes: tilt the base's sole, or turn the flyer's thighs outward.
+  - Turning the thighs outward (hip rotate -20) breaks the hook by 5–15 cm.
+  - So I tilted the base's sole and never tried small positive hip rotate combined with outward-turned flyer feet, which is what the human chose.
+  - I followed the coordinator's "pelvis more above the soles" with straddle; I should have reported the cost (over-split look) instead of paying it silently.
+- **References**: Gieger, Acrodemy and yogaemotion photos (already downloaded) compared with `--view "Head end"`.
+  - Gieger was the most useful for where the soles sit on the thigh and for the flyer's foot shape. Her feet are relaxed with toes pointing inward and down around the calves, not sickled, and I should have compared that too.
+  - No approved poses used.
+- **Tools**: `pose:solve` about 15× directly plus about 150 solves through `grid.py`, `--vary` about 6×, `pose:check` with sites 4×, `pose:render` 4×. `pose:check` with sites (sole normal and direction) was what showed the base's toe-in.
+- **Missing**:
+  - Scratch scripts, all in scratchpad/revise-throne-2/:
+    - `run.sh`: solve, then print contacts, limits and key points.
+    - `grid.py`: cartesian grid of solves, printing the error per contact, the base ankle angles, limits and pelvis.
+    - `search.ts`: brute force over flyer hip rotate, knee, ankle and base ankle point, scoring the sole normal match, the instep gap and normal, and the shin penetration.
+  - Missing information:
+    - Which way ankle turn/tilt signs turn the toes (in or out) for each person. I worked it out from site directions.
+    - That the reach ignores the starting ankle angles.
+- **Time sinks**:
+  - The sole-orientation vs hook conflict.
+  - `--vary` only shows the worst error, so each step needed my own grid.
+  - Locking the base's ankle turn made the reach stop using `point`, so the starting values had to be gridded by hand.
+- **Suggestion**: report foot orientation in human terms for every foot in the report: toes in/out and sickled in/out in degrees for both people, flagged when beyond about 10°. That would have caught both the base's toe-in and the flyer's inward-sickled hooks, which the human had to fix.
+
+## 2026-10-19: revised (feet hook)
+- **Result**: The flyer's feet hook the base's legs the way the photos show it. Her shins cross in front of the base's shins just below his ankles, and her insteps press on the inner-back of his calves.
+  - Contact: flyer instep → base shin 0.30 / -125, mirrored. The base soles moved to the flyer's thigh 0.65 / 195, near the knee. All 4 contacts ok (0 mm, ≤3°). Base knees bent 10° (stacked).
+  - Base arms put on the floor (shoulder forward -14 / raise 45 / rotate -80).
+  - Flagged: the flyer's pelvis sits 13 cm behind the base's soles (centre of mass 6 cm behind). The instep is low on the calf, at 30%; in the photos the toes reach about halfway. The shin crossing is not a stored contact (0.6 cm overlap). The report says the base's centre of mass is outside the floor contact; that is a tool artefact.
+  - Outcome: a second revision moved the soles to mid-thigh. The human then approved after setting the flyer's straddle 85→68, ankle point 43→30, tilt -27→-15, turn -12→+15 (toes outward) and hip rotate 0→6.
+  - Why my ankles came out steep (point 57, tilt -21, turn 7, from starting values turn 30 / tilt -30):
+    - I placed the instep target on the inner-*back* of the calf (-125). That forces the foot to wrap behind the leg, which the ankle can only do by sickling.
+    - My scratch search scored only gaps and normal alignment, with nothing for a comfortable, neutral ankle. So it settled at the edges of the ankle's range.
+    - I seeded the solver at the ankle limits myself and never judged the foot shape, only whether the contacts were ok.
+    - What the human chose shows the hook comes from the leg, not the ankle: less straddle, a little hip external rotation, toes turned outward. A target on the inner side (around -90 to -100) with a soft foot would have been closer.
+- **Decisions**:
+  - The description says "feet around base shins". The photos and texts are more specific: the shins cross in front, and the tops of the feet press on the inner calves (Gieger "Fußrücken pressen an die Waden", Acrodemy "from the inside", yogaemotion "not behind base legs but from the front"). I followed the photos and texts.
+  - Base soles near the knee (photos and yogaemotion), not near the hip.
+  - Kept the flyer's Namaste hands; Gieger has hands on knees.
+  - Base arms on the floor, as in Gieger.
+- **References**:
+  - christiangieger.de (2000 px image): best for the hook seen from the head end.
+  - acrodemy.eu and yogaemotion.net: photos agree; their texts gave the press side.
+  - partneracrobatics: a small image of a different variant, useless.
+  - Approved chair.json was the model for the fit onto the soles.
+- **Tools**:
+  - `pose:solve` about 20×, `--vary` about 8×, `pose:check` 3×, `pose:render` about 6×.
+  - `"solve": "fit"` for the soles was what finally made every contact hold.
+- **Missing**:
+  - Scratch scripts, all in scratchpad/revise-throne/:
+    - `probe.ts`: position, normal and direction of any site in a stored pose.
+    - `search.ts` (search2–5): brute force over the flyer's leg angles, scoring the instep gap and normal, the shin crossing, and shin-in-shin penetration.
+    - `gap.ts`: closest flyer-shin point to the base shin.
+    - A python rotation of the draft by 180° to render a view from the base's head end; the draft was restored afterwards.
+  - No view from the base's head end, which is where all photos are taken from.
+  - No list of which site sides (around values) face where.
+- **Time sinks**:
+  - Two contacts on one leg (the shin crossing plus the instep): the second reach undid the first, so I wrote my own search.
+  - The base soles stayed 12° off with reach whatever the starting angles; the fix was switching to `fit`.
+  - The head-end view needed a workaround.
+- **Suggestion**: have the search and the report penalise and flag unnatural foot positions (ankle angles near their limits, sickled feet). A contact that is "ok" only at the edge of the ankle's range should count as a warning, not a success.

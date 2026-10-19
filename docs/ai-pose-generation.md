@@ -10,8 +10,9 @@ in the 3D editor ("🎭 Open in 3D editor") and saving. Agents only write drafts
   Neighbouring poses in `public/data/flows.json` tell how the pose is entered and left.
 - The pose's `links` in `public/data/poses.json` point to pages that show it. Open them and look at the photos
   (download an image with curl into a scratch folder and open it with Read): they are the reference for the
-  shape, the description only names it. Most photos of L-base poses are taken from above the base's head, so
-  they look mirrored compared with the editor's Front view; render `--view "Head end"` to compare. Never copy
+  shape, the description only names it. Photos are often taken from above the base's head (mirrored compared
+  with the editor's Front view; render `--view "Head end"`), others from the side (`--view Side`). Look at what
+  each limb presses against and from which side, not only where it is. Never copy
   images into the repo. Note where a reference disagrees with
   the description; the description wins, but say so in your report.
 - Approved poses in `public/data/poses3d/` are the best examples (`front-plank.json`).
@@ -22,7 +23,7 @@ in the 3D editor ("🎭 Open in 3D editor") and saving. Agents only write drafts
 |---|---|
 | `pnpm pose:orient '<joints JSON>' [presets…]` | Which way head, front, own left, soles and palms point. Use it before guessing root angles. |
 | `pnpm pose:solve <params.json> [--out <file>]` | Builds and solves the pose, writes the draft (or `--out` for trying variants), prints a report (below). Takes about 2 s. |
-| `pnpm pose:solve <params.json> --vary <path>=<v1>,<v2> [--vary …]` | Solves every combination and prints one summary line each (contacts ok, worst error, limits, overlaps, whether the flyer is over its support, the base's knee and elbow bends); writes nothing. `<path>` is a dot path into the params, e.g. `flyer.joints.hip.pike` or `contacts.0.a.flyer.around`; values are JSON or plain text (`contacts.0.twist=free,0`). Failing contacts are listed by index. Use it instead of hand-written loops. |
+| `pnpm pose:solve <params.json> --vary <path>=<v1>,<v2> [--vary …]` | Solves every combination and prints one summary line each (contacts ok, worst error, limits, overlaps, whether the flyer is over its support, the base's knee and elbow bends); writes nothing. `<path>` is a dot path into the params, e.g. `flyer.joints.hip.pike` or `contacts.0.a.flyer.around`; values are JSON or plain text (`contacts.0.twist=free,0`). Failing contacts are listed by index. `--show base.left-elbow.bend,base:left-palm` adds chosen angles or site positions (cm) to each line. Use it instead of hand-written loops. |
 | `pnpm pose:suggest <params.json \| pose.json> [<role>:<site> [<role>:<segment>]]` | Where contacts could go: free hands and feet near a surface facing them, or with a site (`flyer:left-palm`) its best points on the bodies, optionally on one segment (`base:left-thigh`). Prints ready contact JSON. Works on params and on stored drafts. |
 | `pnpm pose:check <pose.json> [<role>:<site>…]` | The same report for stored pose data as it is, e.g. a draft under review or an approved pose to compare with. With sites (`flyer:left-instep`, or `base:right-shin@0.3@-125` for segment@along@around), their position, normal and direction. |
 | `pnpm pose:render <poseId> [--view Side] [--saved]` | Renders the draft in the 3D editor to `data-drafts/renders/<poseId>.png` (Front, Side / Angled, Top) or one larger view, also `"Head end"` (from above the base's head, like most photos). |
@@ -88,8 +89,9 @@ base legs blue / orange, flyer legs teal / pink.
   hands resting on knees, palms together in Namaste, crossed ankles are contacts too and hold the shape.
 - **Lowest surface point above the floor**: head, back, pelvis, hands and feet per person. Catches hands floating
   instead of resting on the floor, or a base lifted off it.
-- **Base's feet**: per side how far the toes are turned outward (hip rotation and ankle turn together), the
-  sole's roll and point.
+- **Feet**: all four feet: toes turned outward (hip rotation and ankle turn together; negative = turned in),
+  the sole's roll (positive = sole facing inward) and point. `<- check` marks what humans corrected before:
+  inward or far-out toes, sickled soles, strongly rotated hips. None of the approved poses is marked.
 - **Balance**: centres of mass from rough body-part masses. The flyer's should lie over the contacts that carry
   it (seen from above), and both people's together over the base's floor contact; anything outside falls over
   unless a grip pulls against it (counterbalance poses like whale). Per contact on the base it lists the bend of
@@ -102,6 +104,14 @@ base legs blue / orange, flyer legs teal / pink.
   with `hip.rotate`). Sweep such values with `--vary`.
 
 ## Physics
+**A holding contact is not a correct pose.** The contact error only says that a site matches the target you
+chose. Named sites and your own `around` values are guesses; check the result against the photos (render
+close-ups) and the Feet section. Every human correction so far was on something whose contacts held: rolled
+base soles, sickled flyer feet, a hand on the wrong side of a leg, an over-wide straddle.
+
+If reaching something the brief asks for costs an odd angle (a wide straddle, a twisted hip, an ankle at its
+limit), say so in your report instead of paying it silently; the human decides.
+
 The base's feet are usually the most important contact: they carry the flyer, and humans notice at once when
 they sit in the wrong place or are turned or rolled oddly. Compare their position on the flyer, the toe direction
 and the sole's roll with the photos (report section "Base's feet"), and lock `ankle` and `hip.rotate` once they
@@ -111,6 +121,8 @@ Before tuning angles, think through where the weight goes, and check it in the B
 - Which contacts carry the flyer's weight, and which only stabilise (hands on ankles, a hooked foot)? The
   carrying ones lie under the flyer's centre of mass; the base's limbs under them are as vertical and straight
   as the pose allows.
+- A hand that holds the base's leg for stability grips it from the outside (palm towards the base's midline,
+  around ±90 on the limb), not from the top: only then can it pull against sideways tipping.
 - Hooks and grips work by pulling against something: a foot hooked around the base's leg presses with its
   instep or the back of the ankle against the far side of the leg, and the leg it belongs to pulls towards the
   flyer. Model the contact on the side that is pressed, not just somewhere near.
@@ -146,7 +158,13 @@ More facts:
 - Flyer's feet look natural with modest angles: point up to about 30, tilt within ±15, toes turned slightly
   outward. Agents tend to force extreme, sickled ankles (point 45+, tilt -27, toes turned in) to close a hook,
   and humans correct exactly that; move the leg (straddle, hip rotation, knee) or the contact point instead.
-  Same for a wide straddle: throne was corrected from straddle 85 to 68.
+  Same for a wide straddle: throne was corrected from straddle 85 to 68. For a foot hooking around the base's
+  calf, a target on the inner side (around -90 to -100) with a relaxed foot works; behind the leg (-125) forces
+  a sickled ankle. The hook comes from the leg: less straddle, a little hip external rotation, toes slightly out.
+- A bent knee can be right (the lower leg of a crossed-ankle pose bends to cross); judge a leg by its hip
+  rotation and foot, which humans correct, rather than straightening the knee.
+- Base reaching overhead (whale): with straight arms the palms get to about y 65, z -85 cm; a flyer's ankles
+  further away need bent elbows or a lower flyer.
 - Grips: a palm on the `achilles` pulls an ankle towards the gripping person, on `ankle` (front) it pushes.
 - Twist is measured between the sites' directions (palm / sole: towards fingers / toes; limbs: towards their far
   end; torso: towards the head): 0 parallel, 180 opposite, ±90 crossed.
