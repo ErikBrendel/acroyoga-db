@@ -143,6 +143,10 @@ More facts:
   with the arms closer to the body (`raise 15`) about `forward -11`. More `forward` pushes the hands into the
   floor and lifts the base; check the hands in "Lowest surface point".
 - Flyer lying face up (whale): the legs slope below horizontal by about 90 − |root pitch| − hip pike.
+- Flyer's feet look natural with modest angles: point up to about 30, tilt within ±15, toes turned slightly
+  outward. Agents tend to force extreme, sickled ankles (point 45+, tilt -27, toes turned in) to close a hook,
+  and humans correct exactly that; move the leg (straddle, hip rotation, knee) or the contact point instead.
+  Same for a wide straddle: throne was corrected from straddle 85 to 68.
 - Grips: a palm on the `achilles` pulls an ankle towards the gripping person, on `ankle` (front) it pushes.
 - Twist is measured between the sites' directions (palm / sole: towards fingers / toes; limbs: towards their far
   end; torso: towards the head): 0 parallel, 180 opposite, ±90 crossed.
