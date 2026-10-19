@@ -1,0 +1,1 @@
+The base carries a lot of weight in his straight arms here, so his shoulder blades must be on the floor as extra contact points for stability (not lifted). The base probably has to angle / tuck his leg more to bring the flyer lower so his hands still reach. Stargrip contact as in star's feedback: wrists roughly aligned, fingers reaching over the other's wrist.

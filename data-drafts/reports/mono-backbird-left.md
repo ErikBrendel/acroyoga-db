@@ -26,3 +26,25 @@
   - **Flyer's arms**: 4 rounds on asymmetric arm IK (one clavicle protracted 20, the other -13), until locking the clavicles.
   - **Sole roll**: the hip rotation tilted the sole sideways and needed an ankle tilt to compensate.
 - **Suggestion**: an option for `pose:solve` to solve symmetric contacts symmetrically (mirror the result of the first side), so that a centred flyer with a symmetric grip does not end up with lopsided arms.
+
+## 2026-10-19: revised
+- **Result**: draft and params rewritten, renders `mono-backbird-left-before.png`, `mono-backbird-left.png`, `-side.png`. All 3 contacts ok (0 mm, ≤4°), no limits, no overlaps.
+  - **Shoulder blades**: base `clavicle.protract` 10 → 0, "Lowest surface point" back 6.
+  - **Base arms**: shoulder.forward 98 (was 90), wrist -30 (was -50), elbow rotate -85.
+  - **Stargrip** as in star: flyer palm → base forearm 0.95 / -90, twist 180 (was free).
+    - His palm ends 1 cm from her forearm at 80%, facing it within 15°, so the grip comes out nearly symmetric without a second contact.
+  - **Flyer arms**: elbows bent 134, hands beside her head as before.
+    - Wrists flexed towards the palm, 46 (were 0).
+    - Slightly asymmetric: shoulder rotate -12 / -4, wrist tilt -17 / -9.
+  - Legs, spine, base foot on the sacrum: unchanged. The `<- check` on the base's left foot (toes 70° out, hip rotate 45) is still open from the first report.
+  - **For the human to check**: her wrist flex 46 (hands curled over his wrists).
+- **Decisions**:
+  - **Base arms at forward 98**: at 90 the grip held only with twist free and her wrist at 78; at 80 her hands could not reach.
+  - **Weight**: this pose puts little weight on his arms (her centre of mass is 1 cm above his foot). The feedback asks for the shoulder blades on the floor anyway, so protract 0 for the whole 4-Step.
+- **References**: Acrodemy `backbird` and `hatsomadarbolcsillag`. His arms are vertical and her hands come from above onto his; this matches the render. The photo is too small for the wrist angle.
+- **Tools**: one `pose:solve --vary` sweep (6 variants), `pose:solve` once, `pose:render` 2 times.
+- **Missing**:
+  - **Scratch**: `scratchpad/revise-grip/bb.json`.
+  - **Flyer wrist**: there is no guidance on her wrist in an overhead grip. The star recipe only fixes -30 for star.
+- **Time sinks**: none. The pose was quick once star had settled the grip.
+- **Suggestion**: same as star, a palm site with an offset, so the grip does not have to be paid for in the flyer's wrist in every pose.

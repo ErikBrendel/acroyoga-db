@@ -28,3 +28,28 @@
 - **Time sinks**:
   - **Left shin contact**: 10 rounds. Reach IK jumps between a straight leg that is a few cm short and a leg folded at knee 60. The orientation error swings 20–40° with small changes of the flyer's hip pike. What ended it was fitting the flyer on the kneepit, letting only the base's left ankle point free, and sweeping pike against the along position.
 - **Suggestion**: let `--vary` take JSON objects (split only at top-level commas). Also report the overlap's location (which ends of the capsules), so a hanging calf next to the contact can be told apart from a real collision.
+
+## 2026-10-19: revised
+- **Result**: draft and params rewritten, renders `supported-mono-kneepit-right-before.png`, `supported-mono-kneepit-right.png`, `-side.png`. All 4 contacts ok (0 mm, ≤2°).
+  - **Shoulder blades**: base `clavicle.protract` 15 → 0, "Lowest surface point" back 6.
+  - **Base arms**: straight, shoulder.forward 98 (tilted 8° towards his head; 90 left her arms 24° off vertical), elbow rotate -85, wrist -30 (was -60).
+  - **Stargrip** as in star: flyer palm → base forearm 0.95 / -90, twist 180. Her wrist is now straight (flex 4).
+  - **To bring her 11 cm lower**:
+    - base right leg (kneepit): pike 75 → 78, knee bend 0 → 10, ankle point -10 → -24 (sole stays flat under the kneepit);
+    - flyer leans back 56° (was 50);
+    - her left shin contact on the base's left foot moved from along 0.4 to 0.3; his left leg stays straight with the foot flexed -36 (was -26).
+  - **Stacked**: her forearms run from elbow (z -54) to hands (z -48), about 10° from vertical, roughly parallel to his.
+  - **For the human to check**:
+    - **Base's left foot**: flexed -36.
+    - **Overlap**: the 5 cm between his right shin and her right calf is still there (unchanged from the first draft).
+    - **Flyer's shoulders**: her clavicles are pushed down (elevate -10, limit).
+- **Decisions**:
+  - **Base arms**: forward 98, not star's 80. The description asks for straight arms "stacked", so his arms stay under hers. At 80 or 90 her arms leaned 20–25° towards her feet.
+  - **Lowering**: done through the kneepit leg and her lean rather than a bent base knee under load. The kneepit knee bends only 10, so the stacked support stays.
+- **References**: no new ones. `4stepslepes` and `cakewcandle` (Acrodemy) only confirm the arm stacking. Both show the candle leg, which the description overrides (see the first report).
+- **Tools**: `pose:solve --vary` 5 sweeps, `pose:solve` 3 times, `pose:check` with sites once (forearm directions to judge "stacked"), `pose:render` 3 times.
+- **Missing**:
+  - **Scratch**: `scratchpad/revise-grip/kp.json`.
+  - **Fit and the far limb**: a `fit` onto a sole only moves the flyer. The base's right ankle did not follow, although it was unlocked, so I swept it.
+- **Time sinks**: the base's left leg (reach onto her folded shin) again, solved by sweeping her contact `along` against her hip pike.
+- **Suggestion**: `--show` for a segment site's direction, so "stacked" could be read as an angle instead of from two positions.

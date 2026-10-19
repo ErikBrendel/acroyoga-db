@@ -25,3 +25,41 @@
   - **Hand height**: 6 rounds. The flyer's hands at the base's reach (≤82 cm) fight with the base's foot under her shin (≥95 cm for a nearly straight leg). The way out was a deeper flyer lean plus the base's leg tilted towards his head.
   - **Base's ankle**: sat at -40 (its limit) until the flyer's shin was horizontal.
 - **Suggestion**: a recipe line saying that root pitch carries the limbs, e.g. "upright flyer leaning forward x: a horizontal thigh needs pike 90 + x, vertical arms need shoulder.forward x".
+
+## 2026-10-19: revised
+- **Result**: draft and params rewritten, renders `mono-reverse-shin-left-before.png`, `mono-reverse-shin-left.png`, `-side.png`. All 3 contacts ok (0 mm; shin 5°, hands 0°). No overlaps.
+  - **Feedback "shoulder blades on the floor"**: done.
+    - Base `clavicle.protract` 20 → 0. Arms as the star recipe (forward 80, elbow rotate -85, wrist -30), all locked.
+    - "Lowest surface point" back 6, the same as approved star.
+  - **Feedback "angle/tuck his leg more"**: done. Base left leg hip.pike 132 → 140 (at its limit) and knee bend 25 → 92.
+    - His sole is now at y 81, z -8, about 10 cm above his hands and 23 cm towards his feet from them.
+    - The flyer sits on it at the top of her shin (contact on her shin moved from along 0.4 to 0.15, just below the knee). That is where the base's foot is in the beach photo.
+  - **Feedback "stargrip contact"**: as in star (palm → base forearm 0.95 / -90, twist 180).
+    - Her wrists are bent back 14, her forearms fully pronated (elbow rotate -90, at its limit), arms straight and vertical.
+  - **Flyer**:
+    - Lean reduced from 45° to root pitch 32, but the back is now rounded: waist 10 + chest 15. The torso still tips about 55° from the pelvis to the head. The neck nods -25 so she looks forward, not at the base.
+    - Left thigh pike 104 (knee lower than the hips), right leg horizontal forward (pike 120).
+    - Clavicles: elevate -10 (limit), protract 19.
+  - **For the human to check**:
+    - **Flyer's hunched torso**. Even with his knee at 92 she has to round over to reach his hands; the photo shows a more upright flyer.
+    - **Base's left foot**: flexed to point -39, limit -40. It is needed so that the sole meets her shin with the leg this tucked.
+    - **Base's left knee**: 92, "held by muscle", taking her weight bent.
+- **Decisions**:
+  - **Geometry**:
+    - Reaching his hands (forearm site at y 69–70 once the shoulder blades are down and the grip slides) means her shoulders at about 128. An upright crouch on a foot at 85–90 puts them at 140+.
+    - Every 10 cm of foot height costs about 20° of lean. Tucking the knee (to 115) lowers the foot but moves it towards his feet, away from his hands (z -36). Then the contacts fail by 6–17 cm in z.
+    - The pike limit (140) caps how far the tucked leg can come towards his head. So the remaining 15–20 cm come from her lean and rounded back.
+  - **Her shin vs his sole**: with his knee at 92 and point near -40 his sole faces slightly towards his feet. Her shin had to slope the same way, which is why her left thigh dropped to pike 104 (the knee below the hips, as in the photo).
+  - **Grip in this pose**: her palms face his head, his palms her front. That is the star grip after her half rotation, not the predecessor's palm-down / palm-up low grip.
+- **References**:
+  - **Acrodemy `fordshin2footonelegged`** (beach, pose page, star-to-shin and Four Step pages): his foot under her knee at the height of his hands, his hands under her hips, her arms straight down at her sides, his thigh tilted towards his head with the knee clearly bent. It confirmed the tuck.
+  - **Acrodemy `csillag_revonelegshin`**: the entry from star, no new information.
+  - **`4stepslepes`** (Four Step page): the right half is the kneepit step, no new information for this pose.
+- **Tools**:
+  - `pose:solve --vary` about 12 sweeps (48 variants maximum); plain `pose:solve` 5 times.
+  - `pose:render` 4 times.
+- **Missing**:
+  - **Scratch**: params variants in `scratchpad/revise-grip/` (`mrs*.json`). `zoom.mts` as in star.
+  - **Contact solve**: a `reach` of the base's sole into her shin flips to ankle limits (sickled -40 / tilt 40) from a bad start. Switching to `fit` (flyer shin onto his sole) with his hip and knee locked and only the ankle free made it predictable.
+- **Time sinks**: about 8 sweeps on the reach-versus-height trade-off before I computed it by hand (above). Computing it first would have saved most of them.
+- **Suggestion**: a `pose:check` line giving each contact's world distance from the base's shoulder line (or "this hand height needs a foot at ≤ y") would make reach problems like this visible before sweeping.

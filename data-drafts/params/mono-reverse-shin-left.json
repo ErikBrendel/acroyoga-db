@@ -7,31 +7,31 @@
   "joints": {
    "hip": {
     "pike": {
-     "left": 110,
+     "left": 140,
      "right": 45
     }
    },
    "knee": {
     "bend": {
-     "left": 20,
+     "left": 92,
      "right": 110
     }
    },
    "ankle": {
     "point": {
-     "left": 0,
+     "left": -39,
      "right": 25
     },
     "tilt": 0,
     "turn": 5
    },
    "shoulder": {
-    "forward": 88,
+    "forward": 80,
     "rotate": 0,
     "raise": 0
    },
    "clavicle": {
-    "protract": 20,
+    "protract": 0,
     "elevate": 0
    },
    "elbow": {
@@ -39,7 +39,7 @@
     "rotate": -85
    },
    "wrist": {
-    "flex": -60,
+    "flex": -30,
     "tilt": 0
    }
   }
@@ -47,21 +47,21 @@
  "flyer": {
   "position": [
    0,
-   1.15,
-   -0.66
+   0.97,
+   -0.45
   ],
   "joints": {
    "root": {
     "turn": 0,
-    "pitch": 45
+    "pitch": 32
    },
    "neck": {
-    "nod": 0
+    "nod": -25
    },
    "hip": {
     "pike": {
-     "left": 120,
-     "right": 135
+     "left": 104,
+     "right": 120
     }
    },
    "knee": {
@@ -77,7 +77,7 @@
     }
    },
    "shoulder": {
-    "forward": 45,
+    "forward": 25,
     "raise": 5,
     "rotate": 0
    },
@@ -86,21 +86,32 @@
     "rotate": -90
    },
    "wrist": {
-    "flex": -60
+    "flex": -30
+   },
+   "clavicle": {
+    "protract": 0,
+    "elevate": 0
+   },
+   "waist": {
+    "bend": 10
+   },
+   "chest": {
+    "bend": 15
    }
   }
  },
  "contacts": [
   {
+   "solve": "fit",
    "a": {
-    "base": "left-sole"
-   },
-   "b": {
     "flyer": {
      "segment": "left-shin",
-     "along": 0.4,
+     "along": 0.15,
      "around": 0
     }
+   },
+   "b": {
+    "base": "left-sole"
    },
    "twist": "free"
   },
@@ -109,7 +120,11 @@
     "flyer": "left-palm"
    },
    "b": {
-    "base": "left-palm"
+    "base": {
+     "segment": "left-forearm",
+     "along": 0.95,
+     "around": -90
+    }
    },
    "twist": 180,
    "symmetric": true
@@ -118,7 +133,8 @@
  "locks": {
   "base": [
    "right-leg",
-   "left-hip.rotate",
+   "left-hip",
+   "left-knee",
    "arms"
   ],
   "flyer": [

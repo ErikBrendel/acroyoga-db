@@ -46,6 +46,9 @@ type SiteDef = Coordinate | FixedFrame;
 // Defined for the left side, the right side is the mirror image
 const PAIRED_SITES: Record<string, SiteDef> = {
   palm: { joint: 'wrist', point: CONTACT_POINTS.wrist, normal: CONTACT_NORMALS.wrist, direction: [0, 1, 0] },
+  // Palm surface at the wrist, oriented like the palm: palm on another's palm-heel slides the hands so each wrist
+  // lies in the middle of the other's palm (stargrip)
+  'palm-heel': { joint: 'wrist', point: [CONTACT_POINTS.wrist[0], 0.01, 0], normal: CONTACT_NORMALS.wrist, direction: [0, 1, 0] },
   'hand-back': { joint: 'wrist', point: [-CONTACT_POINTS.wrist[0], CONTACT_POINTS.wrist[1], 0], normal: [-1, 0, 0], direction: [0, 1, 0] },
   sole: { joint: 'ankle', point: CONTACT_POINTS.ankle, normal: CONTACT_NORMALS.ankle, direction: [0, 1, 0] },
   instep: { joint: 'ankle', point: [0, 0.1, -0.005], normal: [0, 0, 1], direction: [0, 1, 0] },

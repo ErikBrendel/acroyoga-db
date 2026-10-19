@@ -44,3 +44,38 @@
   - Base ankle point 5 is tied to the flyer's 5° tilt. If the flyer's line changes, re-check the remaining sole (`pose:check ... base:right-sole flyer:right-shoulder`) instead of trusting "ok".
   - The flyer's arms are left to IK. Keep the stargrip contact with twist 180 or the hands flip.
 - **Suggestion**: add a recipe row for an inverted flyer (shoulderstand facing the base's head: `pitch 180`, or `turn 180, roll 180, pitch ±x` to lean beyond the limit). Better still, let root pitch wrap past ±180 so this does not need a workaround.
+
+## 2026-10-19: revised
+- **Result**: draft `data-drafts/poses3d/star.json` next to the approved `public/data/poses3d/star.json`; params `data-drafts/params/star.json` (now built from the approved angles, not the pre-correction ones). Renders `star-before.png` (approved), `star.png`, `star-side.png`. All 4 contacts ok (0–1 mm, ≤3°), no limits, no overlaps.
+  - Grip contact: flyer palm → base `<side>-forearm` along 0.95, around -90 (palm side; `pose:check` sites: normal +Z, facing the flyer, for both people), twist 180, symmetric. Her palm centre sits at his wrist, her hand 9 cm further down than before (y 78 → 69).
+  - Unchanged and locked: base completely (arms forward 80, elbow rotate -85, wrist -30, legs), flyer position, root lean (pitch 3), spine, legs, clavicles, shoulder.raise 8.
+  - **Changed in the flyer's arms**:
+    - wrist flex -30 → **+22**: no longer bent back but bent towards the palm, around his wrist;
+    - shoulder.forward 80.9 → 100.3;
+    - elbow.rotate -90 → -83;
+    - elbow bend 90.5 → 89.7 (forearms still parallel and vertical, elbows above the hands).
+  - **For the human to check**: the flyer's wrist. That is not "barely changed" (see Decisions). His palm is now 3 cm from her forearm at 85%, facing it within 8°: his hand also reaches her wrist, without a contact.
+- **Decisions**:
+  - **Wrist conflict**: the brief cannot be met completely. With both wrists bent back 30 and both forearms parallel, palm-on-forearm is 35–41° off in orientation, whatever the `along` (0.9–1.0) or the twist (I swept them).
+    - Each forearm's palm side is tilted 30° against its own palm. The approved palm-on-palm needs no extra angle; palm-on-forearm needs 30–40° somewhere.
+    - Options measured:
+      - (a) Free her wrist flex: holds, wrist -30 → +22. **Taken**: it is the least loaded joint in star and keeps everything the human corrected on the base and on her lean.
+      - (b) Keep her wrist and let her shoulder.raise go: holds only at raise 138, absurd.
+      - (c) Keep everything: the contact stays 41° off (red in the editor).
+    - The faithful rigid model would be palm on palm, slid 6–8 cm along the palm plane, with her fingertips 4–5 cm above his forearm. Fingers would close that gap; the model has no finger joints (roadmap).
+    - No site can express it: `palm` is fixed at the palm centre, and forearm sites have the forearm's normal.
+  - **along 0.95**, as in the doc recipe. Along 1.0 (the wrist joint itself) differs by 1.3 cm and gives the same angles within 3°.
+- **References**: none new. The grip feedback is explicit, and the approved pose is the reference. The Acrodemy star photos are too small for the hand detail.
+- **Tools**:
+  - `pose:check` with forearm sites at four `around` values: once, found -90 = palm side at once.
+  - `pose:solve` about 8 times, 4 of them `--vary`.
+  - `pose:render` 4 times, plus the zoom script 4 times.
+- **Missing**:
+  - **Scratch script**: `scratchpad/revise-grip/zoom.mts`, a copy of `render.ts` with a `CLIP=x,y,w,h` crop at 3× scale and an `OUT` path. Without it the hands are 10 px wide in a render.
+  - **`--vary` with JSON arrays** (locks) breaks at the commas; I wrote variant params files instead.
+  - **Information I lacked**: whether her wrist or her forearm angle should give way. The brief says both stay.
+- **Time sinks**: the wrist conflict, about 6 rounds of proving that no `around`, `along`, twist or arm start angle closes it with the wrist locked.
+- **Suggestion**:
+  - Either a site with an offset along the palm (`{"segment": "hand", along, around}`), so "palm on palm, slid to the wrist" can be modelled exactly;
+  - or a contact option that holds position only and leaves the orientation free.
+  - Either would have kept her wrist at -30.

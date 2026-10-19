@@ -40,12 +40,12 @@
     }
    },
    "shoulder": {
-    "forward": 90,
+    "forward": 98,
     "rotate": 0,
     "raise": 0
    },
    "clavicle": {
-    "protract": 10,
+    "protract": 0,
     "elevate": 0
    },
    "elbow": {
@@ -53,7 +53,7 @@
     "rotate": -85
    },
    "wrist": {
-    "flex": -50,
+    "flex": -30,
     "tilt": 0
    }
   }
@@ -85,16 +85,28 @@
     "point": 45
    },
    "shoulder": {
-    "forward": 150,
+    "forward": {
+     "left": 127.9,
+     "right": 126.3
+    },
     "raise": 10,
-    "rotate": 0
+    "rotate": {
+     "left": -0.7,
+     "right": 2.6
+    }
    },
    "elbow": {
-    "bend": 120,
-    "rotate": -85
+    "bend": {
+     "left": 142.3,
+     "right": 141.7
+    },
+    "rotate": {
+     "left": -90,
+     "right": -87
+    }
    },
    "wrist": {
-    "flex": 0
+    "flex": -30
    },
    "clavicle": {
     "protract": 0,
@@ -118,9 +130,13 @@
     "flyer": "left-palm"
    },
    "b": {
-    "base": "left-palm"
+    "base": {
+     "segment": "left-forearm",
+     "along": 0.95,
+     "around": -90
+    }
    },
-   "twist": "free",
+   "twist": 180,
    "symmetric": true
   }
  ],

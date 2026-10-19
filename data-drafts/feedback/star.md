@@ -1,0 +1,1 @@
+Stargrip contact point: the hands are not stacked palm on palm with fingertips at the other's wrist and knuckles aligned. Each hand slides further along, so the wrists are roughly aligned (each wrist in the middle of the other's palm) and the fingers reach over the other's wrist onto the forearm. Everything else of the approved star stays.
