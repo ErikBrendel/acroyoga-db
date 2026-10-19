@@ -7,7 +7,7 @@
       "ankle": {"turn":5},
       "shoulder": {"forward":80},
       "elbow": {"rotate":-85},
-      "wrist": {"flex":-30}
+      "wrist": {"flex":-30,"fingers":35}
     }
   },
   "flyer": {
@@ -18,7 +18,7 @@
       "ankle": {"point":45},
       "shoulder": {"forward":92.4,"raise":8,"rotate":-9.6},
       "elbow": {"bend":85,"rotate":-89.1},
-      "wrist": {"flex":-22,"tilt":-8.5}
+      "wrist": {"flex":-22,"tilt":-8.5,"fingers":35}
     }
   },
   "contacts": [

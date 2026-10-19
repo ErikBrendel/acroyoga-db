@@ -58,5 +58,5 @@ Ideas, grouped by area, in no particular order. Related tools: `docs/related-wor
 - [ ] Warn about contradictory contacts, e.g. a symmetric hip pair with twist ±90
 - [ ] Screen size limit for the pin markers, like the contact markers
 - [ ] Kneecaps sit slightly low when the knee is bent far
-- [ ] Finger flex as an angle of the hand, so grips can wrap around a wrist or ankle (stargrip, hand-to-hand,
+- [x] Finger flex as an angle of the hand, so grips can wrap around a wrist or ankle (stargrip, hand-to-hand,
       grips on the ankles) instead of lying flat

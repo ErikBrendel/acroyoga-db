@@ -34,7 +34,7 @@ export class Bone {
     this.node.name = this.key;
 
     const isRight = side === 'right';
-    this.angles = def.angles.map(angle => ({
+    this.angles = def.angles.filter(angle => !angle.meshOnly).map(angle => ({
       ...angle,
       unitAxis: angle.axis.replace('-', '') as UnitAxis,
       sign: ((angle.axis.startsWith('-') ? -1 : 1) * (isRight ? mirrorSign(angle.axis) : 1)) as 1 | -1,

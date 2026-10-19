@@ -191,13 +191,13 @@ const SPREAD_STARTS = [0.2, 0.8, 0.35, 0.65];
 
 function spreadOver(pose: HumanPose, keys: BoneKey[], fixed: FixedAngle[], share: number): HumanPose {
   return keys.reduce((result, key) => JOINTS[BONES[key].joint].angles
-    .filter(({ name }) => !fixed.some(f => f.key === key && f.name === name))
+    .filter(({ name, meshOnly }) => !meshOnly && !fixed.some(f => f.key === key && f.name === name))
     .reduce((r, { name, min, max }, i) => withAngle(r, key, name, min + (max - min) * (i % 2 ? 1 - share : share)), result), pose);
 }
 
 function towardsMiddle(pose: HumanPose, keys: BoneKey[], fixed: FixedAngle[]): HumanPose {
   return keys.reduce((result, key) => JOINTS[BONES[key].joint].angles
-    .filter(({ name }) => !fixed.some(f => f.key === key && f.name === name))
+    .filter(({ name, meshOnly }) => !meshOnly && !fixed.some(f => f.key === key && f.name === name))
     .reduce((r, { name, min, max }) => withAngle(r, key, name, (r.angles[key][name] + (min + max) / 2) / 2), result), pose);
 }
 

@@ -44,7 +44,7 @@ function contactLines(pose: AcroPose): string[] {
 // Angles at a limit usually explain a contact that does not hold. Straight knees / elbows (0 at the limit) are left out.
 function limitLines(pose: AcroPose): string[] {
   return ROLES.flatMap(role => ALL_BONES.flatMap(({ key, joint }) => JOINTS[joint].angles
-    .filter(a => a.max - a.min < 360)
+    .filter(a => a.max - a.min < 360 && !a.meshOnly)
     .map(a => ({ a, value: pose[role].angles[key][a.name] }))
     .filter(({ a, value }) => value !== 0 && (value <= a.min + 0.5 || value >= a.max - 0.5))
     .map(({ a, value }) => `  ${role} ${key}.${a.name} = ${value.toFixed(1)} (${value <= a.min + 0.5 ? 'min' : 'max'} ${value <= a.min + 0.5 ? a.min : a.max})`)));

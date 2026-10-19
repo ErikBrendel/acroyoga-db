@@ -20,22 +20,28 @@ export class Human {
   private readonly faceBones: BoneKey[];
   private readonly baseColors: Float32Array;
   private readonly rigidParts: THREE.Mesh[] = [];
-  // Twist each shin by the foot's turn, see buildSkinnedBody
-  private readonly shinTwists = (['left', 'right'] as const).map(side => ({
-    twist: new THREE.Bone(),
-    knee: boneKey('knee', side),
-    ankle: boneKey('ankle', side),
-  }));
+  // See buildSkinnedBody: each shin twists along with the foot's turn towards the ankle; the forearm's rotation
+  // starts at the elbow at zero, so the elbow's point stays behind the joint like the ulna's
+  private readonly twists = (['left', 'right'] as const).flatMap(side => [
+    { node: new THREE.Bone(), key: boneKey('knee', side), atJoint: false, rotation: (pose: HumanPose) =>
+      this.bones[boneKey('ankle', side)].firstAngleRotation(pose.angles[boneKey('ankle', side)].turn) },
+    { node: new THREE.Bone(), key: boneKey('elbow', side), atJoint: true, rotation: (pose: HumanPose) => {
+      const elbow = this.bones[boneKey('elbow', side)];
+      const angles = pose.angles[elbow.key];
+      return elbow.quaternionFor(angles).invert().multiply(elbow.quaternionFor({ ...angles, rotate: 0 }));
+    } },
+  ]);
+  private readonly hands = (['left', 'right'] as const).map(side => ({ hand: buildHand(), wrist: boneKey('wrist', side) }));
 
   constructor(palette: Palette) {
     this.bones = createBones();
     for (const bone of Object.values(this.bones)) bone.parent?.node.add(bone.node);
     this.object.add(this.bones.root.node);
-    for (const { twist, knee } of this.shinTwists) this.bones[knee].node.add(twist);
+    for (const { node, key } of this.twists) this.bones[key].node.add(node);
 
     this.apply(neutralPose());
     this.object.updateMatrixWorld(true);
-    const twists = Object.fromEntries(this.shinTwists.map(({ twist, knee }) => [knee, twist]));
+    const twists = Object.fromEntries(this.twists.map(twist => [twist.key, twist]));
     const { mesh, faceBones, baseColors } = buildSkinnedBody(this.bones, twists, palette);
     this.body = mesh;
     this.faceBones = faceBones;
@@ -43,10 +49,14 @@ export class Human {
     this.object.add(mesh);
 
     this.attachRigid(this.bones.neck, buildHead());
+    for (const { hand, wrist } of this.hands) this.attachRigid(this.bones[wrist], hand.object);
     for (const side of ['left', 'right'] as const) {
-      this.attachRigid(this.bones[boneKey('wrist', side)], buildHand());
       this.attachRigid(this.bones[boneKey('ankle', side)], buildFoot());
-      for (const joint of CAPPED_JOINTS) this.attachRigid(this.bones[boneKey(joint, side)], buildJointCap(joint, palette, side));
+      for (const joint of CAPPED_JOINTS) {
+        const key = boneKey(joint, side);
+        const twist = this.twists.find(t => t.key === key && t.atJoint);
+        this.attachRigid(this.bones[key], buildJointCap(joint, palette, side), twist?.node);
+      }
     }
   }
 
@@ -55,9 +65,8 @@ export class Human {
     for (const bone of Object.values(this.bones)) {
       bone.applyAngles(pose.angles[bone.key], bone.parent ? pose.angles[bone.parent.key] : undefined);
     }
-    for (const { twist, ankle } of this.shinTwists) {
-      twist.quaternion.copy(this.bones[ankle].firstAngleRotation(pose.angles[ankle].turn));
-    }
+    for (const { node, rotation } of this.twists) node.quaternion.copy(rotation(pose));
+    for (const { hand, wrist } of this.hands) hand.curl(pose.angles[wrist].fingers);
   }
 
   pick(raycaster: THREE.Raycaster): Hit | null {
@@ -113,7 +122,8 @@ export class Human {
   }
 
   // Rigid parts are modelled for the left side; the right side gets a mirrored copy
-  private attachRigid(bone: Bone, part: THREE.Object3D): void {
+  // `node` moves the part instead of the bone's own, e.g. a twist bone
+  private attachRigid(bone: Bone, part: THREE.Object3D, node: THREE.Object3D = bone.node): void {
     if (bone.side === 'right') part.scale.x *= -1;
     part.traverse(child => {
       if (!(child instanceof THREE.Mesh)) return;
@@ -121,6 +131,6 @@ export class Human {
       child.userData.boneKey = bone.key;
       this.rigidParts.push(child);
     });
-    bone.node.add(part);
+    node.add(part);
   }
 }

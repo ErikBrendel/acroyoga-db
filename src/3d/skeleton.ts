@@ -12,6 +12,8 @@ export interface AngleDef {
   axis: Axis;
   min: number;
   max: number;
+  // Bends the mesh only and does not turn the bone, so it leaves the solver, sites and contacts alone
+  meshOnly?: true;
 }
 
 interface JointDef {
@@ -162,6 +164,8 @@ export const JOINTS: Record<JointId, JointDef> = {
     angles: [
       { name: 'flex', axis: '-z', min: -80, max: 80 },
       { name: 'tilt', axis: 'x', min: -20, max: 30 },
+      // Curling the four fingers towards the palm, the same angle at the knuckles and the middle finger joints
+      { name: 'fingers', axis: '-z', min: -10, max: 90, meshOnly: true },
     ],
   },
 };

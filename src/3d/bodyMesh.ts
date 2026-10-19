@@ -123,10 +123,16 @@ export interface SkinnedBody {
 
 // `bones` must be in the rest pose (neutral standing) with their world matrices updated
 // `twists` are extra bones at the start of a limb bone that rotate only about its axis: the limb's vertices
-// follow them increasingly towards its far end, so that it twists gradually instead of at one joint.
-export function buildSkinnedBody(bones: Record<BoneKey, Bone>, twists: Partial<Record<BoneKey, THREE.Bone>>, palette: Palette): SkinnedBody {
+// follow them fully at the joint (`atJoint`) or at the far end, and blend along the bone, so that it twists
+// gradually instead of at one joint.
+export interface Twist {
+  node: THREE.Bone;
+  atJoint: boolean;
+}
+
+export function buildSkinnedBody(bones: Record<BoneKey, Bone>, twists: Partial<Record<BoneKey, Twist>>, palette: Palette): SkinnedBody {
   const boneList = Object.values(bones);
-  const skeletonBones = [...boneList.map(b => b.node), ...Object.values(twists)];
+  const skeletonBones = [...boneList.map(b => b.node), ...Object.values(twists).map(t => t.node)];
   const indexOf = new Map(boneList.map((b, i) => [b.key, i]));
   const positions: number[] = [];
   const skinIndices: number[] = [];
@@ -159,10 +165,11 @@ export function buildSkinnedBody(bones: Record<BoneKey, Bone>, twists: Partial<R
     };
 
     const twist = twists[bone.key];
-    const twistIndex = twist ? skeletonBones.indexOf(twist) : -1;
+    const twistIndex = twist ? skeletonBones.indexOf(twist.node) : -1;
     const skinWeights = (y: number, x: number): [number, number][] => influences(y, x).flatMap(([key, weight]): [number, number][] => {
       if (key !== bone.key || !twist) return [[indexOf.get(key)!, weight]];
-      const twisted = THREE.MathUtils.clamp(y / bone.length, 0, 1);
+      const along = THREE.MathUtils.clamp(y / bone.length, 0, 1);
+      const twisted = twist.atJoint ? 1 - along : along;
       return [[indexOf.get(key)!, weight * (1 - twisted)], [twistIndex, weight * twisted]];
     });
 
@@ -285,20 +292,43 @@ export function buildJointCap(joint: keyof typeof JOINT_CAPS, palette: Palette, 
   return meshAt(new THREE.IcosahedronGeometry(radius, 0), flat(palette[side].clone().lerp(new THREE.Color(0xffffff), 0.6)), position, scale);
 }
 
-// Mitten hand: palm normal +X (facing the body when standing), fingers along +Y, thumb towards +Z
-export function buildHand(): THREE.Group {
-  const hand = new THREE.Group();
+// Index to little finger: sideways position of the knuckle, its height along the hand and the finger's length
+const FINGERS: [z: number, knuckle: number, length: number][] = [
+  [0.03, 0.097, 0.075], [0.01, 0.1, 0.082], [-0.01, 0.097, 0.077], [-0.029, 0.09, 0.06],
+];
+const PROXIMAL_SHARE = 0.55;
+
+interface Hand {
+  object: THREE.Group;
+  curl: (degrees: number) => void;
+}
+
+// Palm normal +X (facing the body when standing), fingers along +Y, thumb towards +Z. Each finger bends
+// towards the palm at its knuckle and again at its middle joint.
+export function buildHand(): Hand {
+  const object = new THREE.Group();
   const skin = flat(COLORS.skin);
   const [palmSurface, palmCentre] = CONTACT_POINTS.wrist;
   const thickness = 2 * palmSurface;
-  hand.add(meshAt(new THREE.BoxGeometry(thickness, palmCentre * 1.3, 0.085), skin, [0, palmCentre * 0.65, 0]));
-  const fingers = meshAt(new THREE.BoxGeometry(thickness * 0.85, 0.08, 0.078), skin, [0.002, palmCentre * 1.3 + 0.037, 0]);
-  fingers.rotation.z = 0.12; // slightly curled towards the palm
-  hand.add(fingers);
+  const palmLength = palmCentre * 1.3;
+  object.add(meshAt(new THREE.BoxGeometry(thickness, palmLength, 0.085), skin, [0, palmLength / 2, 0]));
+  const joints = FINGERS.flatMap(([z, knuckle, length]) => {
+    const segment = (segmentLength: number) =>
+      meshAt(new THREE.BoxGeometry(thickness * 0.75, segmentLength, 0.018), skin, [0, segmentLength / 2, 0]);
+    const base = new THREE.Group();
+    base.position.set(0, knuckle, z);
+    base.add(segment(length * PROXIMAL_SHARE));
+    const middle = new THREE.Group();
+    middle.position.y = length * PROXIMAL_SHARE;
+    middle.add(segment(length * (1 - PROXIMAL_SHARE)));
+    base.add(middle);
+    object.add(base);
+    return [base, middle];
+  });
   const thumb = meshAt(new THREE.BoxGeometry(0.02, 0.055, 0.022), skin, [0.006, 0.04, 0.05]);
   thumb.rotation.x = 0.6;
-  hand.add(thumb);
-  return hand;
+  object.add(thumb);
+  return { object, curl: degrees => joints.forEach(joint => { joint.rotation.z = -THREE.MathUtils.degToRad(degrees); }) };
 }
 
 // Foot from heel to toes along +Y, sole flat at SOLE_DEPTH below the ankle (local -Z points down)
