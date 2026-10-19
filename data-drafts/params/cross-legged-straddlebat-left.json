@@ -1,0 +1,156 @@
+{
+  "poseId": "cross-legged-straddlebat-left",
+  "base": {
+    "position": [
+      0,
+      0.156,
+      0
+    ],
+    "joints": {
+      "root": {
+        "pitch": -90
+      },
+      "hip": {
+        "pike": {
+          "left": 105,
+          "right": 95
+        },
+        "straddle": {
+          "left": -20,
+          "right": -22
+        },
+        "rotate": 0
+      },
+      "knee": {
+        "bend": {
+          "left": 25,
+          "right": 0
+        }
+      },
+      "ankle": {
+        "point": {
+          "left": 14,
+          "right": 6
+        },
+        "tilt": {
+          "left": -15,
+          "right": -18
+        },
+        "turn": {
+          "left": 2,
+          "right": 2
+        }
+      },
+      "clavicle": {
+        "protract": -3.3,
+        "elevate": 5.1
+      },
+      "shoulder": {
+        "forward": 30,
+        "raise": 62,
+        "rotate": -30.9
+      },
+      "elbow": {
+        "bend": 70,
+        "rotate": -5.8
+      },
+      "wrist": {
+        "flex": -33.3,
+        "tilt": 20.3,
+        "fingers": 25
+      }
+    }
+  },
+  "flyer": {
+    "position": [
+      0,
+      1.06,
+      -0.15
+    ],
+    "joints": {
+      "root": {
+        "turn": 180,
+        "pitch": -13,
+        "roll": 180
+      },
+      "neck": {
+        "nod": 10
+      },
+      "hip": {
+        "straddle": 90
+      },
+      "ankle": {
+        "point": 45
+      },
+      "clavicle": {
+        "protract": -24.5,
+        "elevate": -7
+      },
+      "shoulder": {
+        "forward": 70,
+        "raise": 20.2,
+        "rotate": 19.7
+      },
+      "elbow": {
+        "bend": 111.5,
+        "rotate": -89
+      },
+      "wrist": {
+        "flex": -7.1,
+        "tilt": -20,
+        "fingers": 25
+      }
+    }
+  },
+  "contacts": [
+    {
+      "a": {
+        "base": "left-sole"
+      },
+      "b": {
+        "flyer": {
+          "segment": "right-thigh",
+          "along": 0.12,
+          "around": 90
+        }
+      },
+      "twist": "free"
+    },
+    {
+      "a": {
+        "base": "right-sole"
+      },
+      "b": {
+        "flyer": {
+          "segment": "left-thigh",
+          "along": 0.12,
+          "around": 105
+        }
+      },
+      "twist": "free"
+    },
+    {
+      "a": {
+        "flyer": "left-palm"
+      },
+      "b": {
+        "base": "left-palm-heel"
+      },
+      "twist": 180,
+      "symmetric": true
+    }
+  ],
+  "locks": {
+    "base": [
+      "knee",
+      "arms",
+      "hip.rotate",
+      "ankle.tilt"
+    ],
+    "flyer": [
+      "spine",
+      "legs",
+      "wrist.flex"
+    ]
+  }
+}

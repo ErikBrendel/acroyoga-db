@@ -1,0 +1,43 @@
+## 2026-10-19: generated
+- **Result**: I wrote the draft `data-drafts/poses3d/cross-legged-straddlebat-left.json` and the params `data-drafts/params/cross-legged-straddlebat-left.json`. Renders: `cross-legged-straddlebat-left{,-side,-head-end,-angled}.png`.
+  - **Checks**: all 4 contacts are ok (0 mm, 4° or less). There are no overlaps and no `<- check` marks in Feet. The only angles at a limit are the flyer's `clavicle.elevate` at -10 (both sides). Her centre of mass is over the contacts.
+  - **Base legs**: crossed in an X.
+    - Left leg: in front (nearer her back). Pike 112, adducted 17, knee bent 25, sole under her right thigh (`right-thigh` along 0.12, around 90).
+    - Right leg: straight and behind the left leg (further towards his feet). Pike 95, adducted 17, sole under the back-underside of her left thigh (`left-thigh` along 0.12, around 105).
+    - Seen from the feet end, the right (orange) shin crosses in front of the left (blue) one at about knee height. The rough-capsule check finds no overlap there.
+  - **Left knee on her back**: the bent left knee presses forwards, towards his head, into her upper back. The kneecap is at (-4, 56, -15). Her `upper-back@1@180` (the shoulder line) is at (0, 61, -19). The knee is about 2 cm from her back plane and about 5 cm below the end of her upper back.
+    - **For the human to check**: the knee touches the top of her upper back at the shoulder line, not the middle of her back. This is not a contact, only set by angles. Render a close-up.
+  - **Flyer**: inverted as in straddlebat (`turn 180, roll 180`), but leaning towards his head (`pitch -13`). Her pelvis is at (0, 106, -15), straddle 90 (straddlebat: 80), spine and legs straight.
+  - **Heads**: her head is 2 cm from his chest. It is not in his belly: the lean moves it from his belly towards his lower chest.
+  - **Stargrip**: as in straddlebat (flyer `palm` on base `palm-heel`, twist 180, symmetric).
+    - Base arms: `shoulder forward 30, raise 62, rotate -31`, elbow bend 70, all locked.
+    - Her arms come out of IK: shoulder forward 77, raise 32, rotate 55, elbow 112, rotate -43.
+    - Her hands are wider than in straddlebat (±47 cm against ±36), and her shoulder rotation is high (55 against 20). Check the arm look.
+  - **Base ankles**: sole tilt -15 (left) and -18 (right), i.e. everted. The crossed, adducted legs tilt the soles towards the midline, so the soles need eversion to lie flat under her thighs. Toes are 2° outward, points 14 and 6.
+- **Decisions**:
+  - **Reading the description**: as in straddlebat, her back faces his feet end and his legs run along her back. The X follows from crossing: his left foot goes to her right thigh and his right foot to her left thigh.
+    - Two crossed legs cannot both lie in her back's plane, so one has to be in front. Bending the left knee moves it towards his head, i.e. into her back. That is "left knee on the flyer's back", so the left leg is the front one.
+    - The right leg stays straight and "behind" (further from her). Its foot sits a little further back on her thigh (around 105 instead of 90), which gives the right shin room behind the left knee.
+    - I kept both feet carrying on her thighs ("like straddlebat").
+  - **Flyer lean (pitch -13)**: needed to make room for the left knee. Without it, her back sits where his legs are (straddlebat: back plane z ≈ -3, his legs z -4…-12), and the bent left knee runs into her chest or neck (overlaps 3–6 cm at pitch -5). The cost: her head leaves his belly and moves to his lower chest (2 cm clear).
+  - **Knee height**: with equal body sizes, his knee reaches at most y ≈ 59 (hip y 16 + thigh 43). Her back ends at her shoulders at y ≈ 61, so the knee can only touch the top of her upper back. A taller base, as in most photos, would put it between her shoulder blades. A lower flyer would push her head into him.
+  - **Flyer straddle 90 instead of 80**: with the base's legs adducted 17°, his soles tilt towards the midline. A flatter thigh underside reduces the eversion his ankles need. At 85 the right ankle needed tilt -26 (near its -30 limit) plus a 26° toe turn. Say if 90 is too wide; 85 also holds with more eversion.
+  - **Contacts**: the knee-on-back is not a contact. The left leg already carries the sole contact, and two contacts on one limb fight (doc). The knee is placed by locking the knee bend and checked with `--show` sites.
+- **References**: none found.
+  - Three web searches ("cross legged straddle bat", "straddle bat leg cross knee on back youtube", "straddle bat crossed legs base knee flyer back") found nothing about this variant, and I found no YouTube tutorial. So I did not use `pose:frames`.
+  - Everything above is worked out from the description, the neighbouring flow poses and geometry. The next pose, "Folded Leaf tucked through" (flyer's upper body through his legs, back on his hamstrings), fits this reading: her back is already against his legs from the feet side.
+  - Examples: approved `public/data/poses3d/straddlebat.json` (base arms and flyer arm angles as the start) and `data-drafts/params/straddlebat.json`.
+- **Tools**:
+  - `pose:solve --vary … --show` about 20 times, the main instrument: lean × knee bend × flyer position, foot `around`, ankle tilt, base arms.
+  - `pose:solve` about 8 times, `pose:check` with sites twice, `pose:render` 6 times.
+  - `--show base.left-ankle.tilt` (angle) together with sites worked well.
+  - Once `pose:solve` crashed with `ReferenceError: liftedSummary is not defined` while another agent was editing `report.ts`. It worked again a minute later.
+- **Missing**:
+  - **Scratch script** `knee.py` (scratchpad): parses `--vary --show base:left-knee,flyer:upper-back@1@180` lines and prints the knee's distance from her back plane and their height difference.
+  - **Knee clearance**: no tool reports how far a limb that is not in a contact (a knee, a shin) is from the other person's surface. Overlaps report only 3 cm or more, Possible contacts only hands and feet.
+  - **Upper-back extent**: I had to find out by probing that her `upper-back` segment ends at her shoulders at y ≈ 61. That is what limits where a base knee can touch.
+  - **Contact fits**: a first try with three `fit` contacts (both soles and the knee) on a rigid flyer left 4–15 cm errors. That approach does not work for this kind of over-determined placement.
+- **Time sinks**:
+  - **Geometry**: about 5 rounds to understand that his legs already lie in her back's plane in straddlebat, so crossing them needs a flyer lean.
+  - **Sole roll**: about 4 rounds. Adducted, crossed legs tilt the soles. The solver answered with toes turned in at the -20 limit or 26–60° hip rotation until I locked `ankle.tilt` and moved the foot's `around`.
+- **Suggestion**: report in "Heads" (or a "Knees" line) the distance of free base knees and shins to the flyer's torso surface. Poses like this one and folded leaf tucked through are defined by a knee or leg touching the back, which no section shows today.

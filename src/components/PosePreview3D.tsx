@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { AcroPose, ROLES, Role } from '../3d/acroPose';
-import { lerpHumanPose } from '../3d/humanPose';
 import { DISPLAY_PALETTES } from '../3d/bodyMesh';
 import { Human } from '../3d/Human';
 import { Pose3d, loadPose3d } from '../3d/pose3dData';
+import { transition } from '../3d/transition';
 import { Pose } from '../types/data';
 
 const BACKGROUND = 0xf8f8f6;
@@ -110,11 +110,11 @@ function Scene({ pose }: { pose: AcroPose }) {
     let frame = 0;
     moveToRef.current = target => {
       cancelAnimationFrame(frame);
-      const from = shown;
+      const way = transition(shown, target);
       const start = performance.now();
       const step = (now: number) => {
         const t = easeInOut(Math.min(1, (now - start) / MOVE_MILLISECONDS));
-        shown = { ...target, base: lerpHumanPose(from.base, target.base, t), flyer: lerpHumanPose(from.flyer, target.flyer, t) };
+        shown = way(t);
         ROLES.forEach(role => humans[role].apply(shown[role]));
         render();
         if (t < 1) frame = requestAnimationFrame(step);

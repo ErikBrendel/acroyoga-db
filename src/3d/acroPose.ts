@@ -146,7 +146,7 @@ export function contactError(pose: AcroPose, contact: Contact): { millimetres: n
 export const movesLimb = (site: Site) => limbChain(localSiteFrame(site).bone).length > 0;
 
 // A free twist is whatever the sites have now, so only position and normals count
-const targetOf = (pose: AcroPose, { a, b, twist }: Contact) =>
+export const targetOf = (pose: AcroPose, { a, b, twist }: Contact) =>
   contactTarget(siteMatrix(pose[b.role], b.site), twist === 'free' ? currentTwist(pose, a, b) : twist);
 
 // The same contact, seen from `b`
