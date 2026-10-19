@@ -12,7 +12,7 @@
         "bend": 0
       },
       "ankle": {
-        "point": 5,
+        "point": 0,
         "tilt": 0,
         "turn": 5
       },
@@ -45,7 +45,7 @@
       "root": {
         "turn": 180,
         "roll": 180,
-        "pitch": -5
+        "pitch": 3
       },
       "waist": {
         "bend": 0
