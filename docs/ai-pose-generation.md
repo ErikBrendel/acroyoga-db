@@ -165,12 +165,20 @@ More facts:
   rotation and foot, which humans correct, rather than straightening the knee.
 - Base reaching overhead (whale): with straight arms the palms get to about y 65, z -85 cm; a flyer's ankles
   further away need bent elbows or a lower flyer.
+- L-base with a lot of weight in the base's straight arms (star, the 4-Step, hand-to-hand): his shoulder blades
+  stay on the floor as extra contact points (`clavicle.protract` not lifted, "Lowest surface point" back near
+  0). If his hands then do not reach, bring the flyer lower: angle or tuck the base's legs more, not lift his
+  shoulders.
 - Stargrip (star and the 4-Step), as approved in `public/data/poses3d/star.json` and its params
   `data-drafts/params/star.json`: symmetric, same-side hands palm on palm, fingers on each other's wrist
   (contact palm → palm, twist 180), not a handshake.
   - The base's palms face the flyer's face: his arms vertical-ish and pronated (`shoulder.rotate 0`,
     `elbow.rotate -85`), tilted 10° towards his feet (`shoulder.forward 80`).
   - Both wrists bent back (`wrist.flex -30` each, locked).
+  - The hands are not stacked palm on palm with fingertips at the other's wrist: each hand slides further, so
+    the wrists are roughly aligned (each wrist in the middle of the other's palm) and the fingers reach over the
+    other's wrist onto the forearm (real acroyogis grip around it; the model has no finger joints). Model it as
+    the flyer's palm on the base's forearm near the wrist (`<side>-forearm` at along about 0.95, on its palm side).
   - The flyer's forearms parallel, elbows straight above her hands (`shoulder.raise` about 8, locked), elbows
     bent about 90°.
   - The flyer leans a few degrees towards the base's belly, her centre of mass about 7 cm towards his head
