@@ -6,7 +6,9 @@
     ],
     "joints": {
       "hip": {
-        "pike": 90
+        "pike": 90,
+        "straddle": -4,
+        "rotate": 10
       },
       "knee": {
         "bend": 0
@@ -14,7 +16,7 @@
       "ankle": {
         "point": -5,
         "tilt": 0,
-        "turn": 5
+        "turn": 18
       },
       "shoulder": {
         "forward": -12,
@@ -47,16 +49,17 @@
         "bend": 10
       },
       "hip": {
-        "pike": 62
+        "pike": 53,
+        "straddle": 15
       },
       "knee": {
-        "bend": 15
+        "bend": 40
       },
       "ankle": {
         "point": 30
       },
       "shoulder": {
-        "forward": 172,
+        "forward": 162,
         "raise": 15,
         "rotate": 0
       },
@@ -77,7 +80,7 @@
       "a": {
         "flyer": {
           "segment": "right-thigh",
-          "along": 0.2,
+          "along": 0.05,
           "around": 0
         }
       },

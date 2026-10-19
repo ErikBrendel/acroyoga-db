@@ -41,3 +41,34 @@
   - **Head height**: about 5 rounds. The cause was the lifted base (hands) plus ankle point, not the flyer.
   - **Balance**: about 4 rounds. Legs out horizontally pull her centre of mass off his feet unless the contact moves down the thigh and her torso leans towards his head.
 - **Suggestion**: add the head gap (Heads section) and "base lifted off the floor" to the `--vary` summary line. Both decided this pose and had to be read from full reports.
+
+## 2026-10-19: revised
+- **Result**: draft `data-drafts/poses3d/folded-leaf.json` and params revised. Renders: `folded-leaf-before.png` (head end, before the revision), `folded-leaf-side.png`, `-head-end.png`, `-angled.png`. Both contacts ok (0 mm, 0°), no limits, no overlaps.
+  - **Toes outward**: 28° in total (hip rotate 10 + ankle turn 18, both locked). The soles point (±0.47, 0, -0.88). The base's knees are still stacked at 0°.
+  - **Centre of the sole at her hip crease**: contact `{"segment":"right-thigh","along":0.05,"around":0}` (was along 0.2, about 9 cm down the thigh, now about 2 cm from the crease). Sole centres at (±11, 106, -3).
+  - **Heels closer than toes**: the base's legs are slightly adducted (straddle -2.7 from the solver, left free). His `achilles` sites are at ±5 cm, the sole centres at ±11 and the toes further out, so the feet form a V.
+  - **Her legs open**: as the human added, `hip.straddle 15`. Her knees are at ±23, her feet at ±33.
+  - **Cost**:
+    - **Balance**: her centre of mass is now 3 cm off the line between his soles (was 1 cm). With the contact at the crease, her outstretched legs pull her centre of mass towards her feet. To counter it I made the fold shallower (hip pike 53, was 62), so her torso leans further towards his head (root pitch 147, was 157).
+    - **Head**: the head is now 2 cm from his chest (was 0 cm from his waist); the crown is at (0, 23, -24), on his upper belly / lower ribs.
+    - **Knees**: her knees bend 40 (was 15), which helps balance by about 1 cm.
+    - **Arms**: her arms come forward 10° (`shoulder.forward 162`), so her hands stay inside his arms instead of on his forearms. Palms are flat on the floor at (±39, 2, -10).
+  - **For the human to check**:
+    - **Toe turnout**: 28° is close to the doc's "far out" mark (that appeared at 35°). Say if it should go further.
+    - **Head**: about 2 cm above his chest rather than resting on his belly.
+    - **Fold**: hip pike 53 is a shallow fold.
+- **Decisions**:
+  - **Turnout split**: about a third from the hip and two thirds from the ankle (hip 10 + ankle 18), so neither joint is extreme. With hip 15 + ankle 20 (35°) and the straddle locked, the soles moved to ±13 and the contacts were 28 mm off. Leaving `hip.straddle` free let the solver bring the heels inward.
+  - **Rejected variant**: knee bend 80 balanced better (2 cm), but put her shins vertical in the air (render), unlike all photos, so I did not use it.
+  - **References vs feedback**: the reference photos don't show the base's toe direction clearly. Gieger Pose055 shows his foot at her crease with the toes over her thigh, which fits the feedback. Nothing contradicts it.
+- **References**: no new ones. I re-used the Gieger Pose055 foot crop from the first round.
+- **Tools**:
+  - `pose:solve --vary` about 8 times with `--only-ok` / `--sort` and `--show` (sole, `achilles` as heel proxy, straddle). The head gap in the summary line saved the grep loops of the first round.
+  - Full solve 4 times, `pose:check` 2 times, `pose:render` 4 times.
+- **Missing**:
+  - **Scratch scripts**: none.
+  - **Heel site**: there is no `heel` site. I used `achilles` (back of the lower shin, 8 cm above the sole) as a proxy for the heel spacing.
+- **Time sinks**:
+  - **Turnout**: one round with the straddle locked, which left the turned-out soles out of reach.
+  - **Balance and leg shape**: two rounds after moving the contact to the crease.
+- **Suggestion**: add a `heel` site (back of the sole). Then "heels closer together than toes" can be checked numerically, and `pose:check` can print the heel and toe spacing for the base's feet in the Feet section.

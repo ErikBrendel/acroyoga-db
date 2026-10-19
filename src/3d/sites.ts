@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { crossSection } from './bodyMesh';
 import { HumanPose } from './humanPose';
 import { worldMatrix } from './ik';
-import { ALL_BONES, BoneKey, CONTACT_NORMALS, CONTACT_POINTS, JOINTS, JointId, Side, boneKey } from './skeleton';
+import { ALL_BONES, BoneKey, CONTACT_NORMALS, CONTACT_POINTS, JOINTS, JointId, SOLE_DEPTH, Side, boneKey } from './skeleton';
 
 // A contact site is a point on the body surface with a frame: `normal` points out of the surface and
 // `direction` along it, towards the fingers / toes on hands and feet, towards the far end on limbs and
@@ -51,6 +51,8 @@ const PAIRED_SITES: Record<string, SiteDef> = {
   'palm-heel': { joint: 'wrist', point: [CONTACT_POINTS.wrist[0], 0.01, 0], normal: CONTACT_NORMALS.wrist, direction: [0, 1, 0] },
   'hand-back': { joint: 'wrist', point: [-CONTACT_POINTS.wrist[0], CONTACT_POINTS.wrist[1], 0], normal: [-1, 0, 0], direction: [0, 1, 0] },
   sole: { joint: 'ankle', point: CONTACT_POINTS.ankle, normal: CONTACT_NORMALS.ankle, direction: [0, 1, 0] },
+  // Underside of the heel, e.g. to check how far apart a base's heels are against the toes
+  heel: { joint: 'ankle', point: [0, -0.03, -SOLE_DEPTH], normal: CONTACT_NORMALS.ankle, direction: [0, 1, 0] },
   instep: { joint: 'ankle', point: [0, 0.1, -0.005], normal: [0, 0, 1], direction: [0, 1, 0] },
   knee: { segment: 'shin', along: 0.05, around: 0 },
   shin: { segment: 'shin', along: 0.45, around: 0 },

@@ -56,7 +56,7 @@ Ranges live in `skeleton.ts`; the stored data never contains limits, axes or bon
 ## Contact sites (`src/3d/sites.ts`)
 - A site is a point on the body surface with a frame: the normal points out of the surface, the
   direction along it (palm / sole: towards fingers / toes; limbs: towards their far end; torso: towards the head).
-- Named sites, each with `left-` / `right-`: `palm`, `palm-heel` (palm surface at the wrist), `hand-back`, `sole`, `instep`, `knee` (kneecap), `shin`,
+- Named sites, each with `left-` / `right-`: `palm`, `palm-heel` (palm surface at the wrist), `hand-back`, `sole`, `heel` (underside), `instep`, `knee` (kneecap), `shin`,
   `calf`, `ankle` / `achilles` (front / back of the lower shin), `thigh` (front), `hamstring` (back),
   `inner-thigh`, `knee-pit`, `sit-bone` (back of the thigh below the buttock), `hip` (front of the hip bone),
   `shoulder` (top, between neck and arm), `shoulder-blade`, `armpit`. Centre: `belly`, `sacrum`, `chest`,
