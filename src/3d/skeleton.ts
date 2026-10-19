@@ -164,7 +164,7 @@ export const JOINTS: Record<JointId, JointDef> = {
     angles: [
       { name: 'flex', axis: '-z', min: -80, max: 80 },
       { name: 'tilt', axis: 'x', min: -20, max: 30 },
-      // Curling the four fingers towards the palm, the same angle at the knuckles and the middle finger joints
+      // Bending the four (straight) fingers towards the palm at the knuckles
       { name: 'fingers', axis: '-z', min: -10, max: 90, meshOnly: true },
     ],
   },

@@ -183,7 +183,7 @@ More facts:
   - Both wrists bent back (`wrist.flex -30` each, locked).
   - The hands are not stacked palm on palm with fingertips at the other's wrist: each hand slides further, so
     the wrists are roughly aligned (each wrist in the middle of the other's palm) and the fingers reach over the
-    other's wrist onto the forearm (`wrist.fingers` about 35 curls them around it). Model it as
+    other's wrist onto the forearm (`wrist.fingers` bends the straight fingers at the knuckles). Model it as
     the flyer's `palm` on the base's `palm-heel`, twist 180: the palms stay flat and parallel, only slid. Not
     palm on the forearm: that tilts the contact by the wrist angle and forces a wrist into an odd bend (a human
     rejected that). In star this needed her wrists at -22 instead of -30.

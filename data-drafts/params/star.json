@@ -25,8 +25,7 @@
         "rotate": -85
       },
       "wrist": {
-        "flex": -30,
-        "fingers": 35
+        "flex": -30
       }
     }
   },
@@ -58,8 +57,7 @@
         "rotate": -90
       },
       "wrist": {
-        "flex": -22,
-        "fingers": 35
+        "flex": -22
       }
     }
   },

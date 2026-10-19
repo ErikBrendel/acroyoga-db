@@ -296,15 +296,14 @@ export function buildJointCap(joint: keyof typeof JOINT_CAPS, palette: Palette, 
 const FINGERS: [z: number, knuckle: number, length: number][] = [
   [0.03, 0.097, 0.075], [0.01, 0.1, 0.082], [-0.01, 0.097, 0.077], [-0.029, 0.09, 0.06],
 ];
-const PROXIMAL_SHARE = 0.55;
 
 interface Hand {
   object: THREE.Group;
   curl: (degrees: number) => void;
 }
 
-// Palm normal +X (facing the body when standing), fingers along +Y, thumb towards +Z. Each finger bends
-// towards the palm at its knuckle and again at its middle joint.
+// Palm normal +X (facing the body when standing), fingers along +Y, thumb towards +Z. The fingers stay
+// straight and bend towards the palm at their knuckles.
 export function buildHand(): Hand {
   const object = new THREE.Group();
   const skin = flat(COLORS.skin);
@@ -312,23 +311,17 @@ export function buildHand(): Hand {
   const thickness = 2 * palmSurface;
   const palmLength = palmCentre * 1.3;
   object.add(meshAt(new THREE.BoxGeometry(thickness, palmLength, 0.085), skin, [0, palmLength / 2, 0]));
-  const joints = FINGERS.flatMap(([z, knuckle, length]) => {
-    const segment = (segmentLength: number) =>
-      meshAt(new THREE.BoxGeometry(thickness * 0.75, segmentLength, 0.018), skin, [0, segmentLength / 2, 0]);
-    const base = new THREE.Group();
-    base.position.set(0, knuckle, z);
-    base.add(segment(length * PROXIMAL_SHARE));
-    const middle = new THREE.Group();
-    middle.position.y = length * PROXIMAL_SHARE;
-    middle.add(segment(length * (1 - PROXIMAL_SHARE)));
-    base.add(middle);
-    object.add(base);
-    return [base, middle];
+  const knuckles = FINGERS.map(([z, knuckle, length]) => {
+    const finger = new THREE.Group();
+    finger.position.set(0, knuckle, z);
+    finger.add(meshAt(new THREE.BoxGeometry(thickness * 0.75, length, 0.018), skin, [0, length / 2, 0]));
+    object.add(finger);
+    return finger;
   });
   const thumb = meshAt(new THREE.BoxGeometry(0.02, 0.055, 0.022), skin, [0.006, 0.04, 0.05]);
   thumb.rotation.x = 0.6;
   object.add(thumb);
-  return { object, curl: degrees => joints.forEach(joint => { joint.rotation.z = -THREE.MathUtils.degToRad(degrees); }) };
+  return { object, curl: degrees => knuckles.forEach(finger => { finger.rotation.z = -THREE.MathUtils.degToRad(degrees); }) };
 }
 
 // Foot from heel to toes along +Y, sole flat at SOLE_DEPTH below the ankle (local -Z points down)

@@ -29,7 +29,7 @@ Code: `src/3d/skeleton.ts` (joint definitions), `src/3d/humanPose.ts` (one perso
 | `clavicle` | shoulder girdle | `protract` (shoulder forward), `elevate` (shrug up) |
 | `shoulder` | upper arm | `forward`, `raise` (sideways), `rotate` (outward) |
 | `elbow` | lower arm | `bend`, `rotate` (supinate; twists along the forearm, the elbow's point stays behind the joint) |
-| `wrist` | hand | `flex` (towards palm), `tilt` (towards thumb), `fingers` (curl towards the palm at knuckles and middle joints; mesh only, no effect on sites and the solver) |
+| `wrist` | hand | `flex` (towards palm), `tilt` (towards thumb), `fingers` (straight fingers bent towards the palm at the knuckles; mesh only, no effect on sites and the solver) |
 
 Ranges live in `skeleton.ts`; the stored data never contains limits, axes or bone lengths.
 
