@@ -14,11 +14,9 @@ in the 3D editor ("🎭 Open in 3D editor") and saving. Agents only write drafts
   with the editor's Front view; render `--view "Head end"`), others from the side (`--view Side`). Look at what
   each limb presses against and from which side, not only where it is. Never copy images into the repo. Note
   where a reference disagrees with the description; the description wins, but say so in your report.
-- Video frames without yt-dlp: fetch the YouTube watch page and read the storyboard `"spec":"https://i.ytimg.com/sb/<id>/storyboard3_L$L/$N.jpg?sqp=…|…"`.
-  The last levels have the most detail (`L2`: 160×90 frames, 5×5 per sheet, 1 s apart; `L3`: 320×180, 3×3,
-  2 s apart). Request `…/storyboard3_L<level>/M<n>.jpg?sqp=…&sigh=<that level's rs$… part, $ as %24>`;
-  sheet `M<n>` starts at frame n × columns × rows. Crop a cell with ffmpeg. Tutorials often show entries and
-  grips more clearly than photos.
+- Videos (YouTube links, tutorials found by search) often show entries and grips more clearly than photos:
+  `pnpm pose:frames <url> [<seconds>…] [--range <from>-<to>]` (below). Find the moment with a short `--range`,
+  then look at single frames.
 - Looking at an image costs about width × height / 750 tokens (up to about 1600). Check numerically first (the
   report's Feet, heights and Balance, `pose:check` sites), and look at images to compare with the photos:
   renders with `--width 512` unless you need a detail, reference photos scaled to at most 768 px, and for a
@@ -31,6 +29,7 @@ in the 3D editor ("🎭 Open in 3D editor") and saving. Agents only write drafts
 ## Tools
 | Command | Does |
 |---|---|
+| `pnpm pose:frames <youtube-url> [<seconds>…] [--range <from>-<to>]` | Still frames from the video's storyboard (no download): one frame per `<seconds>` (default: the URL's `t=`), or a labelled contact sheet of a range, in `data-drafts/renders/frames/`. Coarse: one frame every 1–10 s, at most 320×180 (written ×2). A sheet costs tokens like any image, so keep ranges to about 20 s. |
 | `pnpm pose:orient '<joints JSON>' [presets…]` | Which way head, front, own left, soles and palms point. Use it before guessing root angles. |
 | `pnpm pose:solve <params.json> [--out <file>]` | Builds and solves the pose, writes the draft (or `--out` for trying variants), prints a report (below). Takes about 2 s. |
 | `pnpm pose:solve <params.json> --vary <path>=<v1>,<v2> [--vary …]` | Solves every combination and prints one summary line each (contacts ok, worst error, limits, overlaps, whether the flyer is over its support, the base's knee and elbow bends); writes nothing. `<path>` is a dot path into the params, e.g. `flyer.joints.hip.pike` or `contacts.0.a.flyer.around`; values are JSON or plain text (`contacts.0.twist=free,0`; commas inside JSON do not split: `base.joints.ankle.turn={"left":5,"right":30},5`). A path can reach one side, `base.joints.ankle.turn.right=20,30`, once the params give that angle as `{left, right}`. Failing contacts are listed by index. `--show base.left-elbow.bend,base:left-palm` adds chosen angles or site positions (cm) to each line. Use it instead of hand-written loops. |
@@ -161,6 +160,10 @@ Pose names: "reverse" turns the head the other way and keeps the face down (reve
 head over the base's head is backbird. Check the photos before trusting a brief on this.
 
 More facts:
+- Base lying on his back: `shoulder.forward` 90 points the arms straight up, more moves the hands towards his
+  head, less towards his feet.
+- Inside and outside sidestar share the flyer (same side down, head the same way) and differ only in which base
+  leg carries her: an approved one is the start for the other (swap the base's legs, re-balance).
 - `wrist.flex` positive bends the hand towards the palm; the stargrip's bent-back wrists are negative.
 - L-base: legs vertical, soles face up, toes point to the base's head (-Z), arms straight up.
 - `elbow.rotate -90` turns the palm down with the arm pointing forward.

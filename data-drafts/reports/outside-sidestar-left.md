@@ -1,0 +1,41 @@
+## 2026-10-19: generated
+- **Result**: draft `data-drafts/poses3d/outside-sidestar-left.json`, params `data-drafts/params/outside-sidestar-left.json`, renders `outside-sidestar-left.png` and `outside-sidestar-left-head-end.png`. All 3 contacts hold at 0 mm / 0°. No angles at limits, no overlaps, no heads near the other person, no `<- check` marks on the feet.
+  - **Balance**: the flyer's centre of mass (10, 115, -10) is over its 3 contacts, and both people together are over the base's floor contact.
+  - **Base**:
+    - Left leg carries: vertical and straight (`hip.pike 90, straddle -6, knee 0`, ankle turn 5 / point 0). The sole is at (1, 106, -4), above the middle of his pelvis.
+    - Right leg is free, foot flat on the floor (pike 45, knee 110, point 25).
+    - Shoulder blades stay on the floor (clavicle 0). Left arm `forward 86, raise 30, rotate -55`; right arm `forward 60, raise -25` (crosses towards his midline). Elbow rotate -85, wrist flex -36 / -30, fingers 25.
+  - **Flyer**:
+    - On her right side: right side of her pelvis (`pelvis` 50% around -90) on his left sole, `fit` with `fitRotate`. Head towards his left (crown at x 81) and 20° towards his head (root turn -160), facing his head.
+    - Root after the fit: roll -84, pitch 2. Waist / chest side -15 / -15 (towards the base), twist -20 / -30. Neck tilt 35, nod -15.
+    - Legs straight, straddle 35 each in her frontal plane (left leg up, right leg down), toes pointed 30.
+  - **Grip**: stargrip recipe, same-side hands. Her `palm` is on his `palm-heel` with twist 180 (held, not free), fingers 25. Her right (lower) hand meets his right hand at (5, 60, -17), right next to his carrying shin, where she grips his shin in the photos. Her left (upper) arm comes down in front of her chest to his left hand at (44, 67, -43).
+  - **For the human to check**:
+    - **Her upper (left) shoulder** solved to the odd equivalent set `forward -54, raise 173, rotate 68`, with the elbow bent 66. In the render it looks like a normal arm coming down in front of her chest.
+    - **Her lower (right) arm** is bent 52. In both photos it is straight.
+    - **Her torso**: the crown is at y 114, the pelvis at 122, and the chest is turned partly face down, as in the approved `sidestar-right`. In both photos her torso is horizontal and her chest opens towards the camera.
+- **Decisions**:
+  - **Two hands instead of one**: both photos show the one-hand version. Her lower hand grips the base's carrying shin and her upper arm is raised in the air. I connected both hands:
+    - the brief's grip recipe asks for it;
+    - in the flow the pose sits between front plank twisted hands and star, and both hold hands.
+  - **Same-side pairing** (her right to his right, her left to his left), as in star, the next pose of the flow, and as in the approved sidestar.
+  - **Starting point**: the approved `sidestar-right` has the same flyer (on her right side, head to his left, facing his head). Only the carrying base leg differs (his left instead of his right). I took its flyer and base-arm angles and swapped the base legs.
+  - **Less roll, so less turn**: because the left sole is tilted the other way relative to her, `fitRotate` gives roll -84 instead of -96. Her body therefore leans less towards the base.
+    - At turn -162 (as approved) her centre of mass was 2–3 cm outside the contact triangle. The sole and her lower hand sit almost in line, so the triangle is thin.
+    - I balanced it with more spine side bend (-15 / -15 instead of -10 / -10) and by moving his left hand towards his feet (`forward 86` instead of 95, `raise 30` instead of 23). That widens the triangle.
+    - Turn -150 also balanced, but it puts her 30° diagonal. Both photos show her roughly perpendicular to him.
+  - **Description vs. photos**: no disagreement on orientation. Gieger (head-end view) matches the description exactly: base's left leg up, right leg bent with the foot flat, her head to his left, her left side up, facing the camera. The Acrodemy photo is the right-hand mirror.
+- **References**:
+  - **christiangieger.de outside-star**, `Acroyoga-Haltung-Pose090` (head end, from above): the key photo for which leg carries, her facing, the free leg and the lower hand on his shin.
+  - **acrodemy.eu outside-star**, `outsidestar500keret` (head end, low): the mirror version. The base's hands rest on his belly there.
+  - The Acrodemy page text ("upper body faces opposite the base's free leg, face facing the base") confirmed the side. Its YouTube entries (t0774LZuFjQ, OZ5iOnG4tnk) not watched; the two photos were unambiguous.
+  - **Approved poses used**: `sidestar-right.json` (almost all angles), `star.json` (grip recipe).
+- **Tools**:
+  - `pose:solve` 4 times plus 6 `--vary` sweeps. `grep 'ok 3/3'` on the sweep output to filter the holding variants.
+  - `pose:render` 4 times (default, Head end).
+  - No `pose:orient` / `pose:suggest` needed, because the approved mirror-like pose gave the orientation.
+- **Missing**:
+  - **Scratch scripts**: none, only inline python edits of the params.
+  - **`shoulder.forward` direction for a lying base**: more than 90 moves the hand towards his head, not his feet. I swept the wrong way once. The doc does not say this.
+- **Time sinks**: balance, about 4 sweeps. The thin contact triangle (sole and lower hand almost in line along Z) leaves only a few cm of room.
+- **Suggestion**: a doc line that inside and outside sidestars share the flyer and differ only in the carrying base leg. An approved inside sidestar is then a ready start for the outside one (swap the base legs, re-balance). Also: `shoulder.forward` above 90 on a lying base moves the hand towards his head.
