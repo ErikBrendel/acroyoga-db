@@ -152,6 +152,14 @@ function feetLines(pose: AcroPose): string[] {
 }
 
 // One line for comparing variants
+// For ranking --vary results: failing contacts first, then angles at limits and overlaps, then the worst
+// contact error (a degree counted like a millimetre)
+export function rank(pose: AcroPose): number[] {
+  const errors = pose.contacts.map(c => contactError(pose, c));
+  const failing = errors.filter(e => e.millimetres > HOLDS.millimetres || e.degrees > HOLDS.degrees).length;
+  return [failing, limitLines(pose).length + overlapLines(pose).length, Math.max(0, ...errors.map(e => e.millimetres + e.degrees))];
+}
+
 export function summary(pose: AcroPose): string {
   const errors = pose.contacts.map(c => contactError(pose, c));
   const holding = errors.filter(e => e.millimetres <= HOLDS.millimetres && e.degrees <= HOLDS.degrees).length;

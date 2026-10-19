@@ -2,7 +2,9 @@
 // angles and contacts, solves it and writes the AI draft data-drafts/poses3d/<poseId>.json (or --out); prints
 // contact errors, angles at their limits, key points and overlaps. With --vary, every combination of the
 // values is solved and summed up in one line each, nothing is written; <path> is a dot path into the params,
-// e.g. flyer.joints.hip.pike or contacts.1.b.base.around; --show adds chosen angles or site positions to each line.
+// e.g. flyer.joints.hip.pike or contacts.1.b.base.around; --show adds chosen angles or site positions to each line,
+// --sort orders the lines best first (fewest failing contacts, then limits and overlaps, then the worst error),
+// --only-ok also leaves out those with a failing contact.
 // See docs/ai-pose-generation.md.
 import fs from 'fs';
 import path from 'path';
@@ -10,7 +12,7 @@ import * as THREE from 'three';
 import { AcroPose, Role, formatStoredAcroPose, serializeAcroPose } from '../../src/3d/acroPose';
 import { siteMatrix } from '../../src/3d/sites';
 import { ParamsSchema } from './params';
-import { report, summary } from './report';
+import { rank, report, summary } from './report';
 import { humans, solvePose } from './solver';
 
 const args = process.argv.slice(2);
@@ -65,6 +67,7 @@ function showValue(pose: AcroPose, spec: string): string {
 if (variations.length) {
   const combinations = variations.reduce<Record<string, unknown>[]>(
     (all, { key, values }) => all.flatMap(c => values.map(v => ({ ...c, [key]: v }))), [{}]);
+  const results: { line: string; rank: number[] }[] = [];
   for (const combination of combinations) {
     const varied = structuredClone(raw);
     for (const [key, value] of Object.entries(combination)) {
@@ -76,8 +79,13 @@ if (variations.length) {
     const label = Object.entries(combination).map(([k, v]) => `${k}=${JSON.stringify(v)}`).join(' ');
     const pose = solvePose(ParamsSchema.parse(varied));
     const shown = shows.map(spec => `${spec} ${showValue(pose, spec)}`).join(', ');
-    console.log(`${label}: ${summary(pose)}${shown ? `; ${shown}` : ''}`);
+    results.push({ line: `${label}: ${summary(pose)}${shown ? `; ${shown}` : ''}`, rank: rank(pose) });
   }
+  const compare = (a: number[], b: number[]) => a.map((v, i) => v - b[i]).find(d => d !== 0) ?? 0;
+  const listed = (args.includes('--sort') || args.includes('--only-ok') ? [...results].sort((a, b) => compare(a.rank, b.rank)) : results)
+    .filter(r => !args.includes('--only-ok') || r.rank[0] === 0);
+  listed.forEach(r => console.log(r.line));
+  if (args.includes('--only-ok')) console.log(`${listed.length} of ${results.length} combinations with all contacts ok`);
   process.exit(0);
 }
 
