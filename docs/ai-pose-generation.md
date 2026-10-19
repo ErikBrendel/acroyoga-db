@@ -22,7 +22,7 @@ in the 3D editor ("🎭 Open in 3D editor") and saving. Agents only write drafts
 |---|---|
 | `pnpm pose:orient '<joints JSON>' [presets…]` | Which way head, front, own left, soles and palms point. Use it before guessing root angles. |
 | `pnpm pose:solve <params.json> [--out <file>]` | Builds and solves the pose, writes the draft (or `--out` for trying variants), prints a report (below). Takes about 2 s. |
-| `pnpm pose:solve <params.json> --vary <path>=<v1>,<v2> [--vary …]` | Solves every combination and prints one summary line each (contacts ok, worst error, limits, overlaps, whether the flyer is over its support, the base's knee and elbow bends); writes nothing. `<path>` is a dot path into the params, e.g. `flyer.joints.hip.pike` or `contacts.0.a.flyer.around`. Use it instead of hand-written loops. |
+| `pnpm pose:solve <params.json> --vary <path>=<v1>,<v2> [--vary …]` | Solves every combination and prints one summary line each (contacts ok, worst error, limits, overlaps, whether the flyer is over its support, the base's knee and elbow bends); writes nothing. `<path>` is a dot path into the params, e.g. `flyer.joints.hip.pike` or `contacts.0.a.flyer.around`; values are JSON or plain text (`contacts.0.twist=free,0`). Failing contacts are listed by index. Use it instead of hand-written loops. |
 | `pnpm pose:suggest <params.json \| pose.json> [<role>:<site> [<role>:<segment>]]` | Where contacts could go: free hands and feet near a surface facing them, or with a site (`flyer:left-palm`) its best points on the bodies, optionally on one segment (`base:left-thigh`). Prints ready contact JSON. Works on params and on stored drafts. |
 | `pnpm pose:check <pose.json> [<role>:<site>…]` | The same report for stored pose data as it is, e.g. a draft under review or an approved pose to compare with. With sites (`flyer:left-instep`, or `base:right-shin@0.3@-125` for segment@along@around), their position, normal and direction. |
 | `pnpm pose:render <poseId> [--view Side] [--saved]` | Renders the draft in the 3D editor to `data-drafts/renders/<poseId>.png` (Front, Side / Angled, Top) or one larger view, also `"Head end"` (from above the base's head, like most photos). |
@@ -88,6 +88,8 @@ base legs blue / orange, flyer legs teal / pink.
   hands resting on knees, palms together in Namaste, crossed ankles are contacts too and hold the shape.
 - **Lowest surface point above the floor**: head, back, pelvis, hands and feet per person. Catches hands floating
   instead of resting on the floor, or a base lifted off it.
+- **Base's feet**: per side how far the toes are turned outward (hip rotation and ankle turn together), the
+  sole's roll and point.
 - **Balance**: centres of mass from rough body-part masses. The flyer's should lie over the contacts that carry
   it (seen from above), and both people's together over the base's floor contact; anything outside falls over
   unless a grip pulls against it (counterbalance poses like whale). Per contact on the base it lists the bend of
@@ -100,6 +102,11 @@ base legs blue / orange, flyer legs teal / pink.
   with `hip.rotate`). Sweep such values with `--vary`.
 
 ## Physics
+The base's feet are usually the most important contact: they carry the flyer, and humans notice at once when
+they sit in the wrong place or are turned or rolled oddly. Compare their position on the flyer, the toe direction
+and the sole's roll with the photos (report section "Base's feet"), and lock `ankle` and `hip.rotate` once they
+are right, or the solver turns them to close other contacts (it turned a throne base's toes 12° inward).
+
 Before tuning angles, think through where the weight goes, and check it in the Balance section:
 - Which contacts carry the flyer's weight, and which only stabilise (hands on ankles, a hooked foot)? The
   carrying ones lie under the flyer's centre of mass; the base's limbs under them are as vertical and straight
@@ -156,6 +163,10 @@ and removed when they approve the pose by saving it.
 3. Revise the params (or start from the stored data's angles) until every feedback point is addressed; physics
    and contacts still have to hold. Write the draft as usual; for an approved pose the draft stands next to it
    until a human saves one of them.
+   A small correction is easily undone by the solver: it closes the contacts with whatever angles are free, e.g.
+   an ankle turned 5° outward came back straight through a 5° inward hip rotation, and a contact with `twist: 0`
+   pulled the toes back too. Lock the angles that express the correction (`ankle`, `hip.rotate`), loosen
+   what contradicts it (`twist: "free"`), and check the result in the report, not only in the params.
 4. Render again and report per feedback point what you changed, and where the reference photos and the feedback
    disagree. Leave the feedback file alone; the human clears or approves.
 

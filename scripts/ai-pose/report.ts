@@ -109,12 +109,22 @@ function overlapLines(pose: AcroPose): string[] {
   return lines;
 }
 
+// Toes turned outward by the hip's rotation and the ankle's turn together, both positive outward
+function feetLines(pose: AcroPose): string[] {
+  return (['left', 'right'] as const).map(side => {
+    const { hip, ankle } = { hip: pose.base.angles[`${side}-hip`], ankle: pose.base.angles[`${side}-ankle`] };
+    return `  ${side}: toes ${Math.round(hip.rotate + ankle.turn)}° outward (hip rotate ${Math.round(hip.rotate)}, ankle turn ${Math.round(ankle.turn)}), `
+      + `sole tilted ${Math.round(ankle.tilt)}° inward, pointed ${Math.round(ankle.point)}°`;
+  });
+}
+
 // One line for comparing variants
 export function summary(pose: AcroPose): string {
   const errors = pose.contacts.map(c => contactError(pose, c));
   const holding = errors.filter(e => e.millimetres <= HOLDS.millimetres && e.degrees <= HOLDS.degrees).length;
-  const worst = `${Math.round(Math.max(0, ...errors.map(e => e.millimetres)))} mm, ${Math.round(Math.max(0, ...errors.map(e => e.degrees)))}°`;
-  return `contacts ok ${holding}/${errors.length} (worst ${worst}), limits ${limitLines(pose).length}, overlaps ${overlapLines(pose).length}; ${balanceSummary(pose)}`;
+  const failing = errors.flatMap((e, i) => e.millimetres <= HOLDS.millimetres && e.degrees <= HOLDS.degrees ? []
+    : [`#${i} ${Math.round(e.millimetres)} mm ${Math.round(e.degrees)}°`]);
+  return `contacts ok ${holding}/${errors.length}${failing.length ? ` (off: ${failing.join(', ')})` : ''}, limits ${limitLines(pose).length}, overlaps ${overlapLines(pose).length}; ${balanceSummary(pose)}`;
 }
 
 export function report(pose: AcroPose, humans: Record<Role, Human>): string {
@@ -125,6 +135,7 @@ export function report(pose: AcroPose, humans: Record<Role, Human>): string {
     section('Angles at their limits:', limitLines(pose)),
     section('Key points (cm):', pointLines(pose, humans)),
     section('Lowest surface point above the floor (cm; rough capsules, so a few cm off the mesh):', heightLines(pose)),
+    section('Base\'s feet (usually the most important contact; compare with the photos):', feetLines(pose)),
     section('Balance (rough body masses; the flyer should sit over the contacts that carry it, the base\'s limbs ideally stacked):', balanceLines(pose)),
     section(`Overlaps (rough, ${OVERLAP_REPORTED * 100} cm or more):`, overlapLines(pose)),
     section('Possible contacts (free hands and feet within 12 cm of a surface facing them; add them if the pose has them):',

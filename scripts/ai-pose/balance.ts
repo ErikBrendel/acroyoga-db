@@ -66,7 +66,7 @@ function outsideSupport(p: Point2, support: Point2[]): number {
 
 const supportLine = (what: string, com: THREE.Vector3, support: Point2[], over: string) => {
   const off = outsideSupport(ground(com), support);
-  return `  ${what} ${cm(com)}: ${off === 0 ? `over ${over}` : `${Math.round(off * 100)} cm outside ${over} (seen from above)`}`;
+  return `  ${what} ${cm(com)}: ${off < 0.01 ? `over ${over}` : `${Math.round(off * 100)} cm outside ${over} (seen from above)`}`;
 };
 
 export function balanceLines(pose: AcroPose): string[] {
@@ -131,5 +131,5 @@ export function balanceSummary(pose: AcroPose): string {
   const off = points.length ? outsideSupport(ground(centreOfMass(pose, 'flyer')), points) : null;
   const bends = (['knee', 'elbow'] as const).map(joint =>
     `${joint}s ${(['left', 'right'] as const).map(side => Math.round(pose.base.angles[`${side}-${joint}`].bend)).join('/')}`);
-  return `flyer ${off === null ? 'without contact' : off === 0 ? 'over its support' : `${Math.round(off * 100)} cm off its support`}, base ${bends.join(', ')}`;
+  return `flyer ${off === null ? 'without contact' : off < 0.01 ? 'over its support' : `${Math.round(off * 100)} cm off its support`}, base ${bends.join(', ')}`;
 }

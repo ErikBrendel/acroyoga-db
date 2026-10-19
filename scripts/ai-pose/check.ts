@@ -1,6 +1,6 @@
 // pnpm pose:check <pose.json> [<role>:<site>…]: the pose:solve report for stored pose data as it is (an approved
 // pose or a draft), e.g. to review a draft or to compare it with the human-corrected version. With sites (e.g.
-// flyer:left-instep, base:right-shin@0.3@-125), their position, normal and direction instead.
+// flyer:left-instep, base:right-shin@0.3@-125), also their position, normal and direction.
 import fs from 'fs';
 import * as THREE from 'three';
 import { Role, StoredAcroPoseSchema, parseAcroPose } from '../../src/3d/acroPose';
@@ -14,10 +14,8 @@ if (!file) {
   process.exit(1);
 }
 const pose = parseAcroPose(StoredAcroPoseSchema.parse(JSON.parse(fs.readFileSync(file, 'utf-8'))));
-if (!siteSpecs.length) {
-  console.log(report(pose, humans));
-  process.exit(0);
-}
+console.log(report(pose, humans));
+if (siteSpecs.length) console.log('\nSites:');
 
 const cm = (v: THREE.Vector3) => `(${[v.x, v.y, v.z].map(x => Math.round(x * 100)).join(', ')})`;
 const unit = (v: THREE.Vector3) => `(${[v.x, v.y, v.z].map(x => x.toFixed(2)).join(', ')})`;

@@ -21,7 +21,8 @@ const raw = JSON.parse(fs.readFileSync(paramsPath, 'utf-8'));
 
 const variations = option('--vary').map(spec => {
   const [key, values] = spec.split('=');
-  return { key, values: values.split(',').map(v => JSON.parse(v)) };
+  const parse = (v: string) => { try { return JSON.parse(v); } catch { return v; } };
+  return { key, values: values.split(',').map(parse) };
 });
 
 if (variations.length) {
