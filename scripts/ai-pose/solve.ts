@@ -22,10 +22,21 @@ if (!paramsPath) {
 }
 const raw = JSON.parse(fs.readFileSync(paramsPath, 'utf-8'));
 
+// Commas inside JSON values ({"left":5,"right":30}) do not separate values
+function splitTopLevel(text: string): string[] {
+  let depth = 0;
+  return [...text].reduce<string[]>((parts, char) => {
+    depth += '{['.includes(char) ? 1 : '}]'.includes(char) ? -1 : 0;
+    if (char === ',' && depth === 0) return [...parts, ''];
+    parts[parts.length - 1] += char;
+    return parts;
+  }, ['']);
+}
+
 const variations = option('--vary').map(spec => {
-  const [key, values] = spec.split('=');
+  const split = spec.indexOf('=');
   const parse = (v: string) => { try { return JSON.parse(v); } catch { return v; } };
-  return { key, values: values.split(',').map(parse) };
+  return { key: spec.slice(0, split), values: splitTopLevel(spec.slice(split + 1)).map(parse) };
 });
 
 // --show base.left-elbow.bend (an angle) or flyer:left-sole / flyer:left-forearm@0@0 (a site's position in cm), comma-separated

@@ -9,6 +9,10 @@
     "pike": {
      "left": 85,
      "right": 78
+    },
+    "rotate": {
+     "left": 0,
+     "right": 30
     }
    },
    "knee": {
@@ -20,10 +24,16 @@
    "ankle": {
     "point": {
      "left": -15,
-     "right": -24
+     "right": -20
     },
-    "tilt": 0,
-    "turn": 5
+    "tilt": {
+     "left": 0,
+     "right": 15
+    },
+    "turn": {
+     "left": 5,
+     "right": 30
+    }
    },
    "shoulder": {
     "forward": 98,

@@ -1,13 +1,13 @@
 import { z } from 'zod';
 import { AcroPose, Contact, ROLES, Role, StoredAcroPoseSchema, movesLimb, parseAcroPose } from '../../src/3d/acroPose';
-import { HumanPose, StoredHumanPose, neutralPose, serializeHumanPose, withJoints } from '../../src/3d/humanPose';
+import { HumanPose, StoredHumanPose, StoredHumanPoseSchema, neutralPose, serializeHumanPose, withJoints } from '../../src/3d/humanPose';
 import { FixedAngle } from '../../src/3d/ik';
 import { findPreset } from '../../src/3d/presets';
 import { ALL_BONES, JOINTS, JointId } from '../../src/3d/skeleton';
 
 const PersonSchema = z.strictObject({
   presets: z.array(z.string()).optional(),
-  joints: z.record(z.string(), z.unknown()).optional(),
+  joints: StoredHumanPoseSchema.shape.joints.optional(),
   position: z.tuple([z.number(), z.number(), z.number()]).optional(),
   grounded: z.boolean().optional(),
 });
@@ -57,7 +57,7 @@ export function parseLock(spec: string): FixedAngle[] {
 
 function person(spec: z.infer<typeof PersonSchema>): HumanPose {
   const presets = (spec.presets ?? []).map(name => findPreset(name).joints);
-  const joints = [...presets, spec.joints ?? {}].reduce((pose, j) => withJoints(pose, j as never), neutralPose());
+  const joints = [...presets, spec.joints ?? {}].reduce((pose, j) => withJoints(pose, j), neutralPose());
   return spec.position ? { ...joints, position: spec.position } : joints;
 }
 
