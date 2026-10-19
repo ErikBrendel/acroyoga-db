@@ -8,7 +8,7 @@
    "hip": {
     "pike": {
      "left": 90,
-     "right": 95
+     "right": 45
     },
     "rotate": {
      "left": 45,
@@ -22,13 +22,13 @@
    "knee": {
     "bend": {
      "left": 0,
-     "right": 70
+     "right": 110
     }
    },
    "ankle": {
     "point": {
      "left": -8,
-     "right": 15
+     "right": 25
     },
     "tilt": {
      "left": -6,
@@ -53,8 +53,9 @@
     "rotate": -85
    },
    "wrist": {
-    "flex": -30,
-    "tilt": 0
+    "flex": -40,
+    "tilt": 0,
+    "fingers": 25
    }
   }
  },
@@ -106,7 +107,8 @@
     }
    },
    "wrist": {
-    "flex": -30
+    "flex": -22,
+    "fingers": 25
    },
    "clavicle": {
     "protract": 0,
@@ -130,11 +132,7 @@
     "flyer": "left-palm"
    },
    "b": {
-    "base": {
-     "segment": "left-forearm",
-     "along": 0.95,
-     "around": -90
-    }
+    "base": "left-palm-heel"
    },
    "twist": 180,
    "symmetric": true
@@ -143,13 +141,16 @@
  "locks": {
   "base": [
    "legs",
-   "arms"
+   "shoulder",
+   "elbow",
+   "clavicle",
+   "wrist.tilt"
   ],
   "flyer": [
    "legs",
    "spine",
-   "clavicle",
-   "shoulder.raise"
+   "shoulder.raise",
+   "wrist.flex"
   ]
  }
 }

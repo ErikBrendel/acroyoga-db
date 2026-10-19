@@ -39,8 +39,9 @@
     "rotate": -85
    },
    "wrist": {
-    "flex": -30,
-    "tilt": 0
+    "flex": -15,
+    "tilt": 0,
+    "fingers": 25
    }
   }
  },
@@ -86,7 +87,8 @@
     "rotate": -90
    },
    "wrist": {
-    "flex": -30
+    "flex": -22,
+    "fingers": 25
    },
    "clavicle": {
     "protract": 0,
@@ -120,11 +122,7 @@
     "flyer": "left-palm"
    },
    "b": {
-    "base": {
-     "segment": "left-forearm",
-     "along": 0.95,
-     "around": -90
-    }
+    "base": "left-palm-heel"
    },
    "twist": 180,
    "symmetric": true
@@ -139,7 +137,8 @@
   ],
   "flyer": [
    "legs",
-   "spine"
+   "spine",
+   "wrist.flex"
   ]
  }
 }
