@@ -18,7 +18,7 @@
       },
       "shoulder": {
         "forward": 80,
-        "rotate": 40,
+        "rotate": 15,
         "raise": 0
       },
       "clavicle": {
@@ -27,7 +27,7 @@
       },
       "elbow": {
         "bend": 0,
-        "rotate": 50
+        "rotate": 65
       },
       "wrist": {
         "flex": 20,
