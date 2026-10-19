@@ -15,8 +15,9 @@
     "position": [-0.09,1.085,0],
     "joints": {
       "root": {"turn":180,"roll":-78},
-      "hip": {"pike":{"left":10,"right":16.3},"straddle":{"left":-6,"right":2.5},"rotate":{"left":0,"right":35}},
-      "knee": {"bend":{"left":0,"right":29.2}},
+      "hip": {"pike":{"left":10,"right":21.2},"straddle":{"left":-6,"right":-5.6},"rotate":{"left":0,"right":16.9}},
+      "knee": {"bend":{"left":0,"right":39.6}},
+      "ankle": {"turn":{"left":0,"right":-19.9},"point":{"left":0,"right":-19.6},"tilt":{"left":4.2,"right":-1.1}},
       "clavicle": {"protract":{"left":0,"right":-0.6},"elevate":{"left":0,"right":6.8}},
       "shoulder": {"forward":{"left":0,"right":-9.4},"raise":{"left":90,"right":64.9},"rotate":{"left":0,"right":7.2}},
       "elbow": {"rotate":{"left":0,"right":8.1}},

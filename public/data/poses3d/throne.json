@@ -3,7 +3,7 @@
     "position": [0,0.156,0],
     "joints": {
       "root": {"pitch":-90},
-      "hip": {"pike":90,"straddle":14.1},
+      "hip": {"pike":90,"straddle":14.5},
       "knee": {"bend":10},
       "ankle": {"point":9.2,"tilt":10},
       "shoulder": {"forward":-14,"raise":45,"rotate":-80},
@@ -11,12 +11,12 @@
     }
   },
   "flyer": {
-    "position": [0,1.196,0.101],
+    "position": [0,1.178,0.161],
     "joints": {
       "root": {"turn":180},
-      "hip": {"pike":80,"straddle":85},
+      "hip": {"pike":82,"straddle":68,"rotate":6.4},
       "knee": {"bend":136.9},
-      "ankle": {"turn":-12,"point":43.3,"tilt":-27},
+      "ankle": {"turn":15,"point":29.5,"tilt":-15},
       "shoulder": {"forward":12,"raise":15.4,"rotate":-79.6},
       "elbow": {"bend":104.6,"rotate":-9.5},
       "wrist": {"flex":-80,"tilt":30}
