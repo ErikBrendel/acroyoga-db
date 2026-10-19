@@ -1,0 +1,129 @@
+{
+ "poseId": "mono-reverse-shin-left",
+ "base": {
+  "presets": [
+   "L-base"
+  ],
+  "joints": {
+   "hip": {
+    "pike": {
+     "left": 110,
+     "right": 45
+    }
+   },
+   "knee": {
+    "bend": {
+     "left": 20,
+     "right": 110
+    }
+   },
+   "ankle": {
+    "point": {
+     "left": 0,
+     "right": 25
+    },
+    "tilt": 0,
+    "turn": 5
+   },
+   "shoulder": {
+    "forward": 88,
+    "rotate": 0,
+    "raise": 0
+   },
+   "clavicle": {
+    "protract": 20,
+    "elevate": 0
+   },
+   "elbow": {
+    "bend": 0,
+    "rotate": -85
+   },
+   "wrist": {
+    "flex": -60,
+    "tilt": 0
+   }
+  }
+ },
+ "flyer": {
+  "position": [
+   0,
+   1.15,
+   -0.66
+  ],
+  "joints": {
+   "root": {
+    "turn": 0,
+    "pitch": 45
+   },
+   "neck": {
+    "nod": 0
+   },
+   "hip": {
+    "pike": {
+     "left": 120,
+     "right": 135
+    }
+   },
+   "knee": {
+    "bend": {
+     "left": 160,
+     "right": 0
+    }
+   },
+   "ankle": {
+    "point": {
+     "left": 40,
+     "right": 30
+    }
+   },
+   "shoulder": {
+    "forward": 45,
+    "raise": 5,
+    "rotate": 0
+   },
+   "elbow": {
+    "bend": 0,
+    "rotate": -90
+   },
+   "wrist": {
+    "flex": -60
+   }
+  }
+ },
+ "contacts": [
+  {
+   "a": {
+    "base": "left-sole"
+   },
+   "b": {
+    "flyer": {
+     "segment": "left-shin",
+     "along": 0.4,
+     "around": 0
+    }
+   },
+   "twist": "free"
+  },
+  {
+   "a": {
+    "flyer": "left-palm"
+   },
+   "b": {
+    "base": "left-palm"
+   },
+   "twist": 180,
+   "symmetric": true
+  }
+ ],
+ "locks": {
+  "base": [
+   "right-leg",
+   "left-hip.rotate",
+   "arms"
+  ],
+  "flyer": [
+   "legs",
+   "spine"
+  ]
+ }
+}

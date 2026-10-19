@@ -1,0 +1,27 @@
+## 2026-10-19: generated
+- **Result**: draft `data-drafts/poses3d/mono-reverse-shin-left.json`, params `data-drafts/params/mono-reverse-shin-left.json`, renders `mono-reverse-shin-left.png`, `-side.png`, `-head-end.png`. All 3 contacts ok (≤1 mm, ≤3°), no overlaps, no `<- check` marks.
+  - Flyer: turned 180° against star, upright and facing away from the base's head (root `turn 0, pitch 45`), in a deep crouch on her left shin (hip pike 120, knee 160 at its limit, shin horizontal), right leg straight forward and horizontal (pike 135). Arms straight down to the base's hands.
+  - Base: left sole under the flyer's left shin, 40% down from the knee (toes along her shin, towards his head). Right foot came off her shoulder and rests flat on the floor (pike 45, knee 110, point 25), as in the Acrodemy beach photo.
+  - Grip: palm on palm, twist 180 as in star. The flyer's palms face down, fingers forward; the base's wrists are bent back 60 (star: 30), palms up.
+  - For the human to check:
+    - **Base's left leg**: hip pike 132 (leg tilted about 40° towards his head) and knee bent 25. The photo shows a similar tilt, but less knee bend.
+    - **Flyer's forward lean**: 45°, more than the photo's 25–30°. With this model's proportions the base's straight arms end at about 82 cm. A more upright flyer puts her hands 15–30 cm above his, unless the base's knee bends 60–90°.
+    - **Flyer's shoulders**: clavicles at their limits (protract 20, elevate -10) and wrists bent back 76.
+- **Decisions**:
+  - **Flyer orientation**: the description says nothing about it. The Acrodemy pose page and its transition photo (`fordshin2footonelegged`, `csillag_revonelegshin`) show her upright and facing away from the base ("reverse"). This is the first half of her backward rotation through the flow (see the chain note in the agent reply).
+  - **Free leg**: forward and horizontal, as in the photo.
+  - **Base's free right foot**: on the floor, following the photo, not hovering. Next it goes into the kneepit, so hovering would be just as plausible.
+  - **Grip**: low hand-to-hand (palms down on palms up) rather than star grip. The photo shows her arms hanging straight down, and the next step's description ("straight arms connected and stacked") needs it.
+- **References**:
+  - **Acrodemy "Four Step – washing machine"** (https://acrodemy.eu/2025/03/14/four-step-washing-machine/) and its transition pages (https://acrodemy.eu/2025/03/15/from-star-to-reverse-one-legged-shin-2-foot/, https://acrodemy.eu/2025/03/15/from-reverse-one-legged-shin-2-foot-to-cake-with-candle/). The text only names the steps.
+  - **Acrodemy pose page** (https://acrodemy.eu/2025/03/15/reverse-one-legged-shin2foot/): `fordshin2footonelegged` (beach, side view) was the main reference for the crouch, the shin on the base's foot, the free leg forward and the base's tilted leg. `csillag_revonelegshin` shows the moment before: still inverted, with one foot already on the shin.
+  - **Misleading**: `footshinoneleg` shows the forward-facing variant (flyer facing the base's head).
+  - **Example pose**: the approved `star.json` and its params, for the grip, locks and format.
+- **Tools**: `pose:solve` about 18 times, of which about 10 were `--vary` sweeps (with `--show`), `pose:orient` 2 times, `pose:check` with sites 3 times, `pose:render` 5 times. Probing the palm frame by editing a draft's joints and running `pose:check flyer:left-palm` was the fastest way to find the grip's wrist and forearm angles.
+- **Missing**:
+  - **Scratch scripts**: none, only inline python edits of the params in `scratchpad/gen-4step/`.
+  - **Root pitch**: I lost 4 rounds assuming that root pitch leaves the legs where they are. It rotates the legs and arms too, so a thigh's world angle is pike − pitch and an arm's is forward − pitch. Not in the recipes.
+- **Time sinks**:
+  - **Hand height**: 6 rounds. The flyer's hands at the base's reach (≤82 cm) fight with the base's foot under her shin (≥95 cm for a nearly straight leg). The way out was a deeper flyer lean plus the base's leg tilted towards his head.
+  - **Base's ankle**: sat at -40 (its limit) until the flyer's shin was horizontal.
+- **Suggestion**: a recipe line saying that root pitch carries the limbs, e.g. "upright flyer leaning forward x: a horizontal thigh needs pike 90 + x, vertical arms need shoulder.forward x".

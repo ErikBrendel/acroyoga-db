@@ -1,0 +1,32 @@
+{
+  "base": {
+    "position": [0,0.156,0],
+    "joints": {
+      "root": {"pitch":-90},
+      "hip": {"pike":{"left":131.8,"right":45},"straddle":{"left":-0.6,"right":0}},
+      "knee": {"bend":{"left":25.1,"right":110}},
+      "ankle": {"turn":5,"point":{"left":11.6,"right":25},"tilt":{"left":-1.5,"right":0}},
+      "clavicle": {"protract":20},
+      "shoulder": {"forward":88},
+      "elbow": {"rotate":-85},
+      "wrist": {"flex":-60}
+    }
+  },
+  "flyer": {
+    "position": [0,1.15,-0.66],
+    "joints": {
+      "root": {"pitch":45},
+      "hip": {"pike":{"left":120,"right":135}},
+      "knee": {"bend":{"left":160,"right":0}},
+      "ankle": {"point":{"left":40,"right":30}},
+      "clavicle": {"protract":20,"elevate":-10},
+      "shoulder": {"forward":23.9,"raise":1.3,"rotate":-75.2},
+      "elbow": {"rotate":-21.2},
+      "wrist": {"flex":-75.8,"tilt":-1.6}
+    }
+  },
+  "contacts": [
+    {"a":{"base":"left-sole"},"b":{"flyer":{"segment":"left-shin","along":0.4,"around":0}},"twist":"free"},
+    {"a":{"flyer":"left-palm"},"b":{"base":"left-palm"},"twist":180,"symmetric":true}
+  ]
+}

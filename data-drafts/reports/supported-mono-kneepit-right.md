@@ -1,0 +1,30 @@
+## 2026-10-19: generated
+- **Result**: draft `data-drafts/poses3d/supported-mono-kneepit-right.json`, params `data-drafts/params/supported-mono-kneepit-right.json`, renders `supported-mono-kneepit-right.png`, `-side.png`, `-head-end.png`. All 4 contacts ok (≤1 mm, ≤1°).
+  - Flyer: leaning back 50° from the previous step (root `turn 0, pitch -50`), face up, head towards the base's head.
+    - Right kneepit on the base's right sole, fitted (`solve: fit`), right knee bent 35.
+    - Left leg still folded (pike 38, knee 160) with the shin on the base's left sole.
+    - Arms straight and vertical onto the base's vertical straight arms (shoulder forward -46): "stacked".
+  - Base: both legs straight, both elbows straight. Every carrying limb is reported stacked.
+  - Flyer centre of mass: between the hands and the feet.
+  - For the human to check:
+    - **Overlap**: the base's right lower leg and the flyer's right lower leg overlap by 5 cm (rough capsules). Her calf hangs right where his shin rises. With knee bend 50–90 (a deeper hook) it grows to 9 cm, and only knee 20 clears it.
+    - **Base's left foot**: flexed 26 (pointed -26, no `<- check` mark) to lie flat on her folded shin.
+    - **Flyer's torso**: rises about 40° towards the head, steeper than in Acrodemy's photo, where it is nearly horizontal. Vertical flyer arms need shoulder.forward = root pitch, and the limit is -60, so a flatter torso would need angled arms.
+    - **Flyer's forearms**: fully pronated (elbow.rotate -90, at its limit) for the palm-down grip.
+- **Decisions**:
+  - **Description vs Acrodemy**: they disagree on the left leg. Acrodemy's "Cake with Candle" (step 2 of its Four-Step) raises the other leg vertically, the "candle". The description says "the other Foot+Shin can stay together". The description wins: the left shin stays on the base's left foot, as in step 1. If the human prefers the candle, set the flyer's left hip pike to about 90 + 50, knee 0, and drop contact 1.
+  - **Which leg in the kneepit**: Acrodemy's transition text says the base steps into the kneepit of the free leg, i.e. the right leg, the one extended in step 1. That matches the description.
+  - **Grip**: the same palm-on-palm hand-to-hand as step 1, twist 180.
+  - **Base's right toes**: point along the flyer's thigh, towards his head (twist free, found -175°).
+- **References**:
+  - **Acrodemy "Cake with Candle"** (https://acrodemy.eu/2025/03/15/cake-with-candle/), photo `cakewcandle`: torso orientation, kneepit on the base's foot, arms straight and stacked.
+  - **Acrodemy transitions** (https://acrodemy.eu/2025/03/15/from-reverse-one-legged-shin-2-foot-to-cake-with-candle/): the base steps into the kneepit of the free leg.
+  - **No links**: `poses.json` has none for this pose.
+- **Tools**: `pose:solve` about 20 times, about 14 of them `--vary` sweeps, `pose:check` with sites 2 times, `pose:render` 6 times.
+  - `--vary` with a JSON object value (`hip.straddle={"left":0,"right":10}`) is split at the comma and yields NaN everywhere. A dot path (`hip.straddle.right=10`) works, but only if the params already store the angle as `{left, right}`.
+- **Missing**:
+  - **Scratch scripts**: none.
+  - **Base's sole direction**: I had to work out by trial that ankle `point` + tilts a lying base's sole normal towards his feet (+Z), i.e. a leg tilted towards his feet needs a negative point to keep the sole up.
+- **Time sinks**:
+  - **Left shin contact**: 10 rounds. Reach IK jumps between a straight leg that is a few cm short and a leg folded at knee 60. The orientation error swings 20–40° with small changes of the flyer's hip pike. What ended it was fitting the flyer on the kneepit, letting only the base's left ankle point free, and sweeping pike against the along position.
+- **Suggestion**: let `--vary` take JSON objects (split only at top-level commas). Also report the overlap's location (which ends of the capsules), so a hanging calf next to the contact can be told apart from a real collision.

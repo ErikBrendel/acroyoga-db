@@ -1,0 +1,28 @@
+## 2026-10-19: generated
+- **Result**: draft `data-drafts/poses3d/mono-backbird-left.json`, params `data-drafts/params/mono-backbird-left.json`, renders `mono-backbird-left.png`, `-side.png`, `-head-end.png`. All 3 contacts ok (≤4°), no overlaps.
+  - Flyer: face up and horizontal (root `turn 0, pitch -90`), another 40° backwards from step 2, head towards the base's head. Back arched (waist -15, chest -20, neck -30), legs straight and together towards the base's feet, toes pointed 45.
+  - Base:
+    - Left sole on her sacrum (`solve: fit`), leg straight and vertical (pike 90), adducted 12 to sit under her midline.
+    - Toes 70° outward (hip rotate 45 + ankle turn 25), sole tilt -6 and point -8 to stay flat.
+    - Right foot just released from the kneepit, hovering bent (pike 95, knee 70).
+  - Grip: palm on palm, twist left free. The solver found -163° / 176°, i.e. near the 180 of the previous steps. Flyer elbows bent about 140, hands beside her head (Acrodemy's "upper hand grip"). Base arms vertical, wrists bent back 50.
+  - For the human to check:
+    - **Base's left foot**: `<- check` mark, "toes turned far out, hip strongly rotated". The description asks for toes pointing outward (left). I went to 70°, not 90°, and needed 45° of hip rotation for it. Decide how far out it should really be.
+    - **Flyer's left forearm**: at its pronation limit (-90). Her arms are symmetric only with the clavicles and `shoulder.raise` locked (0 / 10). Unlocked, the solver bent them asymmetrically, with the left elbow almost across her neck.
+    - **Base's right foot**: in the air below her thighs. It should travel to her right shoulder for the return to star.
+- **Decisions**:
+  - **Description vs Acrodemy**: Acrodemy's back bird has both base feet on the lower back. This one is "mono", left foot only, as the description says. Only the description gives the toe direction.
+  - **Grip twist**: free instead of 180. The description says the hands "can rotate outwards towards star grip", and with twist 180 the left palm stayed 6° off at the forearm limit.
+  - **Arch**: moderate. Acrodemy's photo shows a deep backbend with the head hanging below the hands; the model would need spine angles at their limits.
+- **References**:
+  - **Acrodemy transition** (https://acrodemy.eu/2025/03/15/from-cake-with-candle-to-back-bird/), photo `pokmalacbol-hatsomadar`: the base steps onto the sacrum and leaves the kneepit; the flyer arches and changes from low to high hand grip.
+  - **Acrodemy "Four Step" page** (https://acrodemy.eu/2025/03/14/four-step-washing-machine/): its thumbnail `backbird` (back bird with upper hand grip) gave the arm shape. I did not open the back bird pose page itself.
+  - **Acrodemy back bird to star** (https://acrodemy.eu/2025/03/01/from-back-bird-to-star/), photo `hatsomadarbolcsillag`: the next transition (one foot onto the shoulder, then the other), used for the hovering right foot.
+- **Tools**: `pose:solve` about 12 times, 8 of them `--vary`, `pose:render` 5 times.
+- **Missing**:
+  - **Scratch scripts**: none.
+  - **Toe angle**: no recipe for a base's foot turned out 90° on a sacrum; it is not clear how far toes "pointing outwards" should go.
+- **Time sinks**:
+  - **Flyer's arms**: 4 rounds on asymmetric arm IK (one clavicle protracted 20, the other -13), until locking the clavicles.
+  - **Sole roll**: the hip rotation tilted the sole sideways and needed an ankle tilt to compensate.
+- **Suggestion**: an option for `pose:solve` to solve symmetric contacts symmetrically (mirror the result of the first side), so that a centred flyer with a symmetric grip does not end up with lopsided arms.
