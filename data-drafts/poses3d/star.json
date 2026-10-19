@@ -16,9 +16,9 @@
       "root": {"turn":180,"pitch":-5,"roll":180},
       "neck": {"nod":10},
       "ankle": {"point":45},
-      "shoulder": {"forward":93.1,"raise":16.6,"rotate":-19.6},
-      "elbow": {"bend":87.7,"rotate":-86.6},
-      "wrist": {"flex":-30,"tilt":-20}
+      "shoulder": {"forward":90.9,"raise":8,"rotate":-8.5},
+      "elbow": {"bend":87.6,"rotate":-90},
+      "wrist": {"flex":-30,"tilt":-8.3}
     }
   },
   "contacts": [

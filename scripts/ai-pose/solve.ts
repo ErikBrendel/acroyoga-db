@@ -28,12 +28,14 @@ const variations = option('--vary').map(spec => {
   return { key, values: values.split(',').map(parse) };
 });
 
-// --show base.left-elbow.bend (an angle) or flyer:left-sole (a site's position in cm), comma-separated
+// --show base.left-elbow.bend (an angle) or flyer:left-sole / flyer:left-forearm@0@0 (a site's position in cm), comma-separated
 const shows = option('--show').flatMap(s => s.split(','));
 function showValue(pose: AcroPose, spec: string): string {
   if (spec.includes(':')) {
-    const [role, site] = spec.split(':') as [Role, string];
-    const v = new THREE.Vector3().setFromMatrixPosition(siteMatrix(pose[role], site));
+    const [role, name] = spec.split(':') as [Role, string];
+    const [segment, along, around] = name.split('@');
+    const site = along === undefined ? name : { segment, along: Number(along), around: Number(around ?? 0) };
+    const v = new THREE.Vector3().setFromMatrixPosition(siteMatrix(pose[role], site as Parameters<typeof siteMatrix>[1]));
     return `(${[v.x, v.y, v.z].map(x => Math.round(x * 100)).join(', ')})`;
   }
   const [role, bone, angle] = spec.split('.');

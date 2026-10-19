@@ -61,7 +61,7 @@
       },
       "shoulder": {
         "forward": 95,
-        "raise": 10,
+        "raise": 8,
         "rotate": 35
       },
       "elbow": {
@@ -113,7 +113,8 @@
       "spine",
       "legs",
       "clavicle",
-      "wrist.flex"
+      "wrist.flex",
+      "shoulder.raise"
     ]
   }
 }
