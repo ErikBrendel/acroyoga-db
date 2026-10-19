@@ -12,9 +12,13 @@ in the 3D editor ("🎭 Open in 3D editor") and saving. Agents only write drafts
   (download an image with curl into a scratch folder and open it with Read): they are the reference for the
   shape, the description only names it. Photos are often taken from above the base's head (mirrored compared
   with the editor's Front view; render `--view "Head end"`), others from the side (`--view Side`). Look at what
-  each limb presses against and from which side, not only where it is. Never copy
-  images into the repo. Note where a reference disagrees with
-  the description; the description wins, but say so in your report.
+  each limb presses against and from which side, not only where it is. Never copy images into the repo. Note
+  where a reference disagrees with the description; the description wins, but say so in your report.
+- Video frames without yt-dlp: fetch the YouTube watch page and read the storyboard `"spec":"https://i.ytimg.com/sb/<id>/storyboard3_L$L/$N.jpg?sqp=…|…"`.
+  The last levels have the most detail (`L2`: 160×90 frames, 5×5 per sheet, 1 s apart; `L3`: 320×180, 3×3,
+  2 s apart). Request `…/storyboard3_L<level>/M<n>.jpg?sqp=…&sigh=<that level's rs$… part, $ as %24>`;
+  sheet `M<n>` starts at frame n × columns × rows. Crop a cell with ffmpeg. Tutorials often show entries and
+  grips more clearly than photos.
 - Looking at an image costs about width × height / 750 tokens (up to about 1600). Check numerically first (the
   report's Feet, heights and Balance, `pose:check` sites), and look at images to compare with the photos:
   renders with `--width 512` unless you need a detail, reference photos scaled to at most 768 px, and for a
@@ -60,12 +64,16 @@ base legs blue / orange, flyer legs teal / pink.
 - Contacts are in the stored format plus `solve`:
   - `reach` (default when `a` is on an arm or leg): `a`'s limb moves by IK;
   - `fit` (default otherwise): `a`'s person moves as a whole, then `b`'s limb reaches back if `b` is on a limb.
-    All `fit` contacts of one person are fitted together. `"fitRotate": true` also turns the person so that
+    All `fit` contacts of one person are fitted together. `"fitRotate": true` (a top-level params key, not on a contact) also turns the person so that
     the contact normals match on average; it helps when the base's angled legs tilt the soles (whale), but can
     turn the person over completely when several contacts pull in different directions.
   - A fit has no preferred height: a flyer fitted onto the base's soles ends up where the base's legs are fully
     stretched. For a flyer lying on the base's feet it is often better to give the flyer a `position` (and root
     angles) and let the base's soles `reach` (`a` = base sole). Vary the position with `--out` variants.
+  - A `reach` moves only `a`'s limb, never `b`'s. For a hand-to-hand grip, set the base's arms by angles (locked,
+    swept with `--vary`) and let the flyer's palm (`a`) reach; making the base's palm `a` gave messy wrists.
+  - A limb placed ready next to a body part without carrying it (an entry pose: the base's foot beside the
+    flyer's hip before she leans in) is not a contact: set it by angles and check it with `pose:check` sites.
   - A contact within one person (hand on own thigh) is held by whichever of its sites is on a limb.
 - `twist`: start with `"free"` unless the pose prescribes how the parts are turned against each other (e.g.
   toes pointing to the base's head). The report shows the twist the solver found; fix it afterwards if needed.
@@ -105,6 +113,8 @@ base legs blue / orange, flyer legs teal / pink.
   L-basing; a strongly bent limb under a big load is a sign the pose is off.
 - **Overlaps**: body parts sinking into each other by 3 cm or more (rough capsules, parts in contact excepted;
   touching forearms or hands of one person can show up and are fine).
+- **Heads**: a head within 10 cm of the other person, with the nearest body part (negative = into it). Decides
+  low poses like straddlebat (head on the base's belly), where overlaps show nothing below 3 cm.
 - The solver is local: starting angles matter, especially of ankles and wrists that a reach barely turns, and a
   site on a limb that another contact also moves rolls with that limb's rotation (e.g. a thigh's `around` shifts
   with `hip.rotate`). Sweep such values with `--vary`.
@@ -142,11 +152,16 @@ Checked with `pose:orient`. World: +X is the left of a person standing at turn 0
 | Base on the back (L-base) | `pitch -90` | -Z | up; own left +X |
 | Flyer upright facing the base (throne, chair) | `turn 180` | up | -Z, towards the base's head |
 | Flyer face down, head over the base's head (front plank, bird) | `turn 180, pitch 75…90` | -Z | down |
+| Flyer face down, head towards the base's feet (reverse bird) | `pitch 75…90` | +Z | down |
 | Flyer face up, head away from the base's head (whale) | `turn 180, pitch -70…-90` | +Z | up |
 | Flyer on the right side, head to the base's left (Vishnu's couch left) | `turn 180, roll -90` | +X | -Z |
 | Flyer on the left side, head to the base's right | `turn 180, roll 90` | -X | -Z |
 
+Pose names: "reverse" turns the head the other way and keeps the face down (reverse bird); face up with the
+head over the base's head is backbird. Check the photos before trusting a brief on this.
+
 More facts:
+- `wrist.flex` positive bends the hand towards the palm; the stargrip's bent-back wrists are negative.
 - L-base: legs vertical, soles face up, toes point to the base's head (-Z), arms straight up.
 - `elbow.rotate -90` turns the palm down with the arm pointing forward.
 - A flyer arching back while lying face up drops the chest; compensate with the root pitch.

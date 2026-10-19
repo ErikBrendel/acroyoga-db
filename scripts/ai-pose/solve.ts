@@ -46,7 +46,14 @@ function showValue(pose: AcroPose, spec: string): string {
     const [role, name] = spec.split(':') as [Role, string];
     const [segment, along, around] = name.split('@');
     const site = along === undefined ? name : { segment, along: Number(along), around: Number(around ?? 0) };
-    const v = new THREE.Vector3().setFromMatrixPosition(siteMatrix(pose[role], site as Parameters<typeof siteMatrix>[1]));
+    let matrix: THREE.Matrix4;
+    try {
+      matrix = siteMatrix(pose[role], site as Parameters<typeof siteMatrix>[1]);
+    } catch {
+      console.error(`--show ${spec}: unknown site; use a named site (docs/3d-model.md) or <segment>@<along>@<around>, e.g. base:left-upper-arm@1@180 for the elbow`);
+      process.exit(1);
+    }
+    const v = new THREE.Vector3().setFromMatrixPosition(matrix);
     return `(${[v.x, v.y, v.z].map(x => Math.round(x * 100)).join(', ')})`;
   }
   const [role, bone, angle] = spec.split('.');

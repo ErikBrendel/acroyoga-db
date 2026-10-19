@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { AcroPose, Contact, ROLES, Role, contactError, currentTwist } from '../../src/3d/acroPose';
+import { AcroPose, Contact, ROLES, Role, contactError, currentTwist, otherRole } from '../../src/3d/acroPose';
 import { Human } from '../../src/3d/Human';
 import { possibleContacts, suggestionLine } from './contacts';
 import { RADII, balanceLines, balanceSummary, heightLines } from './balance';
@@ -109,6 +109,21 @@ function overlapLines(pose: AcroPose): string[] {
   return lines;
 }
 
+const HEAD_NEAR = 0.1;
+
+// A head resting on or close to the other person (straddlebat: the flyer's head on the base's belly) decides
+// whether a low pose works, and overlaps only show more than OVERLAP_REPORTED
+function headLines(pose: AcroPose): string[] {
+  const parts = capsules(pose);
+  return ROLES.flatMap(role => {
+    const head = parts.find(p => p.role === role && p.key === 'neck')!;
+    const nearest = parts.filter(p => p.role !== role)
+      .map(p => ({ key: p.key, gap: segmentDistance(head, p) - head.radius - p.radius }))
+      .reduce((a, b) => (b.gap < a.gap ? b : a));
+    return nearest.gap < HEAD_NEAR ? [`  ${role} head ${Math.round(nearest.gap * 100)} cm from ${otherRole(role)} ${nearest.key}`] : [];
+  });
+}
+
 // Calibrated on the human-approved poses (none of them is flagged) and on what humans corrected in drafts: a
 // flyer's sickled, inward-turned hooking feet and a strongly rotated hip. The base's soles roll a lot to lie on
 // a flyer's pelvis or thighs, the flyer's feet point a lot when free, both are fine.
@@ -156,6 +171,7 @@ export function report(pose: AcroPose, humans: Record<Role, Human>): string {
     section('Feet (the base\'s are usually the most important contact; a holding contact does not mean the foot looks right, compare with the photos):', feetLines(pose)),
     section('Balance (rough body masses; the flyer should sit over the contacts that carry it, the base\'s limbs ideally stacked):', balanceLines(pose)),
     section(`Overlaps (rough, ${OVERLAP_REPORTED * 100} cm or more):`, overlapLines(pose)),
+    section(`Heads within ${HEAD_NEAR * 100} cm of the other person (rough capsules; negative = into it):`, headLines(pose)),
     section('Possible contacts (free hands and feet within 12 cm of a surface facing them; add them if the pose has them):',
       possibleContacts(pose).map(suggestionLine)),
   ].join('\n\n');
