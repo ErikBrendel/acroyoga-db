@@ -184,7 +184,9 @@ More facts:
   - The hands are not stacked palm on palm with fingertips at the other's wrist: each hand slides further, so
     the wrists are roughly aligned (each wrist in the middle of the other's palm) and the fingers reach over the
     other's wrist onto the forearm (real acroyogis grip around it; the model has no finger joints). Model it as
-    the flyer's palm on the base's forearm near the wrist (`<side>-forearm` at along about 0.95, on its palm side).
+    the flyer's `palm` on the base's `palm-heel`, twist 180: the palms stay flat and parallel, only slid. Not
+    palm on the forearm: that tilts the contact by the wrist angle and forces a wrist into an odd bend (a human
+    rejected that). In star this needed her wrists at -22 instead of -30.
   - The flyer's forearms parallel, elbows straight above her hands (`shoulder.raise` about 8, locked), elbows
     bent about 90°.
   - The flyer leans a few degrees towards the base's belly, her centre of mass about 7 cm towards his head
