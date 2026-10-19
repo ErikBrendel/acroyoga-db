@@ -17,7 +17,7 @@
       "root": {"pitch":-56},
       "neck": {"nod":20},
       "hip": {"pike":{"left":38,"right":35}},
-      "knee": {"bend":{"left":160,"right":35}},
+      "knee": {"bend":{"left":160,"right":55}},
       "ankle": {"point":35},
       "clavicle": {"protract":{"left":-11.5,"right":-11},"elevate":{"left":9,"right":9.7}},
       "shoulder": {"forward":{"left":-56.6,"right":-55.7},"raise":{"left":6.2,"right":-3.5},"rotate":{"left":-1.3,"right":-8.1}},
