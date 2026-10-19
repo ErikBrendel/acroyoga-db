@@ -1,0 +1,110 @@
+{
+  "poseId": "folded-leaf-tucked-through",
+  "base": {
+    "presets": [
+      "L-base"
+    ],
+    "joints": {
+      "hip": {
+        "pike": 110,
+        "straddle": 20,
+        "rotate": 50
+      },
+      "knee": {
+        "bend": 60
+      },
+      "ankle": {
+        "point": 0,
+        "tilt": -20,
+        "turn": -10
+      },
+      "shoulder": {
+        "forward": -12,
+        "raise": 35,
+        "rotate": -80
+      },
+      "elbow": {
+        "bend": 0
+      },
+      "wrist": {
+        "flex": 0
+      }
+    }
+  },
+  "flyer": {
+    "position": [
+      0,
+      1.05,
+      0.0
+    ],
+    "joints": {
+      "root": {
+        "roll": 180,
+        "pitch": 50
+      },
+      "waist": {
+        "bend": 0
+      },
+      "chest": {
+        "bend": 10
+      },
+      "hip": {
+        "pike": 135,
+        "straddle": 15
+      },
+      "knee": {
+        "bend": 40
+      },
+      "ankle": {
+        "point": 30
+      },
+      "shoulder": {
+        "forward": 162,
+        "raise": 15,
+        "rotate": 0
+      },
+      "elbow": {
+        "bend": 0
+      },
+      "wrist": {
+        "flex": -70
+      },
+      "clavicle": {
+        "elevate": 25
+      }
+    }
+  },
+  "contacts": [
+    {
+      "solve": "fit",
+      "a": {
+        "flyer": {
+          "segment": "left-thigh",
+          "along": 0.05,
+          "around": 10
+        }
+      },
+      "b": {
+        "base": "right-sole"
+      },
+      "twist": "free",
+      "symmetric": true
+    }
+  ],
+  "locks": {
+    "base": [
+      "arms",
+      "knee",
+      "hip.pike",
+      "hip.rotate",
+      "ankle"
+    ],
+    "flyer": [
+      "spine",
+      "arms",
+      "legs",
+      "clavicle"
+    ]
+  },
+  "fitRotate": true
+}
