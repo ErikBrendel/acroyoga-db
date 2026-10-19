@@ -1,0 +1,44 @@
+## 2026-10-19: generated
+- **Result**: draft `data-drafts/poses3d/sidestar-left.json`, params `data-drafts/params/sidestar-left.json`, renders `sidestar-left.png`, `sidestar-left-head-end.png` (1200 px), `sidestar-left-angled.png` (from an earlier round). All 3 contacts hold (0–1 mm, at most 4°). No overlaps. One angle sits at its limit: the flyer's left elbow is straight (bend 0.5). Feet show no `<- check` marks.
+  - Base: left leg straight and carrying (pike 105, straddle 10, knee 0, ankle turn 5 / point 0), sole flat on the outside of her left hip, toes towards his head. Right leg free, foot flat on the floor (pike 45, knee 110, point 25, as in mono backbird). Arms straight, shoulder blades on the floor (clavicle 0): left `forward 90, raise -10`, right `forward 100`. Elbow rotate -85 / -65, wrist flex -30 / -20, fingers 25.
+  - Flyer: on her left side, head towards the base's right, facing his head. Root after the fit is `turn 167, pitch 17, roll 84`. Waist / chest side -10 (upper body lifted a little), twist 25 / 30 (chest turned partly face down). Neck tilt -35, nod -15 (head lifted, face towards the base's head). Legs straight, straddle 35 each in her frontal plane (right leg up, left leg down), toes pointed 30.
+  - Grip: same-side hands, flyer palm on base palm-heel. Her right (upper) arm hangs straight down to his right hand. Her left (lower) arm reaches diagonally back towards her hips to his left hand, as in the Acrodemy two-hand photo.
+  - Balance: the flyer's centre of mass is 3 cm outside the triangle of sole and both hands, and both people together are 4 cm outside the base's floor contact. Both are within what the grip can pull against, but worth a look.
+  - **For the human to check**:
+    - **Grip twist**: the brief expected star's stargrip (twist 180). The solver settled on 152° (left) and -167° (right) with `twist: "free"`. With 180 fixed, the left contact stays 14–18° off in every variant I tried, because her lower arm comes in diagonally from the hip side.
+    - **Flyer's right shoulder**: raise -28.7 and rotate 88 are close to their limits (-30, 90). An arm hanging from the upper shoulder across the front of the chest is near the edge of what the model's shoulder allows.
+    - **Flyer's left wrist**: flex -37 instead of the -22 from star. I had to unlock it for the left contact to hold.
+    - **Flyer's left arm** is straight. In the photo it is slightly bent.
+    - **Face-down lean**: her chest faces partly down (pitch 17 plus 55° of spine twist). The photos show her chest facing the camera, so more sideways. With less twist or a flatter pitch, her hands do not reach his.
+    - **Base support leg**: tilted 15° towards his head (pike 105) and 10° outward. The head-end photo shows it roughly vertical.
+- **Decisions**:
+  - **Grip pairing**: same-side (flyer left to base left), not crossed. My first reading was crossed. The crop of the two-hand photo shows her upper (right) arm going straight down to the hand nearer her head, which is the base's right hand, and her lower arm angled back to the hand nearer her hips.
+  - **Base support leg tilt**: pike 105 and straddle 10 instead of a vertical leg. With a vertical leg her shoulders are 7–20 cm out of reach of his hands, both in X (her torso is long, his hands sit at ±19 cm) and in Z.
+    - The alternative is lifting his shoulders off the floor (clavicle protract 10). The doc rejects that for loaded arms.
+  - **Base arms not symmetric**: forward 90 / 100, left raise -10, forearm rotate -85 / -65, wrists -30 / -20. Each hand follows the flyer's hand, which sits in a different place. With one symmetric arm setting, at least one contact failed.
+  - **Flyer clavicles locked at 0**: unlocked, the solver used right elevate 34–40 (a strong shrug) and left protract 20 / elevate -10, both at their limits. Locking them cost the left elbow bend.
+  - **Hip contact**: a segment site, `pelvis` along 0.5 around 90 (the side of her pelvis), on the base's `left-sole`, solve `fit`, with `fitRotate` so her roll adapts to the tilted sole. There is no named site for the side of the hip; `left-hip` is the front of the hip bone.
+  - **Description vs. photos**: no disagreement. "Leans inward, to the base's right" matches the photos: her head over the base's right side, her upper body above his free leg (Acrodemy text).
+- **References**:
+  - **acrodemy.eu inside-star**, the only link:
+    - `ketkezzel500` (two hands, side-ish view): the key photo for the grip, the free leg and the body line. Crops of the grip and of the upper body were decisive.
+    - `insidestar500` (free hand up, from the head end): side-lying orientation, the head over the base's right, the free leg with the foot on the floor.
+    - `egykezzel700` (one hand): confirms where the base's foot sits on her hip and the base's free leg.
+    - The page text ("flyer faces the base, upper body above the base's free leg, perpendicular") helped.
+    - `freesidestar`, `oldalcsillag`: downloaded, not used.
+  - **Approved poses used**: `star.json` (stargrip angles), `mono-backbird-left.json` (free leg), `supported-mono-kneepit-right.json` and `vishnus-couch-left.json` (one-leg and side-lying setups).
+- **Tools**:
+  - `pose:solve` about 30 times, roughly 20 of them `--vary` sweeps, mostly with `--show`. The sweeps with `--show` of angles and sites did most of the work.
+  - `pose:orient` twice.
+  - `pose:render` 7 times (default, Head end, Angled).
+- **Missing**:
+  - **Scratch scripts**: none, only inline python edits of the params.
+  - **`fitRotate` placement**: the doc does not say it is a top-level params key. Put on a contact it fails with a Zod "unrecognized key" error.
+  - **`--vary` on one side of an angle** needs the params to give that angle as `{left, right}` first (e.g. `hip.straddle`). Otherwise Zod "invalid input". The doc says so, but the error does not.
+  - **Joint positions**: `--show` takes sites. To get the shoulder joint I used `left-upper-arm@0@0`, which works.
+  - **Side-of-hip site**: none named, so I had to work out the pelvis segment site myself.
+- **Time sinks**: getting both hands to reach, about 15 sweeps.
+  - Her torso along X puts her shoulders 40–50 cm from the support foot, while his hands sit near his midline. In this model, that geometry leaves almost no space where both arms reach without a limit.
+  - The solver is chaotic here: neighbouring values (twist 25 vs 30, forward 100 vs 102) flip between 3/3 ok and 10–30° off. I had to sweep finely instead of reasoning.
+  - Start angles of her arms had no effect at all, since the solver landed in the same basin every time.
+- **Suggestion**: a `--vary` mode that optimises one or two params for the fewest failing contacts and the fewest limits (a small grid search with refinement), or the solver moving the base's arms too when a hand-to-hand contact is out of reach (both arms reaching halfway). Hand-to-hand grips between a fixed base arm and a flyer arm took most of the rounds here and in star.

@@ -1,0 +1,41 @@
+## 2026-10-19: generated
+- **Result**: draft `data-drafts/poses3d/straddlebat.json`, params `data-drafts/params/straddlebat.json`, renders `straddlebat.png`, `straddlebat-head-end.png`, `straddlebat-side.png`. All 4 contacts ok (≤1 mm, ≤4°). No angles at their limits, no overlaps, no `<- check` in Feet.
+  - Base: L-base, legs straight and nearly vertical (pike 95, knee 0, straddle 4). Ankles turn 5, tilt 12 inward, point 0. Soles at (±17, 105, -12) under her thighs, right next to her hip crease, toes towards his head (crossing her thighs at 85°).
+  - Base arms: upper arms on the floor beside his chest (`shoulder forward -10, raise 25, rotate 15`, elbow surface 7 cm above the floor, about where his back is). Forearms vertical (`elbow bend 95, rotate -85`), wrists -30, fingers 25. All base angles are locked in the params.
+  - Flyer: inverted, facing the base's head, root `turn 180, roll 180, pitch 3` (as in star). Spine straight, neck nod 10, straddle 80, legs straight, toes pointed 45. Centre of mass 2 cm towards his head from the soles; both base knees stacked at 0°.
+  - Grip: star's stargrip unchanged (flyer `palm` on base `palm-heel`, twist 180, symmetric, her wrists -22, fingers 25). Her arms come out of IK: shoulder forward 62, raise 60, rotate 25, elbow bend 122, rotate -8, wrist tilt -9. Elbows out to the side and above her shoulders, forearms angled down to the hands. Hands at (±37, 38, -17), beside her head.
+  - **For the human to check**:
+    - **Head on belly**: the lowest point of her head (rough capsule) is 25 cm above the floor, and his belly surface there is 24–25 cm. So her head touches his belly, which is the limit of "almost". The `crown` site says 21 cm, which would be 3–4 cm inside his belly, and the overlap check does not flag it. Look at a close-up before approving.
+    - **Flyer arms**: elbows bent 122 with the upper arms raised 60. That is more bent than star (85). The cause is the proportions: both people are the same size, so her shoulders (about y 57) are only 15–20 cm above the highest point his hands reach with his elbows on the floor (palms at about y 43).
+    - **Hand width**: the hands are ±37 cm from the midline. In Gieger they sit close beside her head (about ±15). With the hands closer, her arm could not reach the palm orientation (contact 19–35° off) unless the base's forearms tilted outward (`shoulder.rotate 15`).
+- **Decisions**:
+  - **Grip**: stargrip as the brief says. It matches Gieger Pose082 (hands connected at her head beside his belly, elbows out). The other three references show the base's arms flat on the floor and her hands free: in Yogaemotion her hands are in prayer under her chin, in Acrodemy at her face, and in Partner Acrobatics one hand reaches down. Gieger Pose083 is the folded-leaf variant, with his arms on the floor. A no-hands variant would be base arms on the floor (the doc recipe) and her hands in Namaste.
+  - **Base arms**: with the grip they carry load, so they do not rest flat. But his elbows rest on the floor beside his chest and the forearms stand vertical, as in Gieger, so his arms still lean on the floor in a stabilising position. The alternative, star's arms raised from the shoulder, puts his hands far above her shoulders' reach.
+  - **Base feet**: placed under her thighs right below the hip crease (`left-thigh` along 0.12, around 90), toes towards his head.
+    - Yogaemotion's close-up shows exactly that: soles under the thighs next to the crotch, toes curling over the front of her thighs.
+    - "Outer thigh" at around 90 is the underside once she is straddled 80.
+    - Contacts further out along the thigh (along 0.2–0.35) lower her by 2–5 cm and press her head into his belly.
+  - **Base sole tilt 12 inward**: a straddle of 80 tilts her thigh's underside 10° outward, and his legs straddle 4. Without the tilt the contact is 22° off. When I unlocked the ankle, the solver overshot to tilt 20, so I locked it at 12 instead.
+  - **Pike 95 with flyer pitch 3**: the only combination of pike 90/95 and pitch -6…6 with all four contacts ok and no limits.
+  - **Straddle 80**: Gieger, Yogaemotion and Acrodemy all show a near split (85–90). I stayed at 80 because humans corrected an over-wide straddle before (throne). 85 would also hold and lets the base ankle tilt less.
+- **References**:
+  - **christiangieger.de Pose082** (2000 px, from above the head end): the most useful. It gives the stargrip shape, the elbows-out arms, the head at his belly and the straddle. Its strong perspective makes leg angles unreadable.
+  - **Pose083**: folded-leaf variant, not used for the shape.
+  - **Yogaemotion** `Straddle Bat_edited.jpg` (1920 px, head end, low): the best one for the base's feet (crop).
+  - **Acrodemy** `denever500`: side view of the overall line, too small for details.
+  - **Partner Acrobatics** (480 px): a variant with one flyer hand down, nearly useless.
+  - **Example poses**: approved `star.json` and its params, as briefed.
+- **Tools**:
+  - `pose:solve` about 8 times, `--vary` with `--show` about 9 times. That was the main instrument and very effective for the contact point, the tilt and the arms.
+  - `pose:check` with sites 4 times, to find the base's belly surface height and the orientation of the sole versus the thigh.
+  - `pose:render` 5 times.
+- **Missing**:
+  - **Scratch scripts**: none, only inline python edits of the params.
+  - **Overlaps**: the check does not compare the flyer's `crown` site with the base's torso surface. The crown site disagrees with "Lowest surface point" by 4 cm, so I could not tell numerically whether her head was in his belly.
+  - **`--show`** with a joint name (`base:left-elbow`) dies with a stack trace instead of a one-line error. There is no named elbow site; `left-upper-arm@1@180` works.
+  - **IK on grips**: a `reach` contact only moves `a`'s limb. The base's arm never moved towards the grip, so I set his arms by hand and swept them. That was not obvious from the doc.
+  - **Proportions**: both people are the same size. Poses where the flyer hangs low (head on belly) are tighter than in the photos, where the base is taller.
+- **Time sinks**:
+  - **Arm shape**: about 4 rounds to find base arms (elbows on the floor) that her arms can reach with the stargrip orientation. Several variants left the palms 12–35° off or gave odd angles (shoulder raise 150).
+  - **Head height**: 2 rounds proving that no contact point, `around`, neck nod or base pike lifts her more than about 2 cm.
+- **Suggestion**: report the head's clearance to the other person's torso (head versus belly / chest) in the Overlaps or Key points section. For low inverted poses (straddlebat, folded leaf) that is the number that matters, and today the `crown` site and the capsule disagree by 4 cm.
