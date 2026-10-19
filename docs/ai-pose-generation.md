@@ -155,8 +155,8 @@ More facts:
 1. Write params from the description: contacts first (named sites where possible), rough angles, locks.
 2. `pose:solve`, read the report, fix what it shows (limits, overlaps, contacts off).
 3. `pose:render`, compare with the description, adjust; `--view Side` for details.
-4. Stop when it matches the description and the contacts are ok, or after about 12 rounds. Report what you
-   decided where the description was open, and what still looks wrong, so the human knows what to check.
+4. Stop when it matches the description and the contacts are ok, or after about 12 rounds.
+5. Write the finishing report (below).
 
 ## Revising a pose after human feedback
 Humans write what is wrong in the 3D editor's feedback field; it is stored in `data-drafts/feedback/<poseId>.md`
@@ -173,4 +173,19 @@ and removed when they approve the pose by saving it.
    what contradicts it (`twist: "free"`), and check the result in the report, not only in the params.
 4. Render again and report per feedback point what you changed, and where the reference photos and the feedback
    disagree. Leave the feedback file alone; the human clears or approves.
+5. Write the finishing report (below).
+
+## Finishing report (always)
+Every generation or revision ends with this report, so the next agent and the tools get better. Append it to
+`data-drafts/reports/<poseId>.md` under a heading `## <date>: generated | revised` and give it as your reply.
+Be concrete and honest; "everything was fine" teaches nothing.
+- **Result**: what you made, contacts ok or not, what still looks off and the human should check.
+- **Decisions**: where the description and photos were open or disagreed, what you chose and why.
+- **References**: which pages and photos you used, which helped, which misled or were useless; which approved
+  poses you used as examples.
+- **Tools**: which commands you used (roughly how often), what worked well.
+- **Missing**: every scratch script you wrote (what it did), information you lacked, things you had to guess or
+  work out yourself (e.g. a recipe, a site position, a camera angle).
+- **Time sinks**: what took the most rounds, and why.
+- **Suggestion**: the one change to tools or docs that would have helped most.
 
