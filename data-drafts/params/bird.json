@@ -13,7 +13,8 @@
       },
       "ankle": {
         "point": 0,
-        "tilt": 25
+        "tilt": 12,
+        "turn": 5
       },
       "shoulder": {
         "forward": -11,
@@ -69,13 +70,13 @@
         "flyer": {
           "segment": "pelvis",
           "along": 0.9,
-          "around": -35
+          "around": -20
         }
       },
       "b": {
         "base": "left-sole"
       },
-      "twist": 0,
+      "twist": "free",
       "symmetric": true
     }
   ],
@@ -84,7 +85,8 @@
       "arms",
       "ankle",
       "knee",
-      "hip.pike"
+      "hip.pike",
+      "hip.rotate"
     ],
     "flyer": [
       "spine",
