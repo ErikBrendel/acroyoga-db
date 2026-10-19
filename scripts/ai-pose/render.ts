@@ -1,4 +1,4 @@
-// pnpm pose:render <poseId> [--view Front|Side|Top|Angled] [--saved]: renders the pose in the 3D editor of the
+// pnpm pose:render <poseId> [--view Front|Side|Top|Angled|Head end] [--saved]: renders the pose in the 3D editor of the
 // running dev server and writes data-drafts/renders/<poseId>.png: 2×2 Front | Side / Angled | Top, or one larger
 // view. Shows the AI draft unless --saved. Starts a headless Chrome with remote debugging if none is running.
 import { spawn } from 'child_process';
@@ -10,14 +10,15 @@ const APP_URL = process.env.POSE_APP_URL ?? 'http://localhost:5173/acroyoga-db/'
 const PORT = Number(process.env.POSE_CHROME_PORT ?? 9333);
 const CHROME = process.env.POSE_CHROME ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const VIEWS = ['Front', 'Side', 'Angled', 'Top'];
+const SINGLE_VIEWS = [...VIEWS, 'Head end'];
 const PANEL_WIDTH = 384;
 const SIZE = { width: 1400, height: 900 };
 
 const args = process.argv.slice(2);
 const poseId = args.find(a => !a.startsWith('--'));
 const view = args.includes('--view') ? args[args.indexOf('--view') + 1] : null;
-if (!poseId || (view && !VIEWS.includes(view))) {
-  console.error('Usage: pnpm pose:render <poseId> [--view Front|Side|Top|Angled] [--saved]');
+if (!poseId || (view && !SINGLE_VIEWS.includes(view))) {
+  console.error('Usage: pnpm pose:render <poseId> [--view Front|Side|Top|Angled|"Head end"] [--saved]');
   process.exit(1);
 }
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -97,7 +98,7 @@ try {
     images.forEach((image, i) => canvas.getContext('2d').drawImage(image, (i % 2) * w, Math.floor(i / 2) * h));
     return canvas.toDataURL('image/png').split(',')[1];
   })()`);
-  const out = path.join('data-drafts/renders', `${poseId}${view ? `-${view.toLowerCase()}` : ''}.png`);
+  const out = path.join('data-drafts/renders', `${poseId}${view ? `-${view.toLowerCase().replace(' ', '-')}` : ''}.png`);
   fs.mkdirSync(path.dirname(out), { recursive: true });
   fs.writeFileSync(out, Buffer.from(composed, 'base64'));
   console.log(`Written: ${out}${view ? '' : ' (Front | Side / Angled | Top)'}`);

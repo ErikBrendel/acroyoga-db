@@ -30,6 +30,8 @@ const VIEWS: Record<string, [number, number, number]> = {
   Side: [3.6, 1.1, 0.35],
   Top: [0, 4.4, 0.351],
   Angled: [2.2, 1.7, 3],
+  // From above the base's head, where most reference photos of L-base poses are taken from
+  'Head end': [0, 2.3, -2.6],
 };
 
 const ROLE_LABELS: Record<Role, string> = { base: 'Base', flyer: 'Flyer' };

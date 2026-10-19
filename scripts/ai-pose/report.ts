@@ -2,16 +2,11 @@ import * as THREE from 'three';
 import { AcroPose, Contact, ROLES, Role, contactError, currentTwist } from '../../src/3d/acroPose';
 import { Human } from '../../src/3d/Human';
 import { possibleContacts, suggestionLine } from './contacts';
-import { balanceLines } from './balance';
+import { RADII, balanceLines, balanceSummary, heightLines } from './balance';
 import { limbChain, worldMatrix } from '../../src/3d/ik';
 import { localSiteFrame, siteLabel, siteMatrix } from '../../src/3d/sites';
-import { ALL_BONES, BONES, BoneKey, JOINTS, JointId } from '../../src/3d/skeleton';
+import { ALL_BONES, BONES, BoneKey, JOINTS } from '../../src/3d/skeleton';
 
-// Rough body part thickness for the overlap check (capsules along the bones); the torso by its front-back
-// depth, so arms in front of it are not counted
-const RADII: Partial<Record<JointId, number>> = {
-  waist: 0.1, chest: 0.1, neck: 0.09, hip: 0.07, knee: 0.05, ankle: 0.03, shoulder: 0.04, elbow: 0.03, wrist: 0.015,
-};
 const OVERLAP_REPORTED = 0.03;
 const HOLDS = { millimetres: 10, degrees: 5 };
 const KEY_SITES = ['crown', 'chest', 'upper-back', 'sacrum', 'left-palm', 'right-palm', 'left-knee', 'right-knee', 'left-sole', 'right-sole'];
@@ -119,7 +114,7 @@ export function summary(pose: AcroPose): string {
   const errors = pose.contacts.map(c => contactError(pose, c));
   const holding = errors.filter(e => e.millimetres <= HOLDS.millimetres && e.degrees <= HOLDS.degrees).length;
   const worst = `${Math.round(Math.max(0, ...errors.map(e => e.millimetres)))} mm, ${Math.round(Math.max(0, ...errors.map(e => e.degrees)))}°`;
-  return `contacts ok ${holding}/${errors.length} (worst ${worst}), limits ${limitLines(pose).length}, overlaps ${overlapLines(pose).length}`;
+  return `contacts ok ${holding}/${errors.length} (worst ${worst}), limits ${limitLines(pose).length}, overlaps ${overlapLines(pose).length}; ${balanceSummary(pose)}`;
 }
 
 export function report(pose: AcroPose, humans: Record<Role, Human>): string {
@@ -129,6 +124,7 @@ export function report(pose: AcroPose, humans: Record<Role, Human>): string {
       + ' normals / directions of a / b, direction = towards fingers, toes, a limb\'s far end or the head):', contactLines(pose)),
     section('Angles at their limits:', limitLines(pose)),
     section('Key points (cm):', pointLines(pose, humans)),
+    section('Lowest surface point above the floor (cm; rough capsules, so a few cm off the mesh):', heightLines(pose)),
     section('Balance (rough body masses; the flyer should sit over the contacts that carry it, the base\'s limbs ideally stacked):', balanceLines(pose)),
     section(`Overlaps (rough, ${OVERLAP_REPORTED * 100} cm or more):`, overlapLines(pose)),
     section('Possible contacts (free hands and feet within 12 cm of a surface facing them; add them if the pose has them):',

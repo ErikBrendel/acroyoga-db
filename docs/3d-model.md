@@ -25,7 +25,7 @@ Code: `src/3d/skeleton.ts` (joint definitions), `src/3d/humanPose.ts` (one perso
 | `neck` | head | `turn` (left), `nod` (down), `tilt` (left ear down) |
 | `hip` | upper leg | `pike` (forward), `straddle` (outward), `rotate` (outward) |
 | `knee` | lower leg | `bend` |
-| `ankle` | foot | `point` (toes down), `tilt` (sole inward) |
+| `ankle` | foot | `turn` (toes outward, -20…30), `point` (toes down), `tilt` (sole inward) |
 | `clavicle` | shoulder girdle | `protract` (shoulder forward), `elevate` (shrug up) |
 | `shoulder` | upper arm | `forward`, `raise` (sideways), `rotate` (outward) |
 | `elbow` | lower arm | `bend`, `rotate` (supinate) |
