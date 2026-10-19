@@ -349,7 +349,8 @@ const apiRoutes: Record<string, ApiHandler> = {
     return { code: 200, data: { success: true } }
   },
 
-  // Saving a pose settles it, so its draft and feedback go
+  // Saving a pose settles it and its mirror image (shown mirrored from it), so their drafts and feedback go, and
+  // so does the mirror's own saved data, which would otherwise be shown instead of the mirrored new one
   'PUT:/api/poses3d': (body) => {
     if (!isPoseId(body.poseId) || typeof body.json !== 'string') {
       return { code: 400, data: { error: 'poseId and json are required' } }
@@ -359,8 +360,12 @@ const apiRoutes: Record<string, ApiHandler> = {
     const filePath = path.join(poses3dDir, `${body.poseId}.json`)
     fs.writeFileSync(filePath + '.tmp', body.json + '\n')
     fs.renameSync(filePath + '.tmp', filePath)
-    fs.rmSync(path.join(drafts3dDir, `${body.poseId}.json`), { force: true })
-    fs.rmSync(path.join(feedbackDir, `${body.poseId}.md`), { force: true })
+    const mirrorId = JSON.parse(fs.readFileSync(posesPath, 'utf-8')).find((p: { id: string }) => p.id === body.poseId)?.mirroredPoseId
+    if (isPoseId(mirrorId)) fs.rmSync(path.join(poses3dDir, `${mirrorId}.json`), { force: true })
+    for (const id of [body.poseId, mirrorId].filter(isPoseId)) {
+      fs.rmSync(path.join(drafts3dDir, `${id}.json`), { force: true })
+      fs.rmSync(path.join(feedbackDir, `${id}.md`), { force: true })
+    }
     return { code: 200, data: { success: true } }
   },
 
