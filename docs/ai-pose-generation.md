@@ -15,6 +15,10 @@ in the 3D editor ("🎭 Open in 3D editor") and saving. Agents only write drafts
   each limb presses against and from which side, not only where it is. Never copy
   images into the repo. Note where a reference disagrees with
   the description; the description wins, but say so in your report.
+- Looking at an image costs about width × height / 750 tokens (up to about 1600). Check numerically first (the
+  report's Feet, heights and Balance, `pose:check` sites), and look at images to compare with the photos:
+  renders with `--width 512` unless you need a detail, reference photos scaled to at most 768 px, and for a
+  detail (a grip, a foot) a crop of just that region rather than the whole photo.
 - Approved poses in `public/data/poses3d/` are the best examples (`front-plank.json`).
 - The dev server must run (`pnpm dev`) for rendering only.
 
@@ -26,7 +30,7 @@ in the 3D editor ("🎭 Open in 3D editor") and saving. Agents only write drafts
 | `pnpm pose:solve <params.json> --vary <path>=<v1>,<v2> [--vary …]` | Solves every combination and prints one summary line each (contacts ok, worst error, limits, overlaps, whether the flyer is over its support, the base's knee and elbow bends); writes nothing. `<path>` is a dot path into the params, e.g. `flyer.joints.hip.pike` or `contacts.0.a.flyer.around`; values are JSON or plain text (`contacts.0.twist=free,0`). Failing contacts are listed by index. `--show base.left-elbow.bend,base:left-palm` adds chosen angles or site positions (cm) to each line. Use it instead of hand-written loops. |
 | `pnpm pose:suggest <params.json \| pose.json> [<role>:<site> [<role>:<segment>]]` | Where contacts could go: free hands and feet near a surface facing them, or with a site (`flyer:left-palm`) its best points on the bodies, optionally on one segment (`base:left-thigh`). Prints ready contact JSON. Works on params and on stored drafts. |
 | `pnpm pose:check <pose.json> [<role>:<site>…]` | The same report for stored pose data as it is, e.g. a draft under review or an approved pose to compare with. With sites (`flyer:left-instep`, or `base:right-shin@0.3@-125` for segment@along@around), their position, normal and direction. |
-| `pnpm pose:render <poseId> [--view Side] [--saved]` | Renders the draft in the 3D editor to `data-drafts/renders/<poseId>.png` (Front, Side / Angled, Top) or one larger view, also `"Head end"` (from above the base's head, like most photos). |
+| `pnpm pose:render <poseId> [--view Side] [--width 512] [--saved]` | Renders the draft in the 3D editor to `data-drafts/renders/<poseId>.png` (Front, Side / Angled, Top) or one larger view, also `"Head end"` (from above the base's head, like many photos); `--width` makes it smaller and cheaper to look at. |
 
 `pose:render` needs the dev server (`POSE_APP_URL`, default `http://localhost:5173/acroyoga-db/`) and starts a
 headless Chrome with remote debugging on port 9333 (`POSE_CHROME_PORT`) if none runs. Each call uses its own

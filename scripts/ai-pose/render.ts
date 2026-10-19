@@ -1,6 +1,6 @@
-// pnpm pose:render <poseId> [--view Front|Side|Top|Angled|Head end] [--saved]: renders the pose in the 3D editor of the
-// running dev server and writes data-drafts/renders/<poseId>.png: 2×2 Front | Side / Angled | Top, or one larger
-// view. Shows the AI draft unless --saved. Starts a headless Chrome with remote debugging if none is running.
+// pnpm pose:render <poseId> [--view Front|Side|Top|Angled|Head end] [--width <px>] [--saved]: renders the pose in the
+// 3D editor of the running dev server and writes data-drafts/renders/<poseId>.png: 2×2 Front | Side / Angled | Top, or
+// one larger view, about 1000 px wide unless --width (smaller images cost an agent fewer tokens to look at). Shows the AI draft unless --saved. Starts a headless Chrome with remote debugging if none is running.
 import { spawn } from 'child_process';
 import fs from 'fs';
 import os from 'os';
@@ -17,8 +17,9 @@ const SIZE = { width: 1400, height: 900 };
 const args = process.argv.slice(2);
 const poseId = args.find(a => !a.startsWith('--'));
 const view = args.includes('--view') ? args[args.indexOf('--view') + 1] : null;
-if (!poseId || (view && !SINGLE_VIEWS.includes(view))) {
-  console.error('Usage: pnpm pose:render <poseId> [--view Front|Side|Top|Angled|"Head end"] [--saved]');
+const width = args.includes('--width') ? Number(args[args.indexOf('--width') + 1]) : null;
+if (!poseId || (view && !SINGLE_VIEWS.includes(view)) || (width !== null && !(width > 0))) {
+  console.error('Usage: pnpm pose:render <poseId> [--view Front|Side|Top|Angled|"Head end"] [--width <px>] [--saved]');
   process.exit(1);
 }
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -79,7 +80,8 @@ try {
   // The editor opened with the pose: its view buttons are there
   if (!(await clickWhenThere(tab, 'Angled'))) throw new Error('The 3D editor did not open');
   await sleep(800);
-  const clip = { x: 0, y: 0, width: SIZE.width - PANEL_WIDTH, height: SIZE.height, scale: view ? 1 : 0.5 };
+  const sceneWidth = SIZE.width - PANEL_WIDTH;
+  const clip = { x: 0, y: 0, width: sceneWidth, height: SIZE.height, scale: (width ?? sceneWidth) / sceneWidth / (view ? 1 : 2) };
   const shots: string[] = [];
   for (const name of view ? [view] : VIEWS) {
     await tab.evaluate(clickButton(name));
