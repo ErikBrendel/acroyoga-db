@@ -1,0 +1,27 @@
+{
+  "base": {
+    "position": [0,0.156,0],
+    "joints": {
+      "root": {"pitch":-90},
+      "hip": {"pike":90,"straddle":0.4},
+      "ankle": {"tilt":25},
+      "shoulder": {"forward":-11,"raise":15,"rotate":-80},
+      "elbow": {"rotate":-27.2}
+    }
+  },
+  "flyer": {
+    "position": [0,1.134,-0.051],
+    "joints": {
+      "root": {"turn":180,"pitch":88},
+      "waist": {"bend":-8},
+      "chest": {"bend":-18},
+      "neck": {"nod":-30},
+      "ankle": {"point":60},
+      "shoulder": {"forward":-35,"raise":8,"rotate":30},
+      "elbow": {"bend":5,"rotate":40}
+    }
+  },
+  "contacts": [
+    {"a":{"flyer":{"segment":"pelvis","along":0.9,"around":-35}},"b":{"base":"left-sole"},"symmetric":true}
+  ]
+}

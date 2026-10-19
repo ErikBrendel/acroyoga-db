@@ -1,0 +1,95 @@
+{
+  "poseId": "bird",
+  "base": {
+    "presets": [
+      "L-base"
+    ],
+    "joints": {
+      "hip": {
+        "pike": 90
+      },
+      "knee": {
+        "bend": 0
+      },
+      "ankle": {
+        "point": 0,
+        "tilt": 25
+      },
+      "shoulder": {
+        "forward": -11,
+        "raise": 15,
+        "rotate": -80
+      },
+      "elbow": {
+        "bend": 0
+      },
+      "wrist": {
+        "flex": 0
+      }
+    }
+  },
+  "flyer": {
+    "position": [
+      0,
+      1.17,
+      -0.02
+    ],
+    "joints": {
+      "root": {
+        "turn": 180,
+        "pitch": 88
+      },
+      "waist": {
+        "bend": -8
+      },
+      "chest": {
+        "bend": -18
+      },
+      "neck": {
+        "nod": -30
+      },
+      "ankle": {
+        "point": 60
+      },
+      "shoulder": {
+        "forward": -35,
+        "raise": 8,
+        "rotate": 30
+      },
+      "elbow": {
+        "bend": 5,
+        "rotate": 40
+      }
+    }
+  },
+  "contacts": [
+    {
+      "solve": "fit",
+      "a": {
+        "flyer": {
+          "segment": "pelvis",
+          "along": 0.9,
+          "around": -35
+        }
+      },
+      "b": {
+        "base": "left-sole"
+      },
+      "twist": 0,
+      "symmetric": true
+    }
+  ],
+  "locks": {
+    "base": [
+      "arms",
+      "ankle",
+      "knee",
+      "hip.pike"
+    ],
+    "flyer": [
+      "spine",
+      "arms",
+      "legs"
+    ]
+  }
+}
