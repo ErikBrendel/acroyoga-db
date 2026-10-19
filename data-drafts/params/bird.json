@@ -12,9 +12,9 @@
         "bend": 0
       },
       "ankle": {
-        "point": 0,
-        "tilt": 12,
-        "turn": 5
+        "point": 4,
+        "tilt": 10,
+        "turn": 15
       },
       "shoulder": {
         "forward": -11,
