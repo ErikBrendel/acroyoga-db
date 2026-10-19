@@ -124,6 +124,17 @@ export function heightLines(pose: AcroPose): string[] {
   });
 }
 
+// A lying base's back sits about 6 cm up by the rough capsules; more means hands or feet lift him off the floor
+const BACK_LIFTED = 0.08;
+
+/** For one-line variant summaries: a lying base's back lifted off the floor, otherwise nothing */
+export function liftedSummary(pose: AcroPose): string {
+  if (Math.abs(pose.base.angles.root.pitch + 90) > 30) return '';
+  const chest = boneEnds(pose, 'base').find(e => e.joint === 'chest')!;
+  const back = Math.min(chest.from.y, chest.to.y) - RADII.chest!;
+  return back > BACK_LIFTED ? `, base's back ${Math.round(back * 100)} cm up (lifted?)` : '';
+}
+
 /** For one-line variant summaries: how far the flyer is off its support, and the bend of the base's knees and elbows */
 export function balanceSummary(pose: AcroPose): string {
   const carrying = pose.contacts.filter(c => c.a.role !== c.b.role);

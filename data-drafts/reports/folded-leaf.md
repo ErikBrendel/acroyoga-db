@@ -1,0 +1,43 @@
+# folded-leaf
+
+## 2026-10-19: generated
+- **Result**: draft `data-drafts/poses3d/folded-leaf.json`, params `data-drafts/params/folded-leaf.json`, renders `folded-leaf-side.png`, `folded-leaf-head-end.png`, `folded-leaf-angled.png` (the combined `folded-leaf.png` came out broken, see Tools). Both contacts ok (0 mm, 0°), no angles at their limits, no overlaps, no `<- check` in Feet.
+  - Base: L-base, legs vertical and straight (pike 90, knee 0, both knees stacked 0°). Ankles turn 5, point -5, tilt 0, locked. Soles at (±10, 106, -4), toes towards his head.
+  - Base arms on the floor beside the body: `shoulder forward -12, raise 35, rotate -80`, elbows straight. His back is at 6 cm, as in straddlebat, so the hands don't lift him.
+  - Flyer: face down and folded over his feet. Root `turn 180`, pitch 157 (set by `fitRotate`), so her torso hangs down with the head slightly towards his head. Spine rounded (waist 15, chest 10). Hip pike 62, so her thighs lie about horizontal on his soles. Knees bent 15, lower legs rising slightly as in Gieger, toes pointed 30.
+  - Flyer arms hang straight down beside his torso, inside his arms, palms flat on the floor: `shoulder forward 172, raise 15`, `clavicle elevate 25`, wrists -70. Palms are at (±39, 2, -8), normal -Y, fingers pointing outward.
+  - Head: the Heads section shows the head 0 cm from the base's waist, so it rests on him and not in him. The crown site is at (0, 22, -16), between his belly site (z -7) and his chest (z -35), so it is on his upper belly.
+  - Balance: her centre of mass is 1 cm outside the line between the two soles, i.e. over the support.
+  - **For the human to check**:
+    - **Contact point**: the soles sit on the front of her thighs, 20% down from the crotch (about 9 cm from the crease). They are not in the crease itself (the `hip` site). See Decisions.
+    - **Hip pike 62**: an angle of about 120° between torso and thighs, a shallower fold than "folded" suggests. A deeper fold tips her centre of mass towards her legs, off his feet. Pike 80 puts her 5–9 cm off the support.
+    - **Shoulder shrug**: `clavicle elevate 25` was needed so that flat palms reach the floor. Without it the palms float 7–10 cm above it.
+    - **Base ankles**: `point -5` (slightly flexed) lowers the soles by about 1 cm, which closed the last part of the gap between her head and his belly. With point 0 the gap is 2–3 cm, with point 10 it is 6 cm.
+- **Decisions**:
+  - **Feet on the thigh**: "Base's feet on flyer's hips" taken as the hip crease / top of the thighs, which is where Gieger Pose055 shows it: his sole on the front of her thigh at the crease, toes curling over it. The `hip` site (front of the hip bone) faces forward, not down, once she is folded, and was 63° off with an overlap of his knees into her pelvis. Along 0.05–0.1 holds too, but puts her centre of mass 5–8 cm off the support.
+  - **Hands on the floor**: as in the Partner Acrobatics photo, with her hands beside his torso, as a stabilising position. In Gieger her arms hang relaxed and touch his belly. In Acrodemy one hand reaches to his hand.
+  - **Base arms wider**: raise 35 instead of the doc's 15, because at 15 her elbows ran 4 cm into his.
+  - **Base legs**: vertical as in Partner Acrobatics. Gieger and Acrodemy show his legs angled towards his head (pike about 100). That moves the support towards his head, so her head would land on his chest (y 30) instead of his belly, so I did not use it.
+  - **Description vs photos**: they agree. Only Partner Acrobatics really shows the head on the belly. In Gieger and Acrodemy the head is a little above him.
+- **References**:
+  - **christiangieger.de Pose055** (2000 px, side): the most useful, for the fold, the foot placement (crop) and the leg shape.
+  - **Partner Acrobatics** `straddle-bat-folded-leaf.jpg` (480 px): small, but the only one with the head on the belly and the hands on the floor.
+  - **Acrodemy** `lehullomelindaekkal500`: a variant with angled base legs and a lower flyer, useful only for the general shape.
+  - **YouTube xCyJBkdh9oc**: an 8 s portrait short. `pose:frames` gives 48×27 frames, which are useless.
+  - **Gieger Pose083**: a folded variant with the legs in butterfly, not used.
+  - **Example poses**: `front-plank.json` and `bird.json` for the base, `straddlebat.json` and its report for head height and the arm-floor lift.
+- **Tools**:
+  - `pose:solve --vary` about 14 times, often with `--show flyer:crown,…`. It was the main instrument.
+  - `pose:solve` full report about 8 times. The Heads section decided the head height.
+  - `pose:check` with sites 2 times: the palm normal, and the base sole height in straddlebat.
+  - `pose:orient` once.
+  - `pose:render` 5 times. The default multi-view render once produced a composite whose other three panels showed the pose list instead of the 3D views. Single `--view` renders were fine. Possibly a conflict with parallel agents.
+  - `pose:frames` once.
+- **Missing**:
+  - **Scratch scripts**: none. There was one inline shell loop that wrote param variants to the scratchpad and grepped the Heads / Balance lines, because `--vary` lines don't include the head gap.
+  - **`fitRotate` behaviour**: with `fitRotate` the root pitch follows the thigh orientation, so spine and pike changes swing the whole torso. Not obvious, but it made the search one-dimensional (pike sets the torso lean).
+  - **Hands lifting the base**: I lost 3 cm of head height to the base's hands (doc arms `forward -18, raise 45`) lifting him off the floor. The report shows it only as "base back 9" in "Lowest surface point". It is easy to miss.
+- **Time sinks**:
+  - **Head height**: about 5 rounds. The cause was the lifted base (hands) plus ankle point, not the flyer.
+  - **Balance**: about 4 rounds. Legs out horizontally pull her centre of mass off his feet unless the contact moves down the thigh and her torso leans towards his head.
+- **Suggestion**: add the head gap (Heads section) and "base lifted off the floor" to the `--vary` summary line. Both decided this pose and had to be read from full reports.

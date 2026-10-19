@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { AcroPose, Contact, ROLES, Role, contactError, currentTwist, otherRole } from '../../src/3d/acroPose';
 import { Human } from '../../src/3d/Human';
 import { possibleContacts, suggestionLine } from './contacts';
-import { RADII, balanceLines, balanceSummary, heightLines } from './balance';
+import { RADII, balanceLines, balanceSummary, heightLines, liftedSummary } from './balance';
 import { limbChain, worldMatrix } from '../../src/3d/ik';
 import { localSiteFrame, siteLabel, siteMatrix } from '../../src/3d/sites';
 import { ALL_BONES, BONES, BoneKey, JOINTS } from '../../src/3d/skeleton';
@@ -113,16 +113,18 @@ const HEAD_NEAR = 0.1;
 
 // A head resting on or close to the other person (straddlebat: the flyer's head on the base's belly) decides
 // whether a low pose works, and overlaps only show more than OVERLAP_REPORTED
-function headLines(pose: AcroPose): string[] {
+function headGaps(pose: AcroPose): { role: Role; key: BoneKey; gap: number }[] {
   const parts = capsules(pose);
   return ROLES.flatMap(role => {
     const head = parts.find(p => p.role === role && p.key === 'neck')!;
     const nearest = parts.filter(p => p.role !== role)
-      .map(p => ({ key: p.key, gap: segmentDistance(head, p) - head.radius - p.radius }))
+      .map(p => ({ role, key: p.key, gap: segmentDistance(head, p) - head.radius - p.radius }))
       .reduce((a, b) => (b.gap < a.gap ? b : a));
-    return nearest.gap < HEAD_NEAR ? [`  ${role} head ${Math.round(nearest.gap * 100)} cm from ${otherRole(role)} ${nearest.key}`] : [];
+    return nearest.gap < HEAD_NEAR ? [nearest] : [];
   });
 }
+
+const headLines = (pose: AcroPose) => headGaps(pose).map(h => `  ${h.role} head ${Math.round(h.gap * 100)} cm from ${otherRole(h.role)} ${h.key}`);
 
 // Calibrated on the human-approved poses (none of them is flagged) and on what humans corrected in drafts: a
 // flyer's sickled, inward-turned hooking feet and a strongly rotated hip. The base's soles roll a lot to lie on
@@ -165,7 +167,8 @@ export function summary(pose: AcroPose): string {
   const holding = errors.filter(e => e.millimetres <= HOLDS.millimetres && e.degrees <= HOLDS.degrees).length;
   const failing = errors.flatMap((e, i) => e.millimetres <= HOLDS.millimetres && e.degrees <= HOLDS.degrees ? []
     : [`#${i} ${Math.round(e.millimetres)} mm ${Math.round(e.degrees)}°`]);
-  return `contacts ok ${holding}/${errors.length}${failing.length ? ` (off: ${failing.join(', ')})` : ''}, limits ${limitLines(pose).length}, overlaps ${overlapLines(pose).length}; ${balanceSummary(pose)}`;
+  const heads = headGaps(pose).map(h => `, ${h.role} head ${Math.round(h.gap * 100)} cm from ${otherRole(h.role)} ${h.key}`).join('');
+  return `contacts ok ${holding}/${errors.length}${failing.length ? ` (off: ${failing.join(', ')})` : ''}, limits ${limitLines(pose).length}, overlaps ${overlapLines(pose).length}; ${balanceSummary(pose)}${liftedSummary(pose)}${heads}`;
 }
 
 export function report(pose: AcroPose, humans: Record<Role, Human>): string {
