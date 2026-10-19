@@ -18,7 +18,9 @@ in the 3D editor ("🎭 Open in 3D editor") and saving. Agents only write drafts
 - Looking at an image costs about width × height / 750 tokens (up to about 1600). Check numerically first (the
   report's Feet, heights and Balance, `pose:check` sites), and look at images to compare with the photos:
   renders with `--width 512` unless you need a detail, reference photos scaled to at most 768 px, and for a
-  detail (a grip, a foot) a crop of just that region rather than the whole photo.
+  detail (a grip, a foot) a crop of just that region rather than the whole photo. Do not hand images to a
+  cheaper model: tested 2026-10 on six known photos, Haiku named the wrong pose or confirmed a wrong one, Sonnet
+  missed pose names and contact points; both were not good enough even for screening references.
 - Approved poses in `public/data/poses3d/` are the best examples (`front-plank.json`).
 - The dev server must run (`pnpm dev`) for rendering only.
 
