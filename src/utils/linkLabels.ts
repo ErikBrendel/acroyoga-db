@@ -6,6 +6,8 @@ const SITES: [host: string, name: string][] = [
   ['partneracrobatics.com', 'Partner Acrobatics'],
   ['acroadventure.com', 'AcroAdventure'],
   ['acroyogavideos.com', 'AcroYogaVideos'],
+  ['yogaemotion.net', 'yogaemotion'],
+  ['circomedia.com', 'Circomedia'],
   ['youtube.com', 'YouTube'],
   ['youtu.be', 'YouTube'],
   ['instagram.com', 'Instagram'],

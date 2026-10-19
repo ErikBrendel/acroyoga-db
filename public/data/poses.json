@@ -5,6 +5,14 @@
     "aliases": [
       "Free Bird"
     ],
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/front-bird/",
+      "https://acrodemy.eu/2025/01/01/bird-no-hands/",
+      "https://partneracrobatics.com/l-basing/l-base-basics/bird-flyer/",
+      "https://www.yogaemotion.net/courses/front-bird",
+      "https://www.youtube.com/watch?v=g5cGNpdaUgs&t=197",
+      "https://www.youtube.com/watch?v=nyzd9kPnPSw"
+    ],
     "description": "Base lies on back with feet up, supporting flyer's hips. Flyer balances horizontally face-down. Hands are free.",
     "difficulty": "easy",
     "position": {
@@ -15,6 +23,12 @@
   {
     "id": "throne",
     "name": "Straddle Throne",
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/straddle-throne/",
+      "https://acrodemy.eu/2025/01/12/straddle-throne/",
+      "https://partneracrobatics.com/l-basing/l-base-basics/secretary-and-throne/",
+      "https://www.yogaemotion.net/courses/straddle-throne"
+    ],
     "description": "Base feet on Flyer thighs. Flyer sits with wide legs, Feet around Base shins. Facing each other.",
     "difficulty": "easy",
     "position": {
@@ -25,6 +39,11 @@
   {
     "id": "reverse-throne",
     "name": "Reverse Straddle Throne",
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/reverse-throne/",
+      "https://acrodemy.eu/2025/01/25/reverse-straddle-throne/",
+      "https://www.youtube.com/watch?v=qTaM5V8o03M"
+    ],
     "description": "Base feet on Flyer thighs. Flyer sits with wide legs, Feet around Base shins, facing away from Base head.",
     "difficulty": "easy",
     "position": {
@@ -38,6 +57,12 @@
     "aliases": [
       "Bird"
     ],
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/frontplank/",
+      "https://acrodemy.eu/2025/01/04/front-plank-bird-the-first-step/",
+      "https://www.yogaemotion.net/courses/front-plank",
+      "https://www.youtube.com/watch?v=0U-nsOvtgHQ"
+    ],
     "description": "Base lies on back with feet up, supporting flyer's hips. Flyer balances horizontally face-down. Hands connected for support.",
     "difficulty": "easy",
     "position": {
@@ -48,6 +73,12 @@
   {
     "id": "shoulder-stand",
     "name": "Shoulder Stand",
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/supported-shoulderstand/",
+      "https://acrodemy.eu/2025/01/02/shoulderstand-with-ankle-grip/",
+      "https://www.yogaemotion.net/courses/supported-shoulderstand",
+      "https://partneracrobatics.com/l-basing/l-base-basics/shoulderstands/"
+    ],
     "description": "Base lies on back supporting flyer's shoulders with hands, flyer is upside down, facing towards base feet. Base Hands (including thumbs) on flyer's back/shoulders. Base sees flyer back.",
     "difficulty": "intermediate",
     "position": {
@@ -58,6 +89,12 @@
   {
     "id": "reverse-shoulder-stand",
     "name": "Reverse Shoulder Stand",
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/reverse-shoulder-stand/",
+      "https://www.christiangieger.de/acroyoga-posen/supported-reverse-shoulder-stand/",
+      "https://acrodemy.eu/2025/01/28/reverse-shoulderstand-with-ankle-grip/",
+      "https://partneracrobatics.com/l-basing/l-base-basics/reverse-shoulderstand-hands/"
+    ],
     "description": "Base lies on back supporting flyer's shoulders with hands, flyer is upside down facing towards base head. Base thumbs on flyer's back. Base sees flyer front.",
     "difficulty": "intermediate",
     "position": {
@@ -71,6 +108,12 @@
     "aliases": [
       "Shoulderstand on Feet"
     ],
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/star/",
+      "https://acrodemy.eu/2025/01/28/star-with-hand-holds/",
+      "https://partneracrobatics.com/l-basing/l-base-basics/shoulderstands-on-feet/",
+      "https://www.youtube.com/watch?v=7gIVlBFUaJc&t=24"
+    ],
     "description": "Flyer does a shoulderstand on Base feet. Hands connected in \"stargrip\". Base straight arms, Flyer bent arms.",
     "difficulty": "easy",
     "position": {
@@ -81,6 +124,12 @@
   {
     "id": "folded-leaf",
     "name": "Folded Leaf",
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/folded-leaf/",
+      "https://acrodemy.eu/2025/02/26/folded-leaf/",
+      "https://partneracrobatics.com/l-basing/l-base-basics/straddle-bat-folded-leaf/",
+      "https://www.youtube.com/watch?v=xCyJBkdh9oc"
+    ],
     "description": "Base's feet on flyer's hips. Flyer folds forward, Flyer head on Base belly.",
     "difficulty": "easy",
     "position": {
@@ -91,6 +140,12 @@
   {
     "id": "chair",
     "name": "Chair",
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/throne/",
+      "https://acrodemy.eu/2025/01/11/classic-throne/",
+      "https://www.yogaemotion.net/courses/throne",
+      "https://www.youtube.com/watch?v=8KZsfosPLZo"
+    ],
     "description": "Flyer sits with butt on Base feet like on a chair. Base holds Flyer feet.",
     "difficulty": "easy",
     "position": {
@@ -101,6 +156,11 @@
   {
     "id": "extended-reverse-f2h",
     "name": "Extended Reverse F2H",
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/reverse-foot-to-hand/",
+      "https://acrodemy.eu/2025/02/04/reverse-high-foot-2-hand/",
+      "https://partneracrobatics.com/l-basing/l-base-basics/foot-to-hand/"
+    ],
     "description": "Like Reverse F2H, just straight Base arms.",
     "difficulty": "intermediate",
     "position": {
@@ -114,6 +174,12 @@
     "aliases": [
       "High Flying Whale"
     ],
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/high-flying-whale/",
+      "https://acrodemy.eu/2025/01/12/high-flying-whale/",
+      "https://www.yogaemotion.net/courses/whale",
+      "https://www.youtube.com/watch?v=4WMAZ67brUc"
+    ],
     "description": "Flyer lays on Base feet with their shoulderblades, arches slightly backwards, watches ceiling. Base holds Flyers lower legs in hands.",
     "difficulty": "easy",
     "position": {
@@ -124,6 +190,11 @@
   {
     "id": "vishnus-couch-left",
     "name": "Vishnu's Couch (Left)",
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/vishnus-couch/",
+      "https://acrodemy.eu/2025/03/02/vishnu-couch/",
+      "https://www.youtube.com/watch?v=p7Y4iYRGRdg"
+    ],
     "description": "Flyer lays sideways: Base left foot in Flyer right armpit, Base right foot between Flyer legs, on Flyer left thigh. Flyer can raise left arm upwards, and use right arm to hold on Base left leg for stability.",
     "mirroredPoseId": "vishnus-couch-right",
     "difficulty": "easy",
@@ -135,6 +206,11 @@
   {
     "id": "vishnus-couch-right",
     "name": "Vishnu's Couch (Right)",
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/vishnus-couch/",
+      "https://acrodemy.eu/2025/03/02/vishnu-couch/",
+      "https://www.youtube.com/watch?v=p7Y4iYRGRdg"
+    ],
     "description": "Flyer lays sideways: Base right foot in Flyer left armpit, Base left foot between Flyer legs, on Flyer right thigh. Flyer can raise right arm upwards, and use left arm to hold on Base right leg for stability.",
     "mirroredPoseId": "vishnus-couch-left",
     "difficulty": "easy",
@@ -149,6 +225,12 @@
     "aliases": [
       "Straddle Bat"
     ],
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/straddle-bat/",
+      "https://acrodemy.eu/2025/02/26/straddle-bat/",
+      "https://www.yogaemotion.net/courses/straddle-bat",
+      "https://partneracrobatics.com/l-basing/l-base-basics/straddle-bat-folded-leaf/"
+    ],
     "description": "Like star, but lower donw: Instead of Base feet on Flyer shoulders, they are on the outer thighs. Flyer head almost on Base belly.",
     "difficulty": "easy",
     "position": {
@@ -162,6 +244,11 @@
     "aliases": [
       "Pashi"
     ],
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/floating-paschi/",
+      "https://acrodemy.eu/2025/02/27/floating-paschi/",
+      "https://www.youtube.com/watch?v=_TNw1XADdVY"
+    ],
     "description": "Flyer in triangle form: grabbing their own ankles, and upside down. Base grabs the Flyer's upper arms, balances whole weight with their arms.",
     "difficulty": "intermediate",
     "position": {
@@ -172,6 +259,11 @@
   {
     "id": "reverse-bird",
     "name": "Reverse Bird",
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/reverse-front-bird/",
+      "https://acrodemy.eu/2025/01/22/reverse-bird/",
+      "https://partneracrobatics.com/l-basing/l-base-basics/bird-flyer/"
+    ],
     "description": "Like Bird, but Flyer faces the other way. Base feet still on Flyer hips. Connecting hands optional, but requires long straight arms.",
     "difficulty": "easy",
     "position": {
@@ -186,6 +278,9 @@
       "Inside Star",
       "Inside Side Star",
       "Sidestar"
+    ],
+    "links": [
+      "https://acrodemy.eu/2025/02/05/inside-star/"
     ],
     "description": "Bases left leg on Flyer left hip. Flyer leans inward, from base perspective to right. Both hands connected.",
     "mirroredPoseId": "sidestar-right",
@@ -203,6 +298,9 @@
       "Inside Side Star",
       "Sidestar"
     ],
+    "links": [
+      "https://acrodemy.eu/2025/02/05/inside-star/"
+    ],
     "description": "Bases right leg on Flyer right hip. Flyer leans inward, from base perspective to left. Both hands connected.",
     "mirroredPoseId": "sidestar-left",
     "difficulty": "intermediate",
@@ -214,6 +312,10 @@
   {
     "id": "mono-reverse-shin-left",
     "name": "Mono Reverse Shin-to-Foot +Hands (Left)",
+    "links": [
+      "https://acrodemy.eu/2025/03/15/reverse-one-legged-shin2foot/",
+      "https://acrodemy.eu/2025/03/14/four-step-washing-machine/"
+    ],
     "description": "From star, Flyer lower left knee, and Base removes their left Foot from Flyer should and places it onto the Flyer shin.",
     "mirroredPoseId": "mono-reverse-shin-right",
     "difficulty": "intermediate",
@@ -225,6 +327,10 @@
   {
     "id": "mono-reverse-shin-right",
     "name": "Mono Reverse Shin-to-Foot +Hands (Right)",
+    "links": [
+      "https://acrodemy.eu/2025/03/15/reverse-one-legged-shin2foot/",
+      "https://acrodemy.eu/2025/03/14/four-step-washing-machine/"
+    ],
     "description": "From star, Flyer lower right knee, and Base removes their right Foot from Flyer should and places it onto the Flyer shin.",
     "mirroredPoseId": "mono-reverse-shin-left",
     "difficulty": "intermediate",
@@ -280,6 +386,12 @@
   {
     "id": "back-bird",
     "name": "Back Bird",
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/back-plank/",
+      "https://partneracrobatics.com/l-basing/l-base-basics/back-plank/",
+      "https://acrodemy.eu/2025/01/01/back-bird/",
+      "https://www.youtube.com/watch?v=qa5iG6k3W0s"
+    ],
     "description": "Like Bird, but Flyer turns to face the ceiling. Base Feet on Flyer butt. Hand connection optional.",
     "difficulty": "easy",
     "position": {
@@ -293,6 +405,11 @@
     "aliases": [
       "Low Foot-to-Hand"
     ],
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/low-foot-to-hand/",
+      "https://acrodemy.eu/2025/02/03/low-foot-2-hand/",
+      "https://partneracrobatics.com/l-basing/l-base-basics/foot-to-hand/"
+    ],
     "description": "Base elbows close to chest, Flyer faces away, heels at Base fingers and toes at Base wrist. High-Heels!",
     "difficulty": "intermediate",
     "position": {
@@ -303,6 +420,11 @@
   {
     "id": "low-reverse-foot-to-hand",
     "name": "Low Reverse F2H",
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/low-reverse-foot-to-hand/",
+      "https://acrodemy.eu/2025/02/04/reverse-low-foot-2-hand/",
+      "https://www.youtube.com/watch?v=Ozi6Gsc5Lkg"
+    ],
     "description": "Base elbows close to chest. Flyer facing towards Base head. C-grip for Base. No High-Heels!",
     "difficulty": "easy",
     "position": {
@@ -323,6 +445,12 @@
   {
     "id": "foot-to-shin",
     "name": "Foot to Shin",
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/foot-to-shin/",
+      "https://acrodemy.eu/2025/01/01/foot-2-shin/",
+      "https://partneracrobatics.com/l-basing/l-base-basics/standing-on-shins/",
+      "https://www.youtube.com/watch?v=6F9sRYTD0xU"
+    ],
     "description": "Base tucked, Flyer stands on shins, facing Base head.",
     "difficulty": "easy",
     "position": {
@@ -333,6 +461,10 @@
   {
     "id": "reverse-back-bird",
     "name": "Reverse Back Bird",
+    "links": [
+      "https://acrodemy.eu/2025/01/22/reverse-back-bird/",
+      "https://partneracrobatics.com/l-basing/l-base-basics/back-plank/"
+    ],
     "description": "Almost like whale, but centered: Base feet on Flyer butt. Flyer facing the ceiling, head away from Base head.",
     "difficulty": "easy",
     "position": {
@@ -353,6 +485,12 @@
   {
     "id": "extended-f2h",
     "name": "Extended F2H",
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/foot-to-hand-mit-gestreckten-armen/",
+      "https://acrodemy.eu/2025/02/03/high-foot-2-hand/",
+      "https://partneracrobatics.com/l-basing/l-base-basics/foot-to-hand/",
+      "https://www.youtube.com/watch?v=xHNgZe5nosk"
+    ],
     "description": "Base straight arms, Flyer faces away, heels at Base fingers and toes at Base wrist. High-Heels!",
     "difficulty": "intermediate",
     "position": {
@@ -365,6 +503,11 @@
     "name": "Two High",
     "aliases": [
       "2 High"
+    ],
+    "links": [
+      "https://partneracrobatics.com/standing-acrobatics/standing-basics/two-high/",
+      "https://www.youtube.com/watch?v=i532d4C5mzM",
+      "https://www.youtube.com/watch?v=noLFywq1Ho0"
     ],
     "description": "Base standing, Flyer on shoulders, Base holding back of Flyer kneepits/calves donw",
     "difficulty": "intermediate",
@@ -379,6 +522,11 @@
     "aliases": [
       "Thigh Stand Face Away"
     ],
+    "links": [
+      "https://partneracrobatics.com/standing-acrobatics/standing-basics/thighstands/",
+      "https://www.youtube.com/watch?v=kR_PU6ZyQAo",
+      "https://www.youtube.com/watch?v=h3QOaD59phY"
+    ],
     "description": "Base standing slightly squatting, Flyer standing on Base knees looking away. Base holding Flyer's hips, leaning back. Counterbalance",
     "difficulty": "intermediate",
     "position": {
@@ -392,6 +540,12 @@
     "aliases": [
       "Thigh Stand Facing"
     ],
+    "links": [
+      "https://partneracrobatics.com/standing-acrobatics/standing-basics/thighstands/",
+      "https://acrodemy.eu/2025/03/29/foot-2-knee-balance-pose/",
+      "https://www.youtube.com/watch?v=quP6lZ-WOHE",
+      "https://www.youtube.com/watch?v=ZzJWZtXeWoU"
+    ],
     "description": "Base slightly squatting, Flyer standing on knees, facing each other. Both holding wrists with long arms, leaning back",
     "difficulty": "easy",
     "position": {
@@ -402,6 +556,11 @@
   {
     "id": "standing-flag-left",
     "name": "Standing Flag (Left)",
+    "links": [
+      "https://partneracrobatics.com/standing-acrobatics/standing-basics/thighstands/",
+      "https://www.circomedia.com/acro-flag/",
+      "https://www.youtube.com/watch?v=4KiwvU2O0iE"
+    ],
     "description": "Base slightly squatting, Flyer standing with their left Foot on both Base knees, Flyer right foot behind Base neck. Base left arm can hold Flyer right leg.",
     "mirroredPoseId": "standing-flag-right",
     "difficulty": "intermediate",
@@ -413,6 +572,11 @@
   {
     "id": "standing-flag-right",
     "name": "Standing Flag (Right)",
+    "links": [
+      "https://partneracrobatics.com/standing-acrobatics/standing-basics/thighstands/",
+      "https://www.circomedia.com/acro-flag/",
+      "https://www.youtube.com/watch?v=4KiwvU2O0iE"
+    ],
     "description": "Base slightly squatting, Flyer standing with their right Foot on both Base knees, Flyer left foot behind Base neck. Base right arm can hold Flyer left leg.",
     "mirroredPoseId": "standing-flag-left",
     "difficulty": "intermediate",
@@ -434,6 +598,9 @@
   {
     "id": "flyer-stading-on-knees",
     "name": "Flyer standing on Knees",
+    "links": [
+      "https://acrodemy.eu/2026/09/19/foot-to-knee-pose/"
+    ],
     "description": "Base on ground, feet close to butt, knees up. Flyer standing on knees. Base can support Flyer shins with hands.",
     "difficulty": "easy",
     "position": {
@@ -444,6 +611,11 @@
   {
     "id": "l-sit",
     "name": "L-Sit",
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/l-sit/",
+      "https://acrodemy.eu/2025/05/25/l-sit-on-hands/",
+      "https://partneracrobatics.com/l-basing/l-base-basics/arm-balancestuck-sits-l-sits/"
+    ],
     "description": "Base on floor, arms straight up. Flyer pushes with arms down. Fingers opposed, Flyer looks towards Base feet.",
     "difficulty": "easy",
     "position": {
@@ -454,6 +626,9 @@
   {
     "id": "reverse-l-sit",
     "name": "Reverse L-Sit",
+    "links": [
+      "https://partneracrobatics.com/l-basing/l-base-basics/arm-balancestuck-sits-l-sits/"
+    ],
     "description": "Base on floor, arms straight up. Flyer pushes with arms down. Fingers aligned, Flyer looks towards Base head.",
     "difficulty": "easy",
     "position": {
@@ -484,6 +659,9 @@
   {
     "id": "sitting-on-shoulders",
     "name": "Sitting on Shoulders",
+    "links": [
+      "https://partneracrobatics.com/standing-acrobatics/standing-basics/sitting-on-shoulders/"
+    ],
     "description": "Like carrying your small child though the zoo :)",
     "difficulty": "easy",
     "position": {
@@ -494,6 +672,12 @@
   {
     "id": "bird-on-hands",
     "name": "Bird on Hands",
+    "links": [
+      "https://acrodemy.eu/2025/01/07/bird-on-hands/",
+      "https://partneracrobatics.com/l-basing/l-base-basics/bird-flyer/",
+      "https://www.youtube.com/watch?v=LQacjmL6c1w",
+      "https://www.youtube.com/watch?v=Z6BCZSXrG9g"
+    ],
     "description": "Base grabs Flyer hips: 2 fingers on belly, 2 on outside, hip bones in palm.",
     "difficulty": "intermediate",
     "position": {
@@ -504,6 +688,10 @@
   {
     "id": "extended-h2h",
     "name": "Extended H2H",
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/extended-hand-to-hand/",
+      "https://acrodemy.eu/2026/08/18/hand-to-hand/"
+    ],
     "description": "L-Base, but straight long arms handstand. Hands are gripping opposed, Flyer facing Base head.",
     "difficulty": "hard",
     "position": {
@@ -514,6 +702,9 @@
   {
     "id": "extended-reverse-h2h",
     "name": "Extended Reverse H2H",
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/reverse-extended-hand-to-hand/"
+    ],
     "description": "Hands gripping with aligned fingers, Flyer faces Base feet.",
     "difficulty": "hard",
     "position": {
@@ -541,6 +732,10 @@
       "Outside Star",
       "Outside Side Star"
     ],
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/outside-star/",
+      "https://acrodemy.eu/2025/02/06/outside-star/"
+    ],
     "description": "Flyer on left Base leg, head towards left.",
     "mirroredPoseId": "outside-sidestar-right",
     "difficulty": "intermediate",
@@ -555,6 +750,10 @@
     "aliases": [
       "Outside Star",
       "Outside Side Star"
+    ],
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/outside-star/",
+      "https://acrodemy.eu/2025/02/06/outside-star/"
     ],
     "description": "Flyer on right Base leg, head towards right.",
     "mirroredPoseId": "outside-sidestar-left",
@@ -651,6 +850,10 @@
   {
     "id": "reverse-vishnus-couch-left",
     "name": "Reverse Vishnus Couch (Left)",
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/reverse-couch/",
+      "https://acrodemy.eu/2025/03/02/reverse-vishnu-couch/"
+    ],
     "description": "Flyer lays sideways, facing away from base head: Base left foot in Flyer left armpit, Base right foot between Flyer legs, on Flyer right thigh. Flyer can raise right arm upwards, and use left arm to hold on Base left leg for stability.",
     "mirroredPoseId": "reverse-vishnus-couch-right",
     "difficulty": "easy",
@@ -662,6 +865,10 @@
   {
     "id": "reverse-vishnus-couch-right",
     "name": "Reverse Vishnus Couch (Right)",
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/reverse-couch/",
+      "https://acrodemy.eu/2025/03/02/reverse-vishnu-couch/"
+    ],
     "description": "Flyer lays sideways, facing away from base head: Base right foot in Flyer right armpit, Base left foot between Flyer legs, on Flyer left thigh. Flyer can raise left arm upwards, and use right arm to hold on Base right leg for stability.",
     "mirroredPoseId": "reverse-vishnus-couch-left",
     "difficulty": "easy",
@@ -788,6 +995,10 @@
     "aliases": [
       "Low Hand-to-Hand"
     ],
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/low-hand-to-hand/",
+      "https://acrodemy.eu/2026/08/18/low-hand-to-hand/"
+    ],
     "description": "L-Base, Base elbows close to chest. Hands are gripping opposed, Flyer doing handstand facing Base head.",
     "difficulty": "intermediate",
     "position": {
@@ -798,6 +1009,9 @@
   {
     "id": "low-reverse-h2h",
     "name": "Low Reverse H2H",
+    "links": [
+      "https://www.christiangieger.de/acroyoga-posen/low-reverse-hand-to-hand/"
+    ],
     "description": "L-Base, Base elbows close to chest. Hands gripping with aligned fingers. Flyer doing handstand facing Base feet.",
     "difficulty": "intermediate",
     "position": {
