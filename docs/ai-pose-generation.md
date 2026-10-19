@@ -165,10 +165,17 @@ More facts:
   rotation and foot, which humans correct, rather than straightening the knee.
 - Base reaching overhead (whale): with straight arms the palms get to about y 65, z -85 cm; a flyer's ankles
   further away need bent elbows or a lower flyer.
-- Stargrip (star and the 4-Step): symmetric, same-side hands palm on palm, fingers on each other's wrist
-  (contact palm → palm, twist 180). Both wrists bent towards the palm (`wrist.flex` about 20 each, locked),
-  which only fits with the base's arms tilted a little towards his feet (`shoulder.forward` about 80, not 90);
-  the flyer's elbows then bend about 80°. Not a handshake, and not wrists bent back (corrected by a human).
+- Stargrip (star and the 4-Step), as approved in `public/data/poses3d/star.json` and its params
+  `data-drafts/params/star.json`: symmetric, same-side hands palm on palm, fingers on each other's wrist
+  (contact palm → palm, twist 180), not a handshake.
+  - The base's palms face the flyer's face: his arms vertical-ish and pronated (`shoulder.rotate 0`,
+    `elbow.rotate -85`), tilted 10° towards his feet (`shoulder.forward 80`).
+  - Both wrists bent back (`wrist.flex -30` each, locked).
+  - The flyer's forearms parallel, elbows straight above her hands (`shoulder.raise` about 8, locked), elbows
+    bent about 90°.
+  - The flyer leans a few degrees towards the base's belly, her centre of mass about 7 cm towards his head
+    from his soles.
+  A human corrected each of these from the first draft; check them first.
 - Flyer upside down facing the base's head (star, shoulder stand): root `turn 180, roll 180, pitch -x` for a lean
   of x towards her back; pitch alone stops at 180.
 - Grips: a palm on the `achilles` pulls an ankle towards the gripping person, on `ankle` (front) it pushes.
