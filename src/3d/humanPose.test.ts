@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { lerpHumanPose, mirrorHumanPose, neutralPose, parseHumanPose, serializeHumanPose, symmetrized, withJoints } from './humanPose';
+import { Bone } from './Bone';
 import { ALL_BONES, oppositeBone } from './skeleton';
 import { boneEnd, randomPose, seededRandom } from './testHelpers';
 
@@ -50,11 +51,13 @@ describe('symmetrized', () => {
 });
 
 describe('lerpHumanPose', () => {
-  it('moves angles and position in a straight line, unbounded angles the shorter way round', () => {
-    const from = { ...withJoints(neutralPose(), { root: { turn: 170 }, knee: { bend: 20 } }), position: [0, 1, 0] as [number, number, number] };
-    const to = { ...withJoints(neutralPose(), { root: { turn: -170 }, knee: { bend: 60 } }), position: [1, 1, 0] as [number, number, number] };
+  it('moves angles and position in a straight line, the orientation along the shortest rotation', () => {
+    const from = { ...withJoints(neutralPose(), { root: { turn: 180, roll: 180, pitch: 3 }, knee: { bend: 20 } }), position: [0, 1, 0] as [number, number, number] };
+    const to = { ...withJoints(neutralPose(), { root: { pitch: 32 }, knee: { bend: 60 } }), position: [1, 1, 0] as [number, number, number] };
     const middle = lerpHumanPose(from, to, 0.5);
-    expect(middle.angles.root.turn).toBeCloseTo(180);
+    const root = new Bone('root', null);
+    const pitchOnly = root.quaternionFor({ turn: 0, pitch: (177 + 32) / 2, roll: 0 });
+    expect(root.quaternionFor(middle.angles.root).angleTo(pitchOnly)).toBeCloseTo(0);
     expect(middle.angles['left-knee'].bend).toBeCloseTo(40);
     expect(middle.position).toEqual([0.5, 1, 0]);
   });

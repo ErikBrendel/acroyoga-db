@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import * as THREE from 'three';
+import { Bone } from './Bone';
 import { ALL_BONES, AngleDef, BONES, BoneKey, DEFAULT_ROOT_POSITION, JOINT_IDS, JOINTS, JointId, Side, boneKey, mirrorSign, oppositeBone } from './skeleton';
 
 // Stored format: angles that are 0 are omitted, and a paired joint's angle is a plain number
@@ -125,13 +126,15 @@ export function editedSide(previous: HumanPose, next: HumanPose): Side {
   return changed('right') && !changed('left') ? 'right' : 'left';
 }
 
-// Straight from one pose to the other at `t` (0 to 1); angles without limits (-180 to 180) take the shorter way round
+const ROOT = new Bone('root', null);
+
+// Straight from one pose to the other at `t` (0 to 1): joint angles linearly, the body's orientation along the
+// shortest rotation, as the same orientation can have very different root angles (turn 180 + roll 180 = pitch 180)
 export function lerpHumanPose(from: HumanPose, to: HumanPose, t: number): HumanPose {
-  const angles = Object.fromEntries(ALL_BONES.map(({ key, joint }) => [key, Object.fromEntries(JOINTS[joint].angles.map(({ name, min, max }) => {
-    const delta = to.angles[key][name] - from.angles[key][name];
-    const way = max - min >= 360 ? THREE.MathUtils.euclideanModulo(delta + 180, 360) - 180 : delta;
-    return [name, from.angles[key][name] + way * t];
-  }))])) as HumanPose['angles'];
+  const angles = Object.fromEntries(ALL_BONES.map(({ key, joint }) => [key, Object.fromEntries(JOINTS[joint].angles.map(({ name }) =>
+    [name, from.angles[key][name] + (to.angles[key][name] - from.angles[key][name]) * t]))])) as HumanPose['angles'];
+  const orientation = ROOT.quaternionFor(from.angles.root).slerp(ROOT.quaternionFor(to.angles.root), t);
+  angles.root = ROOT.anglesFromQuaternion(orientation, from.angles.root);
   const position = from.position.map((value, i) => value + (to.position[i] - value) * t) as HumanPose['position'];
   return { position, angles };
 }
