@@ -5,9 +5,9 @@
       "root": {"pitch":-90},
       "hip": {"pike":90,"straddle":1.3},
       "ankle": {"turn":5,"point":5},
-      "shoulder": {"forward":90},
+      "shoulder": {"forward":80},
       "elbow": {"rotate":-85},
-      "wrist": {"flex":20}
+      "wrist": {"flex":-30}
     }
   },
   "flyer": {
@@ -16,9 +16,9 @@
       "root": {"turn":180,"pitch":-5,"roll":180},
       "neck": {"nod":10},
       "ankle": {"point":45},
-      "shoulder": {"forward":92.3,"raise":3.2,"rotate":-5.3},
-      "elbow": {"bend":88.9,"rotate":-90},
-      "wrist": {"flex":20,"tilt":-5.8}
+      "shoulder": {"forward":93.1,"raise":16.6,"rotate":-19.6},
+      "elbow": {"bend":87.7,"rotate":-86.6},
+      "wrist": {"flex":-30,"tilt":-20}
     }
   },
   "contacts": [
