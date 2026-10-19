@@ -1,16 +1,16 @@
 {
   "base": {
-    "position": [0,0.16,0],
+    "position": [0,0.156,0],
     "joints": {
       "root": {"pitch":-90},
       "hip": {"pike":45,"straddle":5},
-      "knee": {"bend":112},
-      "ankle": {"point":28},
-      "shoulder": {"raise":15}
+      "knee": {"bend":115},
+      "ankle": {"point":20,"tilt":-4},
+      "shoulder": {"forward":-11,"raise":15,"rotate":-80}
     }
   },
   "flyer": {
-    "position": [0,0.969,1.3],
+    "position": [0,0.969,1.02],
     "joints": {
       "root": {"turn":180}
     }

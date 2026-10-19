@@ -1,0 +1,106 @@
+{
+ "poseId": "throne",
+ "base": {
+  "presets": [
+   "L-base"
+  ],
+  "joints": {
+   "hip": {
+    "pike": 90,
+    "straddle": 16,
+    "rotate": 0
+   },
+   "knee": {
+    "bend": 10
+   },
+   "ankle": {
+    "point": -5
+   },
+   "shoulder": {
+    "forward": -14,
+    "raise": 45,
+    "rotate": -80
+   },
+   "elbow": {
+    "bend": 0
+   },
+   "wrist": {
+    "flex": 0
+   }
+  }
+ },
+ "flyer": {
+  "presets": [
+   "Namaste"
+  ],
+  "position": [
+   0,
+   1.15,
+   0.08
+  ],
+  "joints": {
+   "root": {
+    "turn": 180
+   },
+   "hip": {
+    "pike": 90,
+    "straddle": 75,
+    "rotate": -5
+   },
+   "knee": {
+    "bend": 140
+   },
+   "ankle": {
+    "point": 40,
+    "turn": 30,
+    "tilt": -30
+   }
+  }
+ },
+ "contacts": [
+  {
+   "solve": "fit",
+   "a": {
+    "flyer": {
+     "segment": "right-thigh",
+     "along": 0.65,
+     "around": 195
+    }
+   },
+   "b": {
+    "base": "left-sole"
+   },
+   "twist": "free",
+   "symmetric": true
+  },
+  {
+   "a": {
+    "flyer": "left-instep"
+   },
+   "b": {
+    "base": {
+     "segment": "right-shin",
+     "along": 0.3,
+     "around": -125
+    }
+   },
+   "twist": "free",
+   "symmetric": true
+  }
+ ],
+ "locks": {
+  "base": [
+   "hip.pike",
+   "hip.rotate",
+   "knee",
+   "arms"
+  ],
+  "flyer": [
+   "spine",
+   "arms",
+   "hip.pike",
+   "hip.straddle",
+   "hip.rotate"
+  ]
+ }
+}

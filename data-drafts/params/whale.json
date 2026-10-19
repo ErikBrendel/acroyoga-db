@@ -1,0 +1,104 @@
+{
+  "poseId": "whale",
+  "base": {
+    "position": [
+      0,
+      0.156,
+      0
+    ],
+    "joints": {
+      "root": {
+        "pitch": -90
+      },
+      "hip": {
+        "pike": 75
+      },
+      "clavicle": {
+        "protract": 20
+      },
+      "shoulder": {
+        "forward": 150,
+        "rotate": 60
+      },
+      "elbow": {
+        "bend": 5
+      },
+      "wrist": {
+        "flex": -60
+      }
+    }
+  },
+  "flyer": {
+    "position": [
+      0,
+      1.157,
+      -0.126
+    ],
+    "joints": {
+      "root": {
+        "turn": 180,
+        "pitch": -65
+      },
+      "waist": {
+        "bend": -20
+      },
+      "chest": {
+        "bend": -20
+      },
+      "neck": {
+        "nod": 10
+      },
+      "hip": {
+        "pike": -5
+      },
+      "ankle": {
+        "point": 30
+      },
+      "shoulder": {
+        "forward": 180,
+        "raise": 10
+      },
+      "elbow": {
+        "bend": 5
+      },
+      "knee": {
+        "bend": 10
+      }
+    }
+  },
+  "contacts": [
+    {
+      "solve": "fit",
+      "a": {
+        "flyer": "right-shoulder-blade"
+      },
+      "b": {
+        "base": "left-sole"
+      },
+      "twist": "free",
+      "symmetric": true
+    },
+    {
+      "a": {
+        "base": "left-palm"
+      },
+      "b": {
+        "flyer": "right-achilles"
+      },
+      "twist": "free",
+      "symmetric": true
+    }
+  ],
+  "locks": {
+    "base": [
+      "hip.pike",
+      "knee",
+      "clavicle"
+    ],
+    "flyer": [
+      "legs",
+      "arms",
+      "spine"
+    ]
+  }
+}
