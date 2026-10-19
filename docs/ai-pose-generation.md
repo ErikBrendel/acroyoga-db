@@ -165,6 +165,10 @@ More facts:
 - L-base: legs vertical, soles face up, toes point to the base's head (-Z), arms straight up.
 - `elbow.rotate -90` turns the palm down with the arm pointing forward.
 - A flyer arching back while lying face up drops the chest; compensate with the root pitch.
+- A base leg that carries the flyer alone (sidestar, mono poses) stands vertical and straight, the foot above
+  the middle of his pelvis (`hip.pike` 90, `straddle` about -6), and the flyer's weight goes over it. Do not
+  tilt it to bring her shoulders within reach of his hands: a human rejected that as off balance; close the
+  gap with her lean and his arms.
 - Base limbs that carry nothing rest on the floor in a stabilising position, unless the pose says otherwise:
   a free leg with the foot flat on the floor (below), free arms on the floor beside the body. A free leg or
   arm hanging in the air was rejected by a human (mono backbird).
