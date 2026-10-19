@@ -1,0 +1,131 @@
+{
+  "poseId": "front-plank-twisted-hands-left",
+  "base": {
+    "position": [
+      0,
+      0.156,
+      0
+    ],
+    "joints": {
+      "root": {
+        "pitch": -90
+      },
+      "hip": {
+        "pike": 90.5,
+        "straddle": 1,
+        "rotate": 1.5
+      },
+      "knee": {
+        "bend": 2
+      },
+      "ankle": {
+        "turn": -5.3,
+        "point": 12.5,
+        "tilt": 28.3
+      },
+      "clavicle": {
+        "protract": 0,
+        "elevate": 10
+      },
+      "shoulder": {
+        "forward": 88,
+        "raise": -22,
+        "rotate": 0
+      },
+      "elbow": {
+        "bend": {
+          "left": 0,
+          "right": 6
+        },
+        "rotate": 45
+      },
+      "wrist": {
+        "flex": -30,
+        "fingers": 25
+      }
+    }
+  },
+  "flyer": {
+    "position": [
+      0,
+      1.159,
+      -0.026
+    ],
+    "joints": {
+      "root": {
+        "turn": 180,
+        "pitch": 75.9
+      },
+      "waist": {
+        "bend": -4.9
+      },
+      "chest": {
+        "bend": -8.2
+      },
+      "neck": {
+        "nod": -16.8
+      },
+      "ankle": {
+        "point": 37.7
+      },
+      "clavicle": {
+        "protract": 14,
+        "elevate": -0.9
+      },
+      "shoulder": {
+        "forward": 53,
+        "raise": -5,
+        "rotate": 0
+      },
+      "elbow": {
+        "bend": 13,
+        "rotate": -60
+      },
+      "wrist": {
+        "flex": -30,
+        "fingers": 25
+      }
+    }
+  },
+  "contacts": [
+    {
+      "a": {
+        "base": "left-sole"
+      },
+      "b": {
+        "flyer": "right-hip"
+      },
+      "symmetric": true
+    },
+    {
+      "a": {
+        "flyer": "left-palm"
+      },
+      "b": {
+        "base": "left-palm-heel"
+      },
+      "twist": 180
+    },
+    {
+      "a": {
+        "flyer": "right-palm"
+      },
+      "b": {
+        "base": "right-palm-heel"
+      },
+      "twist": 180
+    }
+  ],
+  "locks": {
+    "base": [
+      "legs",
+      "arms",
+      "clavicle"
+    ],
+    "flyer": [
+      "spine",
+      "legs",
+      "clavicle"
+    ]
+  }
+}

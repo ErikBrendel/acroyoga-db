@@ -1,0 +1,24 @@
+# front-plank-twisted-hands-left
+
+## 2026-10-19: generated
+
+- **Result**: approved front plank with unchanged bodies (base legs/feet and flyer body copied from `public/data/poses3d/front-plank.json` and locked; base soles on her hips are `reach` contacts with locked legs, so they just hold). Only the hands changed: **same-side** grip (her left in his left, her right in his right), with the base's straight arms crossed at the wrists (`shoulder.raise -22`). The grip is the stargrip recipe: flyer `palm` on base `palm-heel`, twist 180, `wrist.fingers` 25, base forearms supinated (`elbow.rotate 45`), base `wrist.flex -30`. All 4 contacts ok, no limits, no head issues. Flyer elbows bent about 18°, arms close together. The human should check:
+  - Hands sit near the midline (palms at x ±3 cm). The palms are vertical (normals about ±X): the base's palms face outward, hers inward onto them. It is a crossed-wrist clasp, not flat palms like in front plank.
+  - The "left on top" detail is weak. His left forearm is only 3 cm towards his feet from the right one where they cross, and both hands are at the same height. Making the left hand clearly higher (asymmetric `clavicle.protract` ±4) straightened her right elbow and pushed her right shoulder to rotate -51, so I left it out.
+  - Overlap reported: base left and right elbows 4 cm into each other. This is the crossed arms touching; it is not a body collision.
+  - Base `clavicle.protract` went from front plank's -11.5 to 0 (shoulders a little off the floor), because the palm-heel grip needs the hands higher; with -5 her elbows were straight.
+- **Decisions**: no source shows this exact pose. Reasoning used: in front plank she holds opposite-side hands (her right in his left); star needs same-side hands; and going through outside sidestar left (her head to his left, right side down on his left foot, front to his head; worked out by hand with left = head × front, not checked with pose:orient) rolls her left side up. So the prep re-grips to same-side hands, the base's arms crossed, and she unwinds them as she rolls. Reading "Base left hand up": his left hand holds her left, which is the hand that rises in the twist; I modelled his left arm as the one crossing over, without a height difference (see above). This is an interpretation — the human may have meant a visibly raised left hand. I used the stargrip recipe because Acrodemy "From Front Bird to Star" and Daniel Scott's Corkscrew both say the bird→star twist uses a hand-to-hand grip.
+- **References**:
+  - https://acrodemy.eu/2025/02/06/outside-star/: the photo and the Jacob Brown "Side Stars Demystified" video (https://www.youtube.com/watch?v=OZ5iOnG4tnk, "Inside Toe Turns From Bird" = outside star, about 32–40 s). Useful for which way the outside star faces; their entry from bird is without held hands (lower hand to the ankle), so it was no help on grips.
+  - https://www.christiangieger.de/acroyoga-posen/outside-star/ photo (taken from the head end): confirms the orientation, no text.
+  - https://acrodemy.eu/2025/06/07/from-front-bird-to-star/: text says "hand-to-hand grip". It goes via reverse inside star, though, not via outside star.
+  - Daniel Scott "Corkscrew (Bird to Star)" https://www.youtube.com/watch?v=lw88JUFB2Ok: a "hand2hand grip" caption at about 14 s. The camera is side-on, so the storyboard frames are too small to see whether the arms cross.
+  - Approved examples: front-plank.json, star.json and its params.
+- **Tools**: pose:solve about 10 times (mostly `--vary` with `--show`), pose:check 3 times (front plank and star sites, forearm crossing via `segment@along@around`), pose:render 6 times. `--vary` with whole `{left,right}` objects worked well for asymmetric sweeps.
+- **Missing**:
+  - Scratch `scratchpad/sb.py`: downloads every storyboard sheet of a video at a given level. The new `pose:frames` replaces it; it arrived mid-task.
+  - Small python snippets to edit the params.
+  - No reference shows the twisted/crossed grip itself; the grip and crossing are worked out, not seen.
+  - **Render bug**: `pose:render <id> --width 512` (the 4-view composite) twice wrote the pose *list* page instead of the editor. `--view Angled --width 700` did the same once. `--view Side`/`Front`/`"Head end"` worked. It looks like a race with the page load, or the narrow viewport switching to the list layout.
+- **Time sinks**: base hand orientation vs. her reach. With pronated base forearms (`elbow.rotate -85` as in star) her shoulder needed rotate 70–90; supinated (+45) brought it to about 5. Her reach is very sensitive to both clavicles (her elbows went from 0° to 35° over 10° of protract).
+- **Suggestion**: fix the composite `pose:render` sometimes capturing the list page (wait for the editor canvas before the screenshot). Also add a doc note: a palm-heel grip sits about 5 cm lower than a palm grip, so the arm lengths from an approved palm-grip pose do not carry over.

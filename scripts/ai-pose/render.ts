@@ -74,19 +74,29 @@ const tab = await connectTab('about:blank');
 try {
   await tab.send('Emulation.setDeviceMetricsOverride', { ...SIZE, deviceScaleFactor: 1, mobile: false });
   await tab.send('Page.enable');
-  await tab.send('Page.navigate', { url: `${APP_URL}?pose=${poseId}` });
-  if (!(await clickWhenThere(tab, '🎭 Open in 3D editor'))) throw new Error(`No pose "${poseId}" or the app is not in edit mode at ${APP_URL}`);
-  if (!args.includes('--saved') && !(await clickWhenThere(tab, 'Load AI draft'))) throw new Error(`No AI draft for "${poseId}" (use --saved for saved data)`);
-  // The editor opened with the pose: its view buttons are there
-  if (!(await clickWhenThere(tab, 'Angled'))) throw new Error('The 3D editor did not open');
-  await sleep(800);
+  const openEditor = async () => {
+    await tab.send('Page.navigate', { url: `${APP_URL}?pose=${poseId}` });
+    if (!(await clickWhenThere(tab, '🎭 Open in 3D editor'))) throw new Error(`No pose "${poseId}" or the app is not in edit mode at ${APP_URL}`);
+    if (!args.includes('--saved') && !(await clickWhenThere(tab, 'Load AI draft'))) throw new Error(`No AI draft for "${poseId}" (use --saved for saved data)`);
+    // The editor opened with the pose: its view buttons are there
+    if (!(await clickWhenThere(tab, 'Angled'))) throw new Error('The 3D editor did not open');
+    await sleep(800);
+  };
+  // A reload of the page (the dev server restarting, a file changing) drops the editor and leaves the pose list
+  const editorOpen = () => tab.evaluate(`!!document.querySelector('canvas') && [...document.querySelectorAll('button')].some(b => b.textContent.trim() === 'Head end')`);
   const sceneWidth = SIZE.width - PANEL_WIDTH;
   const clip = { x: 0, y: 0, width: sceneWidth, height: SIZE.height, scale: (width ?? sceneWidth) / sceneWidth / (view ? 1 : 2) };
-  const shots: string[] = [];
-  for (const name of view ? [view] : VIEWS) {
-    await tab.evaluate(clickButton(name));
-    await sleep(400);
-    shots.push((await tab.send('Page.captureScreenshot', { format: 'png', clip })).result.data);
+  let shots: string[] = [];
+  for (let attempt = 1; shots.length === 0; attempt++) {
+    await openEditor();
+    for (const name of view ? [view] : VIEWS) {
+      await tab.evaluate(clickButton(name));
+      await sleep(400);
+      shots.push((await tab.send('Page.captureScreenshot', { format: 'png', clip })).result.data);
+    }
+    if (await editorOpen()) break;
+    if (attempt === 3) throw new Error('The 3D editor kept closing while rendering (page reloads?)');
+    shots = [];
   }
   // Composed in the page itself, so no image library is needed
   const composed: string = await tab.evaluate(`(async () => {

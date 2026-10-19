@@ -164,6 +164,9 @@ More facts:
   head, less towards his feet.
 - Inside and outside sidestar share the flyer (same side down, head the same way) and differ only in which base
   leg carries her: an approved one is the start for the other (swap the base's legs, re-balance).
+- The stargrip (palm on palm-heel) holds the hands about 5 cm closer together than palm on palm: arm angles
+  from an approved palm-grip pose (front plank) do not carry over, and the base's forearm turn (`elbow.rotate`)
+  decides how much the flyer's shoulder has to rotate; sweep it.
 - `wrist.flex` positive bends the hand towards the palm; the stargrip's bent-back wrists are negative.
 - L-base: legs vertical, soles face up, toes point to the base's head (-Z), arms straight up.
 - `elbow.rotate -90` turns the palm down with the arm pointing forward.
