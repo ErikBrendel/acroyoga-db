@@ -152,7 +152,7 @@
         "base": {
           "segment": "left-thigh",
           "along": 0.6,
-          "around": 0
+          "around": 90
         }
       },
       "twist": "free"
