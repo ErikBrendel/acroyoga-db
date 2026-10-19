@@ -1,0 +1,46 @@
+## 2026-10-19: generated
+- **Result**: draft `data-drafts/poses3d/star.json`, params `data-drafts/params/star.json`, renders `star.png`, `star-side.png`, `star-head-end.png`. All 4 contacts ok (≤1 mm, ≤1°). No limits, no overlaps, no `<- check` marks in Feet.
+  - Base: L-base, legs vertical and straight (pike 90, knee 0, straddle 1.3), ankles turn 5 / point 5 / tilt 0. Arms straight and vertical (shoulder forward 90, rotate 40, elbow rotate 50, wrist 0), palms facing the base's head. All base legs and arms are locked in the params.
+  - Flyer: inverted, facing the base's head, root `turn 180, roll 180, pitch -5`. That is the same as `pitch 185`, which the root's ±180 limit does not allow. Spine straight, neck nod 10, legs together, toes pointed 45.
+  - The flyer's centre of mass is 1 cm towards the base's head from the soles. Base knees and elbows are both stacked at 0°.
+  - Flyer arms (left to the solver): shoulder forward 96, raise -11, elbow bend 63, elbow rotate 78 (strongly supinated), wrist flex 29 / tilt -15. The upper arm is about horizontal and the forearm hangs straight down to the base's hands.
+  - For the human to check:
+    - **Flyer elbow bend**: 63 is less bent than in Gieger's photo (about 80–90). Her hands there are lower relative to her shoulders, which these body proportions cannot reproduce with straight, vertical base arms.
+    - **Grip and forearm rotation**: the flyer's forearm rotation (78) and wrist tilt (-15) come from the palm-to-palm stargrip orientation I chose (see Decisions).
+    - **Flyer elbows**: slightly inward (raise -11).
+- **Decisions**:
+  - **Stargrip**: modelled as palm on palm, fingers opposite (twist 180), base palm facing his head (-Z), flyer palm facing her own face (+Z), same-side hands (base left to flyer left).
+    - Source: the YouTube thumbnail close-up, where the flyer's hand sits on the head side of the base's hand.
+    - Gieger and the Acrodemy forest photo are not clear enough to confirm it.
+    - The other option, sideways palms as in a handshake, cannot be ruled out. Follow-up agents should keep this contact as it is.
+  - **Base feet**: the `shoulder` site (top of the shoulder, its direction is the flyer's front) on the base's `sole`, twist "free". Gieger shows the heel at the back of her shoulder and the toes towards her neck and collarbone, which is what the site gives with toes -Z.
+    - Twist 0 failed by 5° only because the base's toes turn 5° outward.
+    - The base ankle is locked at point 5. Point -5 also holds if the flyer's root pitch is exactly 180, but then her centre of mass lies 7 cm towards the base's head. With pitch 185 (body tilted 5° towards her back, as in Gieger, where her hips are slightly behind her shoulders) the soles need point 5 to stay flat on her shoulders.
+  - **Base arms**: vertical (forward 90), not tilted towards the feet. With forward 80, or with the clavicles protracted, the hands came closer and higher, and the flyer's upper arms pointed upward with elbows bent 105, which no photo shows.
+  - **Flyer legs**: together and straight, toes pointed 45, as in Gieger and Partner Acrobatics. The approved bird uses point 60.
+- **References**:
+  - **christiangieger.de**: Pose058 (2000 px). The best side view, used for the foot placement on the shoulder, the arm shape and the body line. Rendered `--view Side` matches it closely.
+  - **Acrodemy**: `csillag500keret` (star, side view, from a distance) and a forest photo, which is a one-handed variant.
+  - **Partner Acrobatics**: a small side photo.
+  - **YouTube thumbnail** (`maxresdefault`): the only usable grip close-up.
+  - **Misleading**: Acrodemy's `h2hkeztartas` close-up shows the hand-to-hand handstand grip, not stargrip.
+  - **Useless**: page texts, the partneracrobatics Instagram feed.
+  - None of the photos is taken from the head end.
+  - **Example poses**: `bird.json` and `chair.json` for the data format and the locks.
+- **Tools**: `pose:solve` about 12 times, `--vary` (with `--show`) 6 times, `pose:orient` 4 times, `pose:check` with sites 2 times, `pose:render` 6 times (default, Side, Head end).
+  - `pose:orient` made the palm orientations a one-shot check.
+  - `pose:check` with sites showed at once that the 5° shoulder error was the toe turn, not the normals.
+- **Missing**:
+  - **Scratch scripts**: none, only `jq` and inline python edits of the params in scratchpad/gen-star/.
+  - **Recipes**: no entry for an inverted flyer. Flyer upside down facing the base's head is `pitch 180` (front -Z, own left +X). To lean her past that, `turn 180, roll 180, pitch ±x`.
+  - **Zoom**: there is no close-up render of a contact (foot on shoulder, grip), so I could only judge the grip from the 4-view render.
+  - **Stargrip**: there is no definition of the grip to check the palm orientation against.
+- **Time sinks**:
+  - **Flyer's centre of mass**: about 5 rounds to get it over the soles. Spine bends tilt the `shoulder` site's normal (it follows the upper back), so with locked base ankles every bend broke the shoulder contact, and root pitch is capped at 180. The fix was the turn/roll workaround plus base ankle point 5.
+  - **Flyer arm shape**: 3 rounds, by moving the base's hands (forward 80→90, clavicle 15→0).
+- **For the 4-Step follow-ups** (mono reverse shin-to-foot, supported mono kneepit, mono backbird):
+  - Start from `data-drafts/params/star.json` and split the symmetric `shoulder`–`sole` contact into two single contacts, and replace the one for the leg that changes.
+  - The base's legs and arms are fully locked. Unlock only the leg that changes, or the solver will not move it.
+  - Base ankle point 5 is tied to the flyer's 5° tilt. If the flyer's line changes, re-check the remaining sole (`pose:check ... base:right-sole flyer:right-shoulder`) instead of trusting "ok".
+  - The flyer's arms are left to IK. Keep the stargrip contact with twist 180 or the hands flip.
+- **Suggestion**: add a recipe row for an inverted flyer (shoulderstand facing the base's head: `pitch 180`, or `turn 180, roll 180, pitch ±x` to lean beyond the limit). Better still, let root pitch wrap past ±180 so this does not need a workaround.
