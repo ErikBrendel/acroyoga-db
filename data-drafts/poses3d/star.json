@@ -1,0 +1,28 @@
+{
+  "base": {
+    "position": [0,0.156,0],
+    "joints": {
+      "root": {"pitch":-90},
+      "hip": {"pike":90,"straddle":1.3},
+      "ankle": {"turn":5,"point":5},
+      "shoulder": {"forward":90,"rotate":40},
+      "elbow": {"rotate":50},
+      "wrist": {"flex":-35}
+    }
+  },
+  "flyer": {
+    "position": [0,1.528,-0.005],
+    "joints": {
+      "root": {"turn":180,"pitch":-5,"roll":180},
+      "neck": {"nod":10},
+      "ankle": {"point":45},
+      "shoulder": {"forward":93.1,"raise":-14.2,"rotate":17.8},
+      "elbow": {"bend":87.1,"rotate":66.5},
+      "wrist": {"flex":-24.6,"tilt":-18.1}
+    }
+  },
+  "contacts": [
+    {"a":{"flyer":"left-shoulder"},"b":{"base":"left-sole"},"twist":"free","symmetric":true},
+    {"a":{"flyer":"left-palm"},"b":{"base":"left-palm"},"twist":180,"symmetric":true}
+  ]
+}

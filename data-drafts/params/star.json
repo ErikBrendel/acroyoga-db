@@ -30,7 +30,7 @@
         "rotate": 50
       },
       "wrist": {
-        "flex": 0,
+        "flex": -35,
         "tilt": 0
       }
     }

@@ -165,6 +165,11 @@ More facts:
   rotation and foot, which humans correct, rather than straightening the knee.
 - Base reaching overhead (whale): with straight arms the palms get to about y 65, z -85 cm; a flyer's ankles
   further away need bent elbows or a lower flyer.
+- Stargrip (star and the 4-Step): symmetric, same-side hands palm on palm, fingers on each other's wrist
+  (contact palm → palm, twist 180). Both wrists angled back: the base's `wrist.flex` about -35 gives the flyer
+  about -25 and bends her elbows to about 85°, as in the photos. Not a handshake.
+- Flyer upside down facing the base's head (star, shoulder stand): root `turn 180, roll 180, pitch -x` for a lean
+  of x towards her back; pitch alone stops at 180.
 - Grips: a palm on the `achilles` pulls an ankle towards the gripping person, on `ankle` (front) it pushes.
 - Twist is measured between the sites' directions (palm / sole: towards fingers / toes; limbs: towards their far
   end; torso: towards the head): 0 parallel, 180 opposite, ±90 crossed.
