@@ -12,11 +12,11 @@
       },
       "hip": {
         "pike": {
-          "left": 105,
+          "left": 90,
           "right": 45
         },
         "straddle": {
-          "left": 10,
+          "left": -6,
           "right": 0
         }
       },
@@ -35,24 +35,24 @@
       },
       "shoulder": {
         "forward": {
-          "left": 90,
-          "right": 100
+          "left": 60,
+          "right": 85
         },
         "raise": {
-          "left": -10,
-          "right": 0
+          "left": -25,
+          "right": 35
         }
       },
       "elbow": {
         "rotate": {
           "left": -85,
-          "right": -65
+          "right": -70
         }
       },
       "wrist": {
         "flex": {
           "left": -30,
-          "right": -20
+          "right": -45
         },
         "fingers": 25
       },
@@ -64,8 +64,8 @@
   "flyer": {
     "joints": {
       "root": {
-        "turn": 165,
-        "roll": 90
+        "turn": 162,
+        "roll": 95
       },
       "hip": {
         "straddle": 35
@@ -106,11 +106,11 @@
         "nod": -15
       },
       "waist": {
-        "side": -10,
-        "twist": 25
+        "side": 10,
+        "twist": 20
       },
       "chest": {
-        "side": -10,
+        "side": 10,
         "twist": 30
       }
     }
@@ -143,10 +143,7 @@
   ],
   "locks": {
     "base": [
-      "right-leg",
-      "left-hip",
-      "left-knee",
-      "left-ankle.turn",
+      "legs",
       "arms"
     ],
     "flyer": [

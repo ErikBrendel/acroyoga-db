@@ -42,3 +42,36 @@
   - The solver is chaotic here: neighbouring values (twist 25 vs 30, forward 100 vs 102) flip between 3/3 ok and 10–30° off. I had to sweep finely instead of reasoning.
   - Start angles of her arms had no effect at all, since the solver landed in the same basin every time.
 - **Suggestion**: a `--vary` mode that optimises one or two params for the fewest failing contacts and the fewest limits (a small grid search with refinement), or the solver moving the base's arms too when a hand-to-hand contact is out of reach (both arms reaching halfway). Hand-to-hand grips between a fixed base arm and a flyer arm took most of the rounds here and in star.
+
+## 2026-10-19: revised
+- **Result**: draft `data-drafts/poses3d/sidestar-left.json`, params `data-drafts/params/sidestar-left.json`. Renders: `sidestar-left-before.png` (the previous draft), `sidestar-left.png`, `sidestar-left-head-end.png`. All 3 contacts hold at 0 mm / 0°, with no angles at limits, no overlaps and no heads near the other person.
+  - **Balance**: the flyer's centre of mass is over its 3 contacts, and both people together are over the base's floor contact. The previous draft was 3 cm and 4 cm outside.
+  - **For the human to check**:
+    - **Her body line**: she now hangs head-down. Crown y 109 against pelvis 121, root roll 96, waist / chest side bend 10 / 10 towards the base. In the Acrodemy photos her torso is horizontal and her head is slightly up. This lean is what closes the hand gap with a vertical leg.
+    - **Base's right arm**: it is angled far out to his right and a little towards his head (`shoulder.forward 85, raise 35`, elbow rotate -70, wrist flex -45). His hand sits at (-56, 66, -44) cm, under her shoulders.
+    - **Base's left arm**: it crosses towards his midline (`forward 60, raise -25`); his hand is at x -7.
+    - **Flyer's right shoulder**: `forward -50, raise 178`, an unusual way of writing the angles. In the render it looks like a normal arm coming down in front of her chest, bent 60. Her left elbow is bent 67, her left wrist flex is -7 (unlocked), her right wrist -22.
+    - **Grip twist**: twist free gave -175° (left) and -125° (right). The right hand is therefore not stargrip-parallel; it is turned about 55°.
+- **Feedback point: "base leg super straight, centred above the base's pelvis, slightly inward, not towards his head"**:
+  - Base left leg now `hip.pike 90, straddle -6, knee 0`, ankle turn 5 / point 0, whole leg locked (`legs` lock).
+  - Left sole at (1, 106, -4) cm, pelvis centre at (0, 16, 0): 1 cm off in x, 4 cm towards his head. That is the sole's own offset from the ankle, the leg itself is vertical (the Side render shows it).
+  - Previously it was pike 105 and straddle +10 (outward), with the sole at (27, 99, -27).
+  - To close the hand gap without tilting the leg back:
+    - **Flyer**: spine side bend +10 / +10 towards the base (before: -10 / -10, upper body lifted) and chest twist 30, waist twist 20. Root turn 162 (head slightly towards his head), which brings her centre of mass into the contact triangle. Root roll comes from `fitRotate`, since the sole fixes it; setting roll by hand had no effect.
+    - **Base's arms**: angled towards her (left `forward 60, raise -25`, right `forward 85, raise 35`). Shoulder blades stay on the floor (clavicle 0).
+- **Decisions**:
+  - **Base right arm raise 35 kept**: raise 25 also holds all contacts, but the flyer ends up 2 cm off her support. The feedback was about balance, so I took the balanced variant.
+  - **Flyer's left wrist unlocked**: only `right-wrist.flex` stays locked. Locked at -22, the left hand did not hold.
+  - **References and feedback disagree** on her torso line: the photos show it horizontal, my draft has it leaning head-down (see Result). The feedback and the vertical leg win.
+- **References**: no new ones. I compared against the earlier crops of Acrodemy's `ketkezzel500` (horizontal torso, base's arms vertical-ish).
+- **Tools**:
+  - `pose:solve` 10 times, 8 of them `--vary` sweeps of 16–48 combinations each. `grep 'ok 3/3'` on the sweep output to list only the holding variants was handy.
+  - `pose:render` 3 times, `pose:check` once with a site.
+- **Missing**:
+  - **Scratch scripts**: none.
+  - **Root roll with `fitRotate`**: roll cannot be varied, because `fitRotate` re-derives it from the sole normal. Leaning her inward had to come from the spine. A note in the doc would have saved a sweep.
+  - **Shoulder angles**: the IK can land on an equivalent but odd-looking set (`raise 178, forward -50`). The report does not flag it.
+- **Time sinks**:
+  - **Right-hand orientation against balance**: every variant that brought her centre of mass over the contact triangle turned her right palm 15–35° off. About 4 sweeps until the base's right arm was turned outward enough.
+  - **My first revision step**: I did not notice that the root roll had no effect.
+- **Suggestion**: let the `--vary` summary filter or rank variants: `--only-ok`, sorted by worst error and then by distance of the centre of mass from the support. Most of my output lines were failing variants.
