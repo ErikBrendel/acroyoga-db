@@ -166,8 +166,9 @@ More facts:
 - Base reaching overhead (whale): with straight arms the palms get to about y 65, z -85 cm; a flyer's ankles
   further away need bent elbows or a lower flyer.
 - Stargrip (star and the 4-Step): symmetric, same-side hands palm on palm, fingers on each other's wrist
-  (contact palm → palm, twist 180). Both wrists angled back: the base's `wrist.flex` about -35 gives the flyer
-  about -25 and bends her elbows to about 85°, as in the photos. Not a handshake.
+  (contact palm → palm, twist 180). Both wrists bent towards the palm (`wrist.flex` about 20 each, locked),
+  which only fits with the base's arms tilted a little towards his feet (`shoulder.forward` about 80, not 90);
+  the flyer's elbows then bend about 80°. Not a handshake, and not wrists bent back (corrected by a human).
 - Flyer upside down facing the base's head (star, shoulder stand): root `turn 180, roll 180, pitch -x` for a lean
   of x towards her back; pitch alone stops at 180.
 - Grips: a palm on the `achilles` pulls an ankle towards the gripping person, on `ankle` (front) it pushes.

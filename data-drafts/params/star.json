@@ -17,7 +17,7 @@
         "turn": 5
       },
       "shoulder": {
-        "forward": 90,
+        "forward": 80,
         "rotate": 40,
         "raise": 0
       },
@@ -30,7 +30,7 @@
         "rotate": 50
       },
       "wrist": {
-        "flex": -35,
+        "flex": 20,
         "tilt": 0
       }
     }
@@ -73,7 +73,7 @@
         "elevate": 0
       },
       "wrist": {
-        "flex": 0,
+        "flex": 20,
         "tilt": 0
       }
     }
@@ -103,16 +103,17 @@
   ],
   "locks": {
     "base": [
-      "arms",
       "knee",
       "hip.pike",
       "hip.rotate",
-      "ankle"
+      "ankle",
+      "arms"
     ],
     "flyer": [
       "spine",
       "legs",
-      "clavicle"
+      "clavicle",
+      "wrist.flex"
     ]
   }
 }
