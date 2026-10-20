@@ -1,0 +1,96 @@
+{
+  "poseId": "shoulder-stand",
+  "base": {
+    "presets": [],
+    "position": [
+      0,
+      0.156,
+      0
+    ],
+    "joints": {
+      "root": {
+        "pitch": -90
+      },
+      "hip": {
+        "pike": 90
+      },
+      "ankle": {
+        "turn": 5
+      },
+      "shoulder": {
+        "forward": 94,
+        "raise": -6
+      },
+      "elbow": {
+        "rotate": -90
+      },
+      "wrist": {
+        "flex": -80,
+        "fingers": 15
+      }
+    }
+  },
+  "flyer": {
+    "position": [
+      0,
+      1.4,
+      -0.45
+    ],
+    "joints": {
+      "root": {
+        "roll": 180,
+        "pitch": 2
+      },
+      "ankle": {
+        "point": 60
+      },
+      "shoulder": {
+        "forward": 60
+      },
+      "elbow": {
+        "rotate": -60
+      },
+      "clavicle": {
+        "elevate": -5
+      }
+    }
+  },
+  "contacts": [
+    {
+      "solve": "fit",
+      "a": {
+        "flyer": "left-shoulder"
+      },
+      "b": {
+        "base": "right-palm"
+      },
+      "twist": "free",
+      "symmetric": true
+    },
+    {
+      "a": {
+        "flyer": "left-palm"
+      },
+      "b": {
+        "base": {
+          "segment": "right-shin",
+          "along": 0.85,
+          "around": 80
+        }
+      },
+      "twist": "free",
+      "symmetric": true
+    }
+  ],
+  "locks": {
+    "base": [
+      "legs",
+      "arms"
+    ],
+    "flyer": [
+      "spine",
+      "legs",
+      "clavicle"
+    ]
+  }
+}
