@@ -52,14 +52,13 @@
       "b": {
         "base": "left-palm-heel"
       },
-      "twist": "free",
+      "twist": -60,
       "symmetric": true
     }
   ],
   "locks": {
     "base": [
-      "legs",
-      "arms"
+      "legs"
     ],
     "flyer": [
       "spine",

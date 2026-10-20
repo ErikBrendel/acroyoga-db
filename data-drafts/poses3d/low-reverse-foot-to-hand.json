@@ -5,9 +5,10 @@
       "root": {"pitch":-90},
       "hip": {"pike":-5,"rotate":10},
       "ankle": {"point":30},
-      "shoulder": {"forward":-20,"raise":-4,"rotate":-5},
-      "elbow": {"bend":130,"rotate":-85},
-      "wrist": {"flex":-68,"tilt":-20,"fingers":40}
+      "clavicle": {"protract":0.5,"elevate":0.9},
+      "shoulder": {"forward":-20.9,"raise":-16.1,"rotate":0.8},
+      "elbow": {"bend":130.1,"rotate":-63.1},
+      "wrist": {"flex":-66.7,"tilt":-20,"fingers":40}
     }
   },
   "flyer": {
@@ -18,6 +19,6 @@
     }
   },
   "contacts": [
-    {"a":{"flyer":"right-heel"},"b":{"base":"left-palm-heel"},"twist":"free","symmetric":true}
+    {"a":{"flyer":"right-heel"},"b":{"base":"left-palm-heel"},"twist":-60,"symmetric":true}
   ]
 }
