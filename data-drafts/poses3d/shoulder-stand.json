@@ -18,7 +18,7 @@
       "clavicle": {"elevate":-5},
       "shoulder": {"forward":62.4,"raise":-8.9,"rotate":30.1},
       "elbow": {"bend":14.9,"rotate":-29.2},
-      "wrist": {"flex":-10.3,"tilt":1.9}
+      "wrist": {"flex":-10.3,"tilt":1.9,"fingers":50}
     }
   },
   "contacts": [

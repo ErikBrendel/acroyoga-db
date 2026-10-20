@@ -52,6 +52,9 @@
       },
       "clavicle": {
         "elevate": -5
+      },
+      "wrist": {
+        "fingers": 50
       }
     }
   },
