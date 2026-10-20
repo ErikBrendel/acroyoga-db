@@ -53,6 +53,8 @@ const PAIRED_SITES: Record<string, SiteDef> = {
   sole: { joint: 'ankle', point: CONTACT_POINTS.ankle, normal: CONTACT_NORMALS.ankle, direction: [0, 1, 0] },
   // Underside of the heel, e.g. to check how far apart a base's heels are against the toes
   heel: { joint: 'ankle', point: [0, -0.03, -SOLE_DEPTH], normal: CONTACT_NORMALS.ankle, direction: [0, 1, 0] },
+  // Between heel and sole centre, e.g. a foot standing on a hand
+  'rear-sole': { joint: 'ankle', point: [0, 0.035, -SOLE_DEPTH], normal: CONTACT_NORMALS.ankle, direction: [0, 1, 0] },
   instep: { joint: 'ankle', point: [0, 0.1, -0.005], normal: [0, 0, 1], direction: [0, 1, 0] },
   knee: { segment: 'shin', along: 0.05, around: 0 },
   shin: { segment: 'shin', along: 0.45, around: 0 },

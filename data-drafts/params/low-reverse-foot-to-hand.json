@@ -37,13 +37,13 @@
     "joints": {
       "root": {
         "turn": 180,
-        "pitch": 6
+        "pitch": 2
       },
       "hip": {
         "straddle": 4
       },
       "ankle": {
-        "point": -8
+        "point": -4
       }
     }
   },
@@ -51,7 +51,7 @@
     {
       "solve": "fit",
       "a": {
-        "flyer": "right-sole"
+        "flyer": "right-rear-sole"
       },
       "b": {
         "base": "left-palm-heel"
