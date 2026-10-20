@@ -185,7 +185,7 @@ More facts:
   hand to the front.
 - Crossed ankles: two straight legs cannot cross at the ankles without the knees running into each other; bend
   the lower leg's knee a little and hold the crossing with a contact within the person (shin on shin).
-- Base arms resting on the floor (lying): about `shoulder.forward -12, raise 35, rotate -80`, elbows straight (-18 lifted his back 3 cm in folded leaf);
+- Base arms resting on the floor (lying): about `shoulder.forward -12, raise 35, rotate -80`, elbows straight (-18 lifted his back 3 cm in folded leaf); over the L-base preset also reset `wrist.flex` and `elbow.rotate` to 0, or the hands stay bent back and lifted;
   with the arms closer to the body (`raise 15`) about `forward -11`. More `forward` pushes the hands into the
   floor and lifts the base; check the hands in "Lowest surface point".
 - Flyer lying face up (whale): the legs slope below horizontal by about 90 − |root pitch| − hip pike.
