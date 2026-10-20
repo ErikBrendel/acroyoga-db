@@ -1,0 +1,70 @@
+{
+  "poseId": "low-reverse-foot-to-hand",
+  "base": {
+    "joints": {
+      "root": {
+        "pitch": -90
+      },
+      "ankle": {
+        "point": 30
+      },
+      "shoulder": {
+        "forward": -20,
+        "raise": -4,
+        "rotate": -5
+      },
+      "elbow": {
+        "bend": 130,
+        "rotate": -85
+      },
+      "wrist": {
+        "flex": -68,
+        "tilt": -20,
+        "fingers": 40
+      },
+      "hip": {
+        "pike": -5,
+        "rotate": 10
+      }
+    }
+  },
+  "flyer": {
+    "position": [
+      0,
+      1.3,
+      -0.25
+    ],
+    "joints": {
+      "root": {
+        "turn": 180
+      },
+      "hip": {
+        "straddle": 4
+      }
+    }
+  },
+  "contacts": [
+    {
+      "solve": "fit",
+      "a": {
+        "flyer": "right-heel"
+      },
+      "b": {
+        "base": "left-palm-heel"
+      },
+      "twist": "free",
+      "symmetric": true
+    }
+  ],
+  "locks": {
+    "base": [
+      "legs",
+      "arms"
+    ],
+    "flyer": [
+      "spine",
+      "arms",
+      "legs"
+    ]
+  }
+}

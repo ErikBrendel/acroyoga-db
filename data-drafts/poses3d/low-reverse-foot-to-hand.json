@@ -1,0 +1,23 @@
+{
+  "base": {
+    "position": [0,0.156,0],
+    "joints": {
+      "root": {"pitch":-90},
+      "hip": {"pike":-5,"rotate":10},
+      "ankle": {"point":30},
+      "shoulder": {"forward":-20,"raise":-4,"rotate":-5},
+      "elbow": {"bend":130,"rotate":-85},
+      "wrist": {"flex":-68,"tilt":-20,"fingers":40}
+    }
+  },
+  "flyer": {
+    "position": [0,1.278,-0.287],
+    "joints": {
+      "root": {"turn":180},
+      "hip": {"straddle":4}
+    }
+  },
+  "contacts": [
+    {"a":{"flyer":"right-heel"},"b":{"base":"left-palm-heel"},"twist":"free","symmetric":true}
+  ]
+}
